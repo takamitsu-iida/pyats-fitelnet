@@ -1,8 +1,6 @@
 # githubのpythonテンプレート
 # https://github.com/github/gitignore
 
-genieparser_fitelnet
-unicon_plugin_fitelnet
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
