@@ -27,7 +27,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-p --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f220-p --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []
@@ -41,7 +41,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-p --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/fx201-p --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []
@@ -55,7 +55,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-pe1 --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/fx201-pe1 --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []
@@ -69,7 +69,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-pe2 --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f220-pe2 --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []
@@ -83,7 +83,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce1 --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f221-ce1 --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []
@@ -97,7 +97,7 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce2 --state connect
+        command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f221-ce2 --state connect
         protocol: unknown
         arguments:
           init_exec_commands: []

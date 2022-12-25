@@ -5,14 +5,31 @@ JOB=$SCRIPT_DIR/job.py
 TESTBED=$SCRIPT_DIR/../testbed.yaml
 MOCK=$SCRIPT_DIR/mock.yaml
 
-# RECORD
-# pyats run job $JOB --testbed-file $TESTBED --record record
+while getopts cpm option; do
+    case $option in
+        c)
+            echo "record job"
+            pyats run job $JOB --testbed-file $TESTBED --record record
+            exit
+            ;;
+        p)
+            echo "replay job"
+            pyats run job $JOB --testbed-file $TESTBED --replay record
+            exit
+            ;;
+        m)
+            # --mock_data_dirで渡した文字列はテストベッドの中の変数に置換される
+            # テストベッド mock.yaml のこの部分
+            # command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f221-ce2 --state connect
+            echo "run using mock devices"
+            pyats run job $JOB --testbed-file $MOCK --mock_data_dir $SCRIPT_DIR/mock
+            exit
+            ;;
+        \?)
+            echo "unknown option"
+            exit
+            ;;
+    esac
+done
 
-# REPLAY
-# pyats run job $JOB --testbed-file $TESTBED --replay record
-
-# REAL DEVICE
-# pyats run job $JOB --testbed-file $TESTBED
-
-# MOCK DEVICE$
-pyats run job $JOB --testbed-file $MOCK
+pyats run job $JOB --testbed-file $TESTBED
