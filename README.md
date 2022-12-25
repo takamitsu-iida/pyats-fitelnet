@@ -6,8 +6,6 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 
 ## 環境構築
 
-これが一番悩むところです。
-
 必要なPythonモジュールは次の４個です。
 
 1. pyATS本体(pipでインストール)
@@ -15,30 +13,48 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 3. FITELnet機器のコマンド出力をパースするためのGenieパーサー(どこかに配置して利用)
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
-2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は、利用にひと手間必要です。
-4はパスさえ通っていれば利用できます。
+2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要で、環境変数を使って設定します。
+4はPYTHONPATHが通っていれば利用できます。
 
-環境変数を使って設定しますのでdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
+Pythonの仮想環境にvenvを利用しますので、direnvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
 <br>
 
 ## このリポジトリの使い方
 
-このリポジトリをクローンします。
+概要はこうなります。
+
+1. クローン(git clone)
+2. venvでPython環境を作成(python3 -m venv .venv)
+3. direnvを設定(direnv allow)
+4. Pythonモジュールをインストール(pip install -r requirements.txt)
+5. Uniconプラグインをインストール(make develop)
+
+<br>
+
+### 1. このリポジトリをクローン
 
 ```bash
-git clone https://github.com/takamitsu-iida/pyats_fitelnet.git
+git clone https://github.com/takamitsu-iida/pyats-fitelnet.git
 ```
 
-pyats_fitelnetディレクトリができますので、そこに移動してPython仮想環境を作ります。
+<br>
+
+### 2. venvでPython環境を作成
+
+pyats-fitelnetディレクトリができますので、そこに移動してPython仮想環境を作ります。
 
 ```bash
-cd pyats_fitelnet
+cd pyats-fitelnet
 
 /usr/bin/python3 -m venv .venv
 ```
 
-この環境を有効にするには `source .venv/bin/activate` コマンドを実行するわけですが、direnvを使うことでその作業を省略できます。
+<br>
+
+### 3. direnvを設定
+
+venvで作成した環境を有効にするには `source .venv/bin/activate` コマンドを実行するわけですが、direnvを使うことでその作業を省略できます。
 
 このリポジトリには.envrcが含まれていますので、内容を確認して問題なければ `direnv allow` します。
 
@@ -57,7 +73,7 @@ export PYATS_LIBS_EXTERNAL_PARSER=external_parser
 
 <br>
 
-### pyATSのインストール
+### 4. Pythonモジュールをインストール
 
 Python仮想環境を有効にしたらpyATSをインストールします。
 
@@ -71,15 +87,15 @@ pip install pyats[full]
 pip install -r requirements.txt
 ```
 
-これで pyats_fitelnet ディレクトリ配下にいる間はpyatsが利用できます。
+これで pyats-fitelnet ディレクトリ配下にいる間はpyatsが利用できます。
 
 <br>
 
-### Uniconプラグインのインストール
+### 5. Uniconプラグインをインストール
 
 続いてFITELnet機器に接続するためのUniconプラグインをインストールします。
 
-unicon.pluginsにソースコードがあります。
+unicon.pluginsディレクトリにソースコードがありますので、ディレクトリを移動します。
 
 ```bash
 cd unicon.plugins
@@ -100,7 +116,7 @@ python setup.py develop --no-deps
 実行例です。
 
 ```bash
-iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$ make develop
+iida@FCCLS0008993-00:~/git/pyats-fitelnet/unicon.plugins$ make develop
 
 --------------------------------------------------------------------
 Building and installing unicon.plugins.fitelnet development distributable: develop
@@ -118,10 +134,10 @@ writing manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
 reading manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
 writing manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
 running build_ext
-Creating /home/iida/git/pyats_fitelnet/.venv/lib/python3.8/site-packages/unicon.plugins.fitelnet.egg-link (link to src)
+Creating /home/iida/git/pyats-fitelnet/.venv/lib/python3.8/site-packages/unicon.plugins.fitelnet.egg-link (link to src)
 Adding unicon.plugins.fitelnet 1.0 to easy-install.pth file
 
-Installed /home/iida/git/pyats_fitelnet/unicon.plugins/src
+Installed /home/iida/git/pyats-fitelnet/unicon.plugins/src
 
 Completed building and installing: develop
 
@@ -135,7 +151,7 @@ unicon.plugins/srcディレクトリにegg-infoが作られています。
 
 ```bash
 unicon                       22.11
-unicon-plugins-fitelnet      1.0         /home/iida/git/pyats_fitelnet/unicon.plugins/src
+unicon-plugins-fitelnet      1.0         /home/iida/git/pyats-fitelnet/unicon.plugins/src
 unicon.plugins               22.11
 ```
 
