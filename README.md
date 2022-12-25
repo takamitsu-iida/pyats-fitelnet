@@ -16,6 +16,7 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
 2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は、利用にひと手間必要です。
+4はパスさえ通っていれば利用できます。
 
 環境変数を使って設定しますのでdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
@@ -33,11 +34,7 @@ pyats_fitelnetディレクトリができますので、そこに移動してPyt
 
 ```bash
 cd pyats_fitelnet
-```
 
-venvを使ってこのディレクトリ配下だけで有効なPython環境を作ります。
-
-```bash
 /usr/bin/python3 -m venv .venv
 ```
 
@@ -47,7 +44,7 @@ venvを使ってこのディレクトリ配下だけで有効なPython環境を�
 
 - .envrc
 
-```
+```bash
 source .venv/bin/activate
 unset PS1
 
@@ -134,20 +131,16 @@ Done.
 unicon.plugins/srcディレクトリにegg-infoが作られています。
 何らかの理由でこのPython環境からプラグインを取り除きたくなったときにegg-infoは必要ですので、消さないようにしておきます。
 
-インストールされているかどうかは、pip listコマンドで確認できます。
+正しくインストールされたかpip listコマンドで確認できます。
 
 ```bash
-iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$ pip list
-Package                 Version Location
------------------------ ------- ------------------------------------------------
-pip                     20.0.2
-pkg-resources           0.0.0
-setuptools              44.0.0
-unicon.plugins.fitelnet 1.0     /home/iida/git/pyats_fitelnet/unicon.plugins/src
-iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$
+(.venv) iida@FCCLS0008993-00:~/git/pyats_fitelnet$ pip list | grep unicon
+unicon                       22.11
+unicon.plugins               22.11
+unicon.plugins.fitelnet      1.0         /home/iida/git/pyats_fitelnet/unicon.plugins/src
 ```
 
-これでFITELnetの機器に接続できるようになります。
+これでpyATSを使ってFITELnetの機器に接続できるようになります。
 
 <br>
 
@@ -164,10 +157,10 @@ vscodeの設定メニューからextra pathsを検索します。
 
 ```json
 {
-	"folders": [
-		{
-			"path": "."
-		}
+    "folders": [
+        {
+            "path": "."
+        }
     ],
     "settings": {
         "python.analysis.extraPaths": [
@@ -175,9 +168,10 @@ vscodeの設定メニューからextra pathsを検索します。
             "genielibs",
         ]
     }
-}```
+}
+```
 
-これでvscodeで補完できるようになります。
+これで補完が効くようになります。
 
 「ファイル」→「名前をつけてワークスペースを保存」を選択して、ワークスペースをファイル名で保存します。
 
@@ -192,6 +186,8 @@ vscodeの設定メニューからextra pathsを検索します。
 
 > Write a parser
 > https://pubhub.devnetcloud.com/media/pyats-development-guide/docs/writeparser/writeparser.html#
+
+
 
 <br><br><br><br>
 
