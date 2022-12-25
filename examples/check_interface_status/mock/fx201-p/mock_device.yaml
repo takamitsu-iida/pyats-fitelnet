@@ -32,16 +32,6 @@ execute:
       new_state: configure
     config-transaction:
       new_state: configure
-    show ip interface brief: "Codes: X - 10G port\r\n\r\n  Interface             \
-      \ IP-Address      Port-channel          Status Protocol  \r\n  Management 1\
-      \           192.168.10.221  unassigned            up     IP        \r\n  Null\
-      \ 0                 unassigned      unassigned            up     unassigned\r\
-      \n  Loopback 0             127.0.0.1       unassigned            up     IP \
-      \       \r\n  Loopback 1             unassigned      unassigned            up\
-      \     unassigned\r\n  GigaEthernet 1/2       unassigned      Port-channel 1020000\
-      \  up     unassigned\r\n  GigaEthernet 2/1       unassigned      Port-channel\
-      \ 2010000  up     unassigned\r\n  GigaEthernet 3/1       unassigned      Port-channel\
-      \ 3010000  up     unassigned"
     show version: ''
     term length 0: ''
     term width 0: ''
