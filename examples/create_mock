@@ -5,11 +5,11 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 TESTBED=${SCRIPT_DIR}/testbed.yaml
 
 ALL_SCRIPTS="
-${SCRIPT_DIR}/check_interface_status/run
-${SCRIPT_DIR}/check_ping_ce/run
-${SCRIPT_DIR}/check_ping_core/run
-${SCRIPT_DIR}/check_segment_list/run
-${SCRIPT_DIR}/check_segment_list/run
+${SCRIPT_DIR}/check_interface_status/test.py
+${SCRIPT_DIR}/check_ping_ce/test.py
+${SCRIPT_DIR}/check_ping_core/test.py
+${SCRIPT_DIR}/check_segment_list/test.py
+${SCRIPT_DIR}/check_segment_list/test.py
 "
 
 # SCRIPTS=${ALL_SCRIPTS}
