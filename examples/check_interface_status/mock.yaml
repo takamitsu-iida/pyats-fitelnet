@@ -1,0 +1,86 @@
+---
+
+#
+# testbed file for FITELnet (mock device)
+#
+
+testbed:
+  name: srv6 lab
+
+  # common credentials
+  credentials:
+    default:
+      username: 'user'
+      password: 'user'
+    enable:
+      password: ''
+
+devices:
+
+  f220-p:
+    alias: 'uut'
+
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-p --state connect
+        protocol: unknown
+
+  fx201-p:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-p --state connect
+        protocol: unknown
+
+  fx201-pe1:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-pe1 --state connect
+        protocol: unknown
+
+  f220-pe2:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-pe2 --state connect
+        protocol: unknown
+
+  f221-ce1:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce1 --state connect
+        protocol: unknown
+
+  f221-ce2:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce2 --state connect
+        protocol: unknown

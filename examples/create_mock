@@ -1,45 +1,30 @@
 #!/bin/bash
 
-ALL_SCRIPTS='
-ex10.execute.py
-ex12.execute.py
-ex13.execute.py
-ex20.parse.py
-ex21.parse_csv.py
-ex22.parse_html.py
-ex30.learn.py
-ex31.learn.py
-ex32.learn.py
-ex33.learn.py
-ex40.parse_find.py
-ex41.learn_find.py
-ex42.learn_find.py
-ex43.learn_poll.py
-ex50.configure.py
-ex51.configure.py
-ex52.configure.py
-ex53.configure.py
-ex60.diff.py
-ex61.diff.py
-ex62.diff.py
-ex70.save.py
-'
+SCRIPT_DIR=$(cd $(dirname $0); pwd)
+
+TESTBED=${SCRIPT_DIR}/testbed.yaml
+
+ALL_SCRIPTS="
+${SCRIPT_DIR}/check_interface_status/run
+${SCRIPT_DIR}/check_ping_ce/run
+${SCRIPT_DIR}/check_ping_core/run
+${SCRIPT_DIR}/check_segment_list/run
+${SCRIPT_DIR}/check_segment_list/run
+"
 
 # SCRIPTS=${ALL_SCRIPTS}
 
-SCRIPTS='
-ex12.execute.py
-'
+SCRIPTS="
+${SCRIPT_DIR}/check_interface_status/test.py
+"
 
-DEVICES="r1 r2 r3 r4 sw1 sw2 sw3 sw4"
+DEVICES="f220-p fx201-p fx201-pe1 f220-pe2 f221-ce1 f221-ce2"
 
 for script in ${SCRIPTS}; do
-    # スクリプト名からディレクトリ名を取得する（ex21.execute.pyならex21）
-    # 後方一致、最長マッチで.までを削除して取得
-    dir=${script%%.*}
+    dir=$(cd $(dirname ${script}); pwd)
 
     # --record付きで実行
-    /usr/bin/env python ${script} --record ${dir}/record  --allow-repeated-commands
+    /usr/bin/env python ${script} --testbed ${TESTBED} --record ${dir}/record --allow-repeated-commands
 
     for device in ${DEVICES} ; do
         if [ -e ${dir}/record/${device} ] ; then

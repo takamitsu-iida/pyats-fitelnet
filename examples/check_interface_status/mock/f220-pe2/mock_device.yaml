@@ -1,0 +1,49 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: f220-pe2(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: f220-pe2(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: f220-pe2#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    show ip interface brief: "Interface                IP-Address      Port-channel\
+      \          Status Protocol  \r\nNull 0                   unassigned      unassigned\
+      \            up     unassigned\r\nLoopback 0               127.0.0.1       unassigned\
+      \            up     IP        \r\nLoopback 1               unassigned      unassigned\
+      \            up     unassigned\r\nGigaEthernet 1/1         unassigned      Port-channel\
+      \ 1010000  up     unassigned\r\nGigaEthernet 1/2         unassigned      Port-channel\
+      \ 1020000  up     unassigned\r\nGigaEthernet 1/8         192.168.10.224  Port-channel\
+      \ 1080000  up     IP        \r\nGigaEthernet 2/1.1       220.0.1.1       Port-channel\
+      \ 2010001  up     IP-VPN    \r\nGigaEthernet 2/1.2       220.0.2.1       Port-channel\
+      \ 2010002  up     IP-VPN    \r\nTunnel 1                 unassigned      unassigned\
+      \            up     unassigned"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: f220-pe2#

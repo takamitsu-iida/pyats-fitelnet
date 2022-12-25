@@ -3,6 +3,7 @@
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 JOB=$SCRIPT_DIR/job.py
 TESTBED=$SCRIPT_DIR/../testbed.yaml
+MOCK=$SCRIPT_DIR/mock.yaml
 
 # RECORD
 # pyats run job $JOB --testbed-file $TESTBED --record record
@@ -11,4 +12,7 @@ TESTBED=$SCRIPT_DIR/../testbed.yaml
 # pyats run job $JOB --testbed-file $TESTBED --replay record
 
 # REAL DEVICE
-pyats run job $JOB --testbed-file $TESTBED
+# pyats run job $JOB --testbed-file $TESTBED
+
+# MOCK DEVICE$
+pyats run job $JOB --testbed-file $MOCK

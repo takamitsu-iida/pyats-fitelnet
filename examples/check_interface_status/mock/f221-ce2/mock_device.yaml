@@ -1,0 +1,45 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: f221-ce2(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: f221-ce2(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: f221-ce2#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    show ip interface brief: "Interface                IP-Address      Port-channel\
+      \          Status Protocol  \r\nNull 0                   unassigned      unassigned\
+      \            up     unassigned\r\nLoopback 0               127.0.0.1       unassigned\
+      \            up     IP        \r\nGigaEthernet 1/8         192.168.10.223  Port-channel\
+      \ 1080000  up     IP        \r\nGigaEthernet 2/1.1       220.0.1.2       Port-channel\
+      \ 2010001  up     IP-VPN    \r\nGigaEthernet 2/1.2       220.0.2.2       Port-channel\
+      \ 2010002  up     IP-VPN"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: f221-ce2#
