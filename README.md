@@ -134,10 +134,9 @@ unicon.plugins/srcディレクトリにegg-infoが作られています。
 正しくインストールされたかpip listコマンドで確認できます。
 
 ```bash
-(.venv) iida@FCCLS0008993-00:~/git/pyats_fitelnet$ pip list | grep unicon
 unicon                       22.11
+unicon-plugins-fitelnet      1.0         /home/iida/git/pyats_fitelnet/unicon.plugins/src
 unicon.plugins               22.11
-unicon.plugins.fitelnet      1.0         /home/iida/git/pyats_fitelnet/unicon.plugins/src
 ```
 
 これでpyATSを使ってFITELnetの機器に接続できるようになります。

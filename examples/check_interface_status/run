@@ -1,7 +1,8 @@
 #!/bin/bash
 
-JOB=job.py
-TESTBED=../testbed.yaml
+SCRIPT_DIR=$(cd $(dirname $0); pwd)
+JOB=$SCRIPT_DIR/job.py
+TESTBED=$SCRIPT_DIR/../testbed.yaml
 
 # RECORD
 # pyats run job $JOB --testbed-file $TESTBED --record record

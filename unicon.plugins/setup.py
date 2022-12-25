@@ -13,7 +13,7 @@ setup(
 
     # name of the package
     # this name is displayed in 'pip list' output
-    name='unicon.plugins.fitelnet',
+    name='unicon-plugins-fitelnet',
 
     version='1.0',
 
@@ -68,7 +68,6 @@ setup(
     #     ├── fitelnet
     #
     # in this case module_name is 'fitelnet'
-
     entry_points={'unicon.plugins': ['fitelnet = fitelnet']},
     install_requires=['setuptools', 'unicon'],
     extras_require={},
