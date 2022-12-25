@@ -1,0 +1,10 @@
+fx201-p#show segment-routing srv6 sid
+
+SID                         Function     Context                                             Owner  State
+--------------------------  -----------  --------------------------------------------------  -----  ---------
+3ffe:201:0:1:40::           End                                                              IS-IS  InUse
+3ffe:201:0:1:41::           End (PSP)                                                        IS-IS  InUse
+3ffe:201:0:1:42::           End.X        [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+3ffe:201:0:1:43::           End.X (PSP)  [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+3ffe:201:0:1:44::           End.X        [Port-channel 3010000, Link-Local]                  IS-IS  InUse
+3ffe:201:0:1:45::           End.X (PSP)  [Port-channel 3010000, Link-Local]                  IS-IS  InUse

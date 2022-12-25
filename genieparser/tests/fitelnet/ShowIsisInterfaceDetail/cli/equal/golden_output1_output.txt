@@ -1,0 +1,32 @@
+f220-p#show isis interface detail
+
+Area core:
+  Interface: Port-channel 1020000, State: Up, Active, Circuit Id: 0x77
+    Type: lan, Level: L2, SNPA: 0080.bd4c.b2a3
+    Level-2 Information:
+      Metric: 10, Active neighbors: 1
+      Hello interval: 3, Holddown count: 10 (pad)
+      CNSP interval: 10, PSNP interval: 2
+      LAN Priority: 64, is not DIS
+    IPv6 Link-Locals:
+      fe80::280:bdff:fe4c:b2a3/64
+
+  Interface: Port-channel 2010000, State: Up, Active, Circuit Id: 0x79
+    Type: lan, Level: L2, SNPA: 0080.bd4c.b2a4
+    Level-2 Information:
+      Metric: 10, Active neighbors: 1
+      Hello interval: 3, Holddown count: 10 (pad)
+      CNSP interval: 10, PSNP interval: 2
+      LAN Priority: 64, is not DIS
+    IPv6 Link-Locals:
+      fe80::280:bdff:fe4c:b2a3/64
+
+  Interface: Port-channel 3010000, State: Up, Active, Circuit Id: 0x7a
+    Type: lan, Level: L2, SNPA: 0080.bd4c.b2a5
+    Level-2 Information:
+      Metric: 10, Active neighbors: 1
+      Hello interval: 3, Holddown count: 10 (pad)
+      CNSP interval: 10, PSNP interval: 2
+      LAN Priority: 64, is not DIS
+    IPv6 Link-Locals:
+      fe80::280:bdff:fe4c:b2a3/64

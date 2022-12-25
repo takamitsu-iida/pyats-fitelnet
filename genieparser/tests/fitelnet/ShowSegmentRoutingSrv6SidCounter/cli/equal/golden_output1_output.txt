@@ -1,0 +1,12 @@
+f220-pe2#show segment-routing srv6 sid counter
+
+End.DT6  3ffe:220:1:1:4d::                             0 packets            0 errors
+End.DT6  3ffe:220:1:1:4c::                             0 packets            0 errors
+End.DT4  3ffe:220:1:1:4b::                             0 packets            0 errors
+End.DT4  3ffe:220:1:1:4a::                            62 packets            0 errors
+End.X    3ffe:220:1:1:45::                             0 packets            0 errors
+End.X    3ffe:220:1:1:44::                             0 packets            0 errors
+End.X    3ffe:220:1:1:43::                             0 packets            0 errors
+End.X    3ffe:220:1:1:42::                             0 packets            0 errors
+End      3ffe:220:1:1:41::                             0 packets            0 errors
+End      3ffe:220:1:1:40::                             0 packets            0 errors

@@ -1,0 +1,49 @@
+fx201-pe1#show ip bgp vpnv4 all detail
+
+Route Distinguisher: 1:1 (1)
+BGP routing table entry for 201.0.1.0/24
+  Local
+    0.0.0.0 from 0.0.0.0 (201.0.0.1)
+      Origin incomplete, metric 0, localpref 100, weight 32768, valid, sourced, best
+      Extended Community: RT:1:1
+      Original RD:1:1
+      Local Label: no label
+      Remote Label: no label
+      Path Identifier (Remote/Local): /0
+      Last update: Wed Dec 14 18:04:58 2022
+
+BGP routing table entry for 220.0.1.0/24
+  Local
+    3ffe:220:1::1 (metric 30) from 3ffe:220:1::1 (220.0.0.1)
+      Origin incomplete, metric 0, localpref 100, valid, internal, best, installed
+      Extended Community: RT:1:1
+      Original RD:1:1
+      BGP Prefix-SID: SRv6 L3VPN 3ffe:220:1:1:: (L:40.24, F:16.0, T:16.64) End.DT4
+      Local Label: no label
+      Remote Label: 1120
+      Path Identifier (Remote/Local): /0
+      Last update: Wed Dec 14 18:05:34 2022
+
+Route Distinguisher: 1:2 (2)
+BGP routing table entry for 201.0.2.0/24
+  Local
+    0.0.0.0 from 0.0.0.0 (201.0.0.1)
+      Origin incomplete, metric 0, localpref 100, weight 32768, valid, sourced, best
+      Extended Community: RT:1:2
+      Original RD:1:2
+      Local Label: no label
+      Remote Label: no label
+      Path Identifier (Remote/Local): /0
+      Last update: Wed Dec 14 18:04:58 2022
+
+BGP routing table entry for 220.0.2.0/24
+  Local
+    3ffe:220:1::1 (metric 30) from 3ffe:220:1::1 (220.0.0.1)
+      Origin incomplete, metric 0, localpref 100, valid, internal, best, installed
+      Extended Community: RT:1:2
+      Original RD:1:2
+      BGP Prefix-SID: SRv6 L3VPN 3ffe:220:1:1:: (L:40.24, F:16.0, T:16.64) End.DT4
+      Local Label: no label
+      Remote Label: 1136
+      Path Identifier (Remote/Local): /0
+      Last update: Wed Dec 14 18:05:34 2022

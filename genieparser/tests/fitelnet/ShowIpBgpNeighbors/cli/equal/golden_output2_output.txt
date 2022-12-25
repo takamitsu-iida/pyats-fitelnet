@@ -1,0 +1,38 @@
+BGP neighbor is 3ffe:201:1::1, remote AS 65000, local AS 65000, internal link
+ Administratively shut down
+  BGP version 4, remote router ID 0.0.0.0
+  BGP state = Idle
+  Surveillance nexthop-validation-check inactive
+  Surveillance-peer inactive
+  Track inactive
+  MD5 : disable
+  Last read 00:00:26, hold time is 180, keepalive interval is 60 seconds
+  Received 9933 messages, 0 notifications, 0 in queue
+  Sent 9935 messages, 1 notifications, 0 in queue
+  Route refresh request: received 0, sent 0
+  Minimum time between advertisement runs is 0 seconds
+  Maximum number of routes advertised per interval is 10000
+  Update source is Loopback1
+
+ For address family: VPNv4 Unicast
+  Index 1, Offset 0, Mask 0x2
+  Community attribute sent to this neighbor (both)
+  0 accepted prefixes (INET:3ffe:201:1::1)
+  0 announced prefixes (INET:3ffe:201:1::1)
+  0 Treat-as-withdraw prefixes (SUM) (INET:3ffe:201:1::1)
+  0 Attribute discard prefixes (SUM) (INET:3ffe:201:1::1)
+
+ For address family: VPNv6 Unicast
+  Index 1, Offset 0, Mask 0x2
+  Community attribute sent to this neighbor (both)
+  0 accepted prefixes (INET:3ffe:201:1::1)
+  0 announced prefixes (INET:3ffe:201:1::1)
+  0 Treat-as-withdraw prefixes (SUM) (INET:3ffe:201:1::1)
+  0 Attribute discard prefixes (SUM) (INET:3ffe:201:1::1)
+
+ Connections established 1; dropped 1
+Read thread: off  Write thread: off
+Last Reset      : Mon Dec 12 13:28:20 2022
+                : due to Notification sent (Neighbor shutdown) at Established
+  at Established: Mon Dec 12 13:28:20 2022
+                : due to Notification sent (Neighbor shutdown) at Established

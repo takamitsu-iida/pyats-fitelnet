@@ -1,0 +1,226 @@
+f220-p#show interface
+
+Loopback 0 is up, line protocol is up
+  Hardware is Loopback
+  IP address is 127.0.0.1/8
+  IPv6 address(es):
+    ::1/128
+  MTU is 33184 bytes
+  Encapsulation UNKNOWN
+  Since: Dec 14 18:09:35 2022
+  Last clearing of "show interface" counters never
+  SNMP link-status trap: Enabled
+  Statistics:
+    0 packets input
+      0 bytes input, 0 errors input, 0 dropped
+      0 unicasts, 0 broadcasts, 0 multicasts
+      Discards: 0 unknown protocol
+    0 packets output
+      0 bytes output, 0 errors output, 0 dropped
+      0 unicasts, 0 broadcasts, 0 multicasts
+
+Port-channel 1020000 is up, line protocol is up
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64
+  MTU is 1500 bytes, MPLS MTU is 1500 bytes
+  DP-Redirect: enable
+  Encapsulation ARPA, loopback not set, not point-to-point link
+  No. of active members in this channel: 1
+    Member 1 : GigaEthernet 1/2 is up, line protocol is up
+  Since: Dec 14 18:10:05 2022
+  Last clearing of "show interface" counters never
+  81 seconds input rate 0 bits/sec 0 packets/sec
+  81 seconds output rate 4200 bits/sec 0 packets/sec
+  SNMP link-status trap: Enabled
+  Statistics:
+    91 packets input
+      88 unicasts, 0 broadcasts, 3 multicasts
+    98140 packets output
+      90 unicasts, 0 broadcasts, 98050 multicasts
+
+Port-channel 1080000 is up, line protocol is up
+  Description:
+  IP address is 192.168.10.225/24
+  Broadcast address is 192.168.10.255
+  MTU is 1500 bytes, MPLS MTU is 1500 bytes
+  DP-Redirect: enable
+  Encapsulation ARPA, loopback not set, not point-to-point link
+  No. of active members in this channel: 1
+    Member 1 : GigaEthernet 1/8 is up, line protocol is up
+  Since: Dec 14 18:10:06 2022
+  Last clearing of "show interface" counters never
+  81 seconds input rate 1760 bits/sec 2 packets/sec
+  81 seconds output rate 2128 bits/sec 1 packets/sec
+  SNMP link-status trap: Enabled
+  Statistics:
+    163955 packets input
+      1827 unicasts, 12006 broadcasts, 7474 multicasts
+    1640 packets output
+      1336 unicasts, 304 broadcasts, 0 multicasts
+
+Port-channel 2010000 is up, line protocol is up
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64
+  MTU is 1500 bytes, MPLS MTU is 1500 bytes
+  DP-Redirect: enable
+  Encapsulation ARPA, loopback not set, not point-to-point link
+  No. of active members in this channel: 1
+    Member 1 : GigaEthernet 2/1 is up, line protocol is up
+  Since: Dec 14 18:11:18 2022
+  Last clearing of "show interface" counters never
+  81 seconds input rate 0 bits/sec 0 packets/sec
+  81 seconds output rate 4232 bits/sec 0 packets/sec
+  SNMP link-status trap: Enabled
+  Statistics:
+    25 packets input
+      21 unicasts, 0 broadcasts, 4 multicasts
+    97469 packets output
+      71 unicasts, 0 broadcasts, 97398 multicasts
+
+Port-channel 3010000 is up, line protocol is up
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64
+  MTU is 1500 bytes, MPLS MTU is 1500 bytes
+  DP-Redirect: enable
+  Encapsulation ARPA, loopback not set, not point-to-point link
+  No. of active members in this channel: 1
+    Member 1 : GigaEthernet 3/1 is up, line protocol is up
+  Since: Dec 14 18:10:06 2022
+  Last clearing of "show interface" counters never
+  81 seconds input rate 0 bits/sec 0 packets/sec
+  81 seconds output rate 4344 bits/sec 0 packets/sec
+  SNMP link-status trap: Enabled
+  Statistics:
+    88 packets input
+      85 unicasts, 0 broadcasts, 3 multicasts
+    98102 packets output
+      37 unicasts, 0 broadcasts, 98065 multicasts
+
+GigaEthernet 1/2 is up, line protocol is up
+  Hardware is GigaEthernet, address is 0080.bd4c.b2a3
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64 (Port-channel 1020000)
+  Bridge-group 102
+  VLAN is 102
+  VLAN-Tag terminate
+  Ether MRU is 4018 bytes
+  Encapsulation ARPA, Duplex full, speed 1000Mb/s, media metal
+  EEE: Disable
+  MDI: MDI
+  Flow control: send off, receive on
+  ARP type: ARPA, ARP Timeout 00:20:00
+  Since: Dec 14 18:10:05 2022
+  SNMP link-status trap: Enabled
+  Last clearing of "show interface" counters never
+  300 seconds input rate 4613 bits/sec 0 packets/sec
+  300 seconds output rate 4189 bits/sec 0 packets/sec
+  Statistics:
+    128782 packets input
+      151977138 bytes input, 0 errors input, 0 dropped
+      -- unicasts, 0 broadcasts, 128694 multicasts
+      0 CRC errors, 0 overrun, 0 undersized, 0 oversized
+      0 pause frames
+    98140 packets output
+      145918366 bytes output, 0 errors output, 0 dropped
+      -- unicasts, 0 broadcasts, 98050 multicasts
+      0 pause frames
+
+GigaEthernet 1/8 is up, line protocol is up
+  Hardware is GigaEthernet, address is 0080.bd4c.b2a3
+  Description:
+  IP address is 192.168.10.225/24 (Port-channel 1080000)
+  Broadcast address is 192.168.10.255
+  Bridge-group 108
+  VLAN is 108
+  VLAN-Tag terminate
+  Ether MRU is 4018 bytes
+  Encapsulation ARPA, Duplex full, speed 1000Mb/s, media metal
+  EEE: Disable
+  MDI: MDI-X
+  Flow control: send off, receive on
+  ARP type: ARPA, ARP Timeout 00:20:00
+  Since: Dec 14 18:10:06 2022
+  SNMP link-status trap: Enabled
+  Last clearing of "show interface" counters never
+  300 seconds input rate 1515 bits/sec 2 packets/sec
+  300 seconds output rate 2039 bits/sec 1 packets/sec
+  Statistics:
+    193061 packets input
+      16528965 bytes input, 0 errors input, 0 dropped
+      -- unicasts, 12006 broadcasts, 149581 multicasts
+      0 CRC errors, 0 overrun, 0 undersized, 0 oversized
+      0 pause frames
+    1640 packets output
+      219775 bytes output, 0 errors output, 0 dropped
+      -- unicasts, 304 broadcasts, 0 multicasts
+      0 pause frames
+
+GigaEthernet 2/1 is up, line protocol is up
+  Hardware is GigaEthernet, address is 0080.bd4c.b2a4
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64 (Port-channel 2010000)
+  Bridge-group 201
+  VLAN is 201
+  VLAN-Tag terminate
+  Ether MRU is 4018 bytes
+  Encapsulation ARPA, Duplex full, speed 1000Mb/s, media metal
+  EEE: Disable
+  MDI: MDI
+  Flow control: send off, receive on
+  ARP type: ARPA, ARP Timeout 00:20:00
+  Since: Dec 14 18:11:18 2022
+  SNMP link-status trap: Enabled
+  Last clearing of "show interface" counters never
+  300 seconds input rate 4513 bits/sec 0 packets/sec
+  300 seconds output rate 4214 bits/sec 0 packets/sec
+  Statistics:
+    128215 packets input
+      151275678 bytes input, 0 errors input, 0 dropped
+      -- unicasts, 0 broadcasts, 128194 multicasts
+      0 CRC errors, 0 overrun, 0 undersized, 0 oversized
+      0 pause frames
+    97469 packets output
+      145818448 bytes output, 0 errors output, 0 dropped
+      -- unicasts, 0 broadcasts, 97398 multicasts
+      0 pause frames
+
+GigaEthernet 3/1 is up, line protocol is up
+  Hardware is GigaEthernet, address is 0080.bd4c.b2a5
+  Description:
+  IPv4 address is not configured
+  IPv6 address(es):
+    fe80::280:bdff:fe4c:b2a3/64 (Port-channel 3010000)
+  Bridge-group 301
+  VLAN is 301
+  VLAN-Tag terminate
+  Ether MRU is 4018 bytes
+  Encapsulation ARPA, Duplex full, speed 1000Mb/s, media metal
+  EEE: Disable
+  MDI: MDI
+  Flow control: send off, receive on
+  ARP type: ARPA, ARP Timeout 00:20:00
+  Since: Dec 14 18:10:06 2022
+  SNMP link-status trap: Enabled
+  Last clearing of "show interface" counters never
+  300 seconds input rate 4382 bits/sec 0 packets/sec
+  300 seconds output rate 4189 bits/sec 0 packets/sec
+  Statistics:
+    128293 packets input
+      151302551 bytes input, 0 errors input, 0 dropped
+      -- unicasts, 0 broadcasts, 128208 multicasts
+      0 CRC errors, 0 overrun, 0 undersized, 0 oversized
+      0 pause frames
+    98102 packets output
+      145923993 bytes output, 0 errors output, 0 dropped
+      -- unicasts, 0 broadcasts, 98065 multicasts
+      0 pause frames

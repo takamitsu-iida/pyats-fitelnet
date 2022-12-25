@@ -1,0 +1,141 @@
+
+from genie.conf.base.config import CliConfig
+from genie.conf.base.cli import CliConfigBuilder
+from genie.conf.base.attributes import AttributesHelper
+
+class L3vpn:
+
+    class DeviceAttributes:
+
+        def build_config(self, apply=True, attributes=None, unconfig=False):
+
+            attributes = AttributesHelper(self, attributes)
+            configurations = CliConfigBuilder(unconfig=unconfig)
+
+            #
+            # device level configuration
+            #
+            if unconfig and attributes.iswildcard:
+                # delete vrf mode
+                with configurations.submode_context(attributes.format('vrf {name}', force=True)):
+                    configurations.submode_unconfig()
+            elif unconfig and attributes.attributes and all(k in attributes.attributes.keys() for k in self.device_keys):
+                # delete vrf mode
+                with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
+                    configurations.submode_unconfig()
+            else:
+                need_config = False
+                if attributes.iswildcard:
+                    need_config = True
+                if attributes.attributes and any(k in attributes.attributes.keys() for k in self.device_keys):
+                    need_config = True
+
+                if need_config:
+                    with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
+
+                        if attributes.value('rd'):
+                            configurations.append_line(attributes.format('rd {rd}'))
+
+                        if attributes.value('import_rt'):
+                            configurations.append_line(attributes.format('import route-target {import_rt}'))
+
+                        if attributes.value('export_rt'):
+                            configurations.append_line(attributes.format('export route-target {export_rt}'))
+
+                        if attributes.value('srv6_locator'):
+                            configurations.append_line(attributes.format('segment-routing srv6 locator {srv6_locator}'))
+
+            #
+            # interface port-channel 2010000
+            #
+            for sub, attributes2 in attributes.mapping_values('interface_attr', sort=True, keys=self.interface_attr):
+                configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
+
+            #
+            # router bgp 65000
+            #
+            sub, attributes2 = attributes.namespace('bgp_attr')
+            if sub is not None:
+                configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
+
+            return CliConfig(device=self.device, unconfig=unconfig, cli_config=configurations)
+
+
+        def build_unconfig(self, apply=True, attributes=None, **kwargs):
+            return self.build_config(apply=apply, attributes=attributes, unconfig=True, **kwargs)
+
+        #
+        # +- DeviceAttributes
+        #     +- InterfaceAttributes
+        #
+        class InterfaceAttributes:
+
+            def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
+                assert not kwargs, kwargs
+
+                attributes = AttributesHelper(self, attributes)
+                configurations = CliConfigBuilder(unconfig=unconfig)
+
+                #
+                # interface {interface}
+                #
+                with configurations.submode_context(attributes.format('interface {interface}', force=True)):
+
+                    if unconfig and attributes.iswildcard:
+                        configurations.append_line(attributes.format('ip vrf forwarding'))
+                    else:
+                        configurations.append_line(attributes.format('ip vrf forwarding {name}'))
+
+                        if attributes.value('ipv4_address'):
+                            configurations.append_line(attributes.format('ip address {ipv4_address}'))
+
+                        if attributes.value('ipv6_address'):
+                            configurations.append_line(attributes.format('ipv6 address {ipv6_address}'))
+
+                return str(configurations)
+
+        #
+        # +- DeviceAttributes
+        #     +- BgpAttributes
+        #
+        class BgpAttributes:
+
+            def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
+                assert not kwargs, kwargs
+
+                attributes = AttributesHelper(self, attributes)
+                configurations = CliConfigBuilder(unconfig=unconfig)
+
+                with configurations.submode_context(attributes.format('router bgp {bgp_asn}', force=True)):
+                    configurations.append_line(attributes.format('aaaaaaaa'))
+
+                    for sub, attributes2 in attributes.mapping_values('af_attr', sort=True, keys=self.af_attr):
+                        configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
+
+                return str(configurations)
+
+
+            class AddressFamilyAttributes:
+
+                def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
+                    assert not kwargs, kwargs
+
+                    attributes = AttributesHelper(self, attributes)
+                    configurations = CliConfigBuilder(unconfig=unconfig)
+
+                    #
+                    # address-family {address_family}
+                    #
+                    with configurations.submode_context(attributes.format('address-family {address_family} {name}', force=True)):
+
+                        if unconfig and attributes.iswildcard:
+                            configurations.submode_unconfig()
+                        else:
+                            if attributes.value('redistribute'):
+                                redistribute = attributes.value('redistribute')
+                                if isinstance(redistribute, str):
+                                    redistribute = [redistribute]
+                                for proto in redistribute:
+                                    configurations.append_line(attributes.format(f'redistribute {proto}'))
+
+                    return str(configurations)

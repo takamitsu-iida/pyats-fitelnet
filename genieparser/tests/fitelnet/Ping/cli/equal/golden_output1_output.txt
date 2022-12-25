@@ -1,0 +1,5 @@
+f220-pe2#ping 3ffe:201:1::1 repeat 100
+Sending 100, 100-byte ICMP Echos to 3ffe:201:1::1(3ffe:201:1::1), timeout is 2 seconds:
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Success rate is 100 percent (100/100), round-trip min/avg/max = 1.455/5.434/94.929 ms

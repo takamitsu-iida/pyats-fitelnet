@@ -1,0 +1,49 @@
+f220-pe2#show ip bgp neighbors
+
+BGP neighbor is 3ffe:201:1::1, remote AS 65000, local AS 65000, internal link
+  BGP version 4, remote router ID 201.0.0.1
+  BGP state = Established, up for 2d05h16m
+  Surveillance nexthop-validation-check inactive
+  Surveillance-peer inactive
+  Track inactive
+  MD5 : disable
+  Last read 00:00:17, hold time is 180, keepalive interval is 60 seconds
+  Neighbor capabilities:
+    Route refresh: advertised and received (old and new)
+    4-Octet ASN Capability: advertised and received
+    Address family VPNv4 Unicast: advertised and received
+    Address family VPNv6 Unicast: advertised and received
+    Extended Nexthop Encoding for VPNv4 Unicast: advertised and received
+  Received 3201 messages, 0 notifications, 0 in queue
+  Sent 3203 messages, 0 notifications, 0 in queue
+  Route refresh request: received 0, sent 0
+  Minimum time between advertisement runs is 0 seconds
+  Maximum number of routes advertised per interval is 10000
+  Update source is Loopback1
+
+ For address family: VPNv4 Unicast
+  Index 1, Offset 0, Mask 0x2
+  Community attribute sent to this neighbor (both)
+  2 accepted prefixes (INET:3ffe:201:1::1)
+  2 announced prefixes (INET:3ffe:201:1::1)
+  0 Treat-as-withdraw prefixes (SUM) (INET:3ffe:201:1::1)
+  0 Attribute discard prefixes (SUM) (INET:3ffe:201:1::1)
+
+ For address family: VPNv6 Unicast
+  Index 1, Offset 0, Mask 0x2
+  Community attribute sent to this neighbor (both)
+  2 accepted prefixes (INET:3ffe:201:1::1)
+  2 announced prefixes (INET:3ffe:201:1::1)
+  0 Treat-as-withdraw prefixes (SUM) (INET:3ffe:201:1::1)
+  0 Attribute discard prefixes (SUM) (INET:3ffe:201:1::1)
+
+ Connections established 1; dropped 0
+Local host: 3ffe:220:1::1, Local port: 179
+Foreign host: 3ffe:201:1::1, Foreign port: 61502
+Nexthop: 220.0.0.1
+Nexthop global: 3ffe:220:1::1
+Nexthop local: ::
+BGP connection: non shared network
+Read thread: on  Write thread: off
+Last Reset      : Mon Dec  5 15:58:16 2022
+                : due to Transfer temporary BGP peer to existing one at Active

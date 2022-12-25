@@ -1,0 +1,15 @@
+---
+
+#
+# datafile
+# https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
+#
+
+# default BGP AS number
+DEFAULT_BGP_AS: 65000
+
+# support only these os
+SUPPORTED_OS:
+  - fitelnet
+
+extends: datafile_l3vpn.yaml

@@ -1,0 +1,5 @@
+fx201-pe1#show segment-routing srv6 locator
+
+Name                  Prefix                    Status
+--------------------  ------------------------  ------
+prefix1               3ffe:201:1:1::/64         Up

@@ -1,0 +1,7 @@
+fx201-p#show isis neighbor
+
+Area core:
+  System Id           Interface             L  State        Holdtime SNPA
+  f220-pe2            Port-channel 1020000  2  Up           27       0080.bd4c.b2b2
+  f220-p              Port-channel 2010000  2  Up           29       0080.bd4c.b2a4
+  fx201-pe1           Port-channel 3010000  2  Up           30       0080.bd4d.5d6c

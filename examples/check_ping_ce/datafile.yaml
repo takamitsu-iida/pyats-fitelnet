@@ -1,0 +1,44 @@
+---
+
+#
+# 参考
+# https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
+#
+
+# モジュールレベルのパラメータ
+# これらはグローバル変数として利用できる
+# module_var_a: some string value
+# module_var_b: 99999
+
+# スクリプトパラメータ
+# これらは関数の引数として受け取ることができる
+parameters:
+
+  targets:
+    f221-ce1:
+      -
+        vrf: 1
+        dest: 220.0.1.2
+      -
+        vrf: 1
+        dest: '220:1::2'
+      -
+        vrf: 2
+        dest: 220.0.2.2
+      -
+        vrf: 2
+        dest: '220:2::2'
+
+    f221-ce2:
+      -
+        vrf: 1
+        dest: 201.0.1.2
+      -
+        vrf: 1
+        dest: '201:1::2'
+      -
+        vrf: 2
+        dest: 201.0.2.2
+      -
+        vrf: 2
+        dest: '201:2::2'

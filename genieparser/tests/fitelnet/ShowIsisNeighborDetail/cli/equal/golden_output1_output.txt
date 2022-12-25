@@ -1,0 +1,28 @@
+f220-pe2#show isis neighbor detail
+
+Area core:
+  fx201-p
+    Interface: Port-channel 1010000, Level: 2, State: Up, Expires in 30s
+    Adjacency flaps: 1, Last: 2d12m49s ago
+    Circuit type: L2, Speaks: IPv4, IPv6
+    Topologies:
+      ipv6-unicast
+    SNPA: 0080.bd4d.5e12, LAN id: fx201-p.23
+    LAN Priority: 64, is DIS, DIS flaps: 1, Last: 2d12m43s ago
+    Area Address(es):
+      49
+    IPv6 Address(es):
+      fe80::280:bdff:fe4d:5e10
+
+  f220-p
+    Interface: Port-channel 1020000, Level: 2, State: Up, Expires in 29s
+    Adjacency flaps: 1, Last: 2d14m1s ago
+    Circuit type: L2, Speaks: IPv4, IPv6
+    Topologies:
+      ipv6-unicast
+    SNPA: 0080.bd4c.b2a3, LAN id: 0000.2201.0001.78
+    LAN Priority: 64, is not DIS, DIS flaps: 1, Last: 2d13m55s ago
+    Area Address(es):
+      49
+    IPv6 Address(es):
+      fe80::280:bdff:fe4c:b2a3

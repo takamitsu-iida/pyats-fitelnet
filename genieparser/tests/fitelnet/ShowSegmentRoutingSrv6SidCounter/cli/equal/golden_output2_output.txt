@@ -1,0 +1,10 @@
+fx201-p#show segment-routing srv6 sid counter
+
+End      3ffe:201:0:1:40::                             0 packets            0 errors
+End      3ffe:201:0:1:41::                             0 packets            0 errors
+End.X    3ffe:201:0:1:42::                           206 packets            0 errors
+End.X    3ffe:201:0:1:43::                             0 packets            0 errors
+End.X    3ffe:201:0:1:44::                             0 packets            0 errors
+End.X    3ffe:201:0:1:45::                             0 packets            0 errors
+End.X    3ffe:201:0:1:46::                           207 packets            0 errors
+End.X    3ffe:201:0:1:47::                             0 packets            0 errors

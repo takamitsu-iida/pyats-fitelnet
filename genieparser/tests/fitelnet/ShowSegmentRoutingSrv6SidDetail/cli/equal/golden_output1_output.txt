@@ -1,0 +1,46 @@
+f220-p#show segment-routing srv6 sid detail
+
+SID                         Function     Context                                             Owner  State
+--------------------------  -----------  --------------------------------------------------  -----  ---------
+3ffe:220:0:1:40::           End                                                              IS-IS  InUse
+  Locator : prefix1
+  Created : Wed Dec 14 18:09:56 2022 (01:22:21 ago)
+3ffe:220:0:1:41::           End (PSP)                                                        IS-IS  InUse
+  Locator : prefix1
+  Created : Wed Dec 14 18:09:56 2022 (01:22:21 ago)
+3ffe:220:0:1:42::           End.X        [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4c:b2b2
+  Link-ID : 5
+  OUT-RFID: 65537
+  Created : Wed Dec 14 18:10:06 2022 (01:22:11 ago)
+3ffe:220:0:1:43::           End.X (PSP)  [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4c:b2b2
+  Link-ID : 5
+  OUT-RFID: 65537
+  Created : Wed Dec 14 18:10:06 2022 (01:22:11 ago)
+3ffe:220:0:1:44::           End.X        [Port-channel 3010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5d6b
+  Link-ID : 7
+  OUT-RFID: 65540
+  Created : Wed Dec 14 18:10:06 2022 (01:22:11 ago)
+3ffe:220:0:1:45::           End.X (PSP)  [Port-channel 3010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5d6b
+  Link-ID : 7
+  OUT-RFID: 65540
+  Created : Wed Dec 14 18:10:06 2022 (01:22:11 ago)
+3ffe:220:0:1:46::           End.X        [Port-channel 2010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5e10
+  Link-ID : 11
+  OUT-RFID: 65539
+  Created : Wed Dec 14 18:11:18 2022 (01:20:59 ago)
+3ffe:220:0:1:47::           End.X (PSP)  [Port-channel 2010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5e10
+  Link-ID : 11
+  OUT-RFID: 65539
+  Created : Wed Dec 14 18:11:18 2022 (01:20:59 ago)

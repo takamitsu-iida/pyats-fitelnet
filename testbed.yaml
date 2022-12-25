@@ -1,0 +1,183 @@
+---
+
+#
+# testbed file for FITELnet
+#
+
+## validate the testbed file
+# pyats validate testbed [file]
+
+## encode password
+# pyats secret encode --string MySecretPassword
+
+## decode encoded password
+# pyats secret decode ...
+
+## NOTE
+# hostname 装置のhostname設定と一致させないといけません
+# alias 任意の別名をつけられます uut = unit under test
+
+## NOTE
+# os: 必須です。プラグインの識別に使いますので ios iosxe iosxr nxos、等から選びます
+# platform: 任意です。装置のプラットフォーム名、cat3850、cat9300、等を指定します
+# type: 任意です。router もしくは switch を指定します
+#
+# https://pubhub.devnetcloud.com/media/unicon/docs/user_guide/supported_platforms.html
+
+
+## NAT
+# 10.77.165.211:50220 -> 192.168.10.220:22
+# 10.77.165.211:50221 -> 192.168.10.221:22
+# 10.77.165.211:50222 -> 192.168.10.222:22
+# 10.77.165.211:50223 -> 192.168.10.223:22
+# 10.77.165.211:50224 -> 192.168.10.224:22
+# 10.77.165.211:50225 -> 192.168.10.225:22
+
+
+testbed:
+  name: srv6 lab
+
+  # common credentials
+  credentials:
+    default:
+      username: 'user'
+      password: 'user'
+    enable:
+      password: ''
+
+devices:
+
+  f220-p:
+    alias: 'uut'
+
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50225
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []
+
+  fx201-p:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50221
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []
+
+
+  fx201-pe1:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50220
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []
+      mock:
+        command: mock_device_cli --os iosxe --mock_data_dir fx201-pe1 --state connect
+        protocol: unknown
+
+
+  f220-pe2:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50224
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []
+
+
+
+  f221-ce1:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50222
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []
+
+  f221-ce2:
+    os: fitelnet
+    type: router
+    connections:
+      defaults:
+        class: 'unicon.Unicon'
+        via: cli
+      cli:
+        protocol: ssh
+        ip: 10.77.165.211
+        port: 50223
+        settings:
+          GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
+          POST_DISCONNECT_WAIT_SEC: 1         # default 10
+          EXEC_TIMEOUT: 20                    # default 60
+          CONFIG_TIMEOUT: 20                  # default 60
+        arguments:
+          connection_timeout: 10              # default 60
+          # init_exec_commands: []
+          # init_config_commands: []

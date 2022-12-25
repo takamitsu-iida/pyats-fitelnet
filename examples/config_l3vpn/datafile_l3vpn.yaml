@@ -1,0 +1,113 @@
+---
+
+DEFAULT_L3VPN_STATE: present
+
+# device name should exist in testbed
+#
+# testbed core routers
+#  fx201-p
+#  f220-p
+#
+# testbed edge routers
+#  fx201-pe1
+#  f220-pe2
+
+parameters:
+
+  l3vpn_params:
+    vrf:
+
+      # vrfの名前
+      '1':
+
+        # presentなら作成(build), absentなら削除(unbuild)
+        state: present
+        #state: absent
+
+        # route distinguisher
+        rd: '1:1'
+
+        # route target
+        import_rt: '1:1'
+        export_rt: '1:1'
+
+        # srv6 locator
+        srv6_locator: prefix1
+
+        # 装置固有設定
+        device_attr:
+
+          # 注意
+          # testbedに存在しないdeviceは処理されない
+          # osがfitelnetでないものも処理されない
+
+          fx201-pe1:
+
+            # 指定がなければ親の設定を引き継ぐ
+            # rd:
+            # import_rt:
+            # export_rt:
+            # srv6_locator: prefix1
+
+            # インタフェース固有の設定
+            interface_attr:
+              'Port-channel 2010001':
+                if_ipv4_address: 201.0.1.1/24
+                if_ipv6_address: '201:1::1/32'
+
+            # PE-CE BGP設定
+            af_attr:
+              'ipv4 vrf':
+                  redistribute:
+                    - connected
+              'ipv6 vrf':
+                redistribute:
+                  - connected
+
+              #router bgp 65000
+              # !
+              # address-family ipv4 vrf 1
+              #  redistribute connected
+              # exit
+              # !
+              # address-family ipv4 vrf 2
+              #  redistribute connected
+              # exit
+              # !
+              # address-family ipv6 vrf 1
+              #  redistribute connected
+              # exit
+              # !
+              # address-family ipv6 vrf 2
+              #  redistribute connected
+              # exit
+              # !
+
+          f220-pe2:
+            interface_attr:
+              'Port-channel 2010001':
+                if_ipv4_address: 220.0.1.1/24
+                if_ipv6_address: '220:1::1/32'
+
+
+        # attributesを定義しない場合は、記載した全てのデータが対象
+        apply_filter: true,
+
+        # 対象とするアトリビュートの定義
+        filter_attributes:
+          device_attr:
+            # '*' もしくは装置名を指定
+            '*':
+              rd:
+              import_rt:
+              export_rt:
+              srv6_locator:
+              interface_attr:
+                # '*' もしくはインタフェース名を指定
+                '*':
+                  if_ipv4_address:
+                  if_ipv6_address:
+              bgp_attr:
+                af_attr:
+                  '*':
+                    'redistribute':

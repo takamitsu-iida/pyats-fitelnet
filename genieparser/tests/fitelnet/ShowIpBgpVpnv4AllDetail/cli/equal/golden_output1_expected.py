@@ -1,0 +1,90 @@
+expected_output = {
+    'route_distinguisher': {
+        '1:1': {
+            '201.0.1.0/24': {
+                'F': '16.0',
+                'L': '40.24',
+                'T': '16.64',
+                'best': True,
+                'extended_community': 'RT:1:1',
+                'function': 'End.DT4',
+                'installed': True,
+                'last_update': 'Wed Dec 14 18:05:36 2022',
+                'local_label': 'no label',
+                'localpref': 100,
+                'metric': 0,
+                'origin': 'incomplete',
+                'original_rd': '1:1',
+                'path_identifier': '/0',
+                'prefix_sid': '3ffe:201:1:1::',
+                'remote_label': 1120,
+                'route_source': 'Local',
+                'route_type': 'internal',
+                'valid': True
+            },
+            '220.0.1.0/24': {
+                'best': True,
+                'extended_community': 'RT:1:1',
+                'installed': False,
+                'last_update': 'Wed Dec 14 18:03:41 2022',
+                'local_label': 'no label',
+                'localpref': 100,
+                'metric': 0,
+                'nexthop': '0.0.0.0',
+                'origin': 'incomplete',
+                'original_rd': '1:1',
+                'path_identifier': '/0',
+                'peer_address': '0.0.0.0',
+                'peer_id': '220.0.0.1',
+                'remote_label': 'no label',
+                'route_source': 'Local',
+                'route_type': 'sourced',
+                'valid': True,
+                'weight': 32768
+            }
+        },
+        '1:2': {
+            '201.0.2.0/24': {
+                'F': '16.0',
+                'L': '40.24',
+                'T': '16.64',
+                'best': True,
+                'extended_community': 'RT:1:2',
+                'function': 'End.DT4',
+                'installed': True,
+                'last_update': 'Wed Dec 14 18:05:36 2022',
+                'local_label': 'no label',
+                'localpref': 100,
+                'metric': 0,
+                'origin': 'incomplete',
+                'original_rd': '1:2',
+                'path_identifier': '/0',
+                'prefix_sid': '3ffe:201:1:1::',
+                'remote_label': 1136,
+                'route_source': 'Local',
+                'route_type': 'internal',
+                'valid': True
+            },
+            '220.0.2.0/24': {
+                'best': True,
+                'extended_community': 'RT:1:2',
+                'installed': False,
+                'last_update': 'Wed Dec 14 18:03:41 2022',
+                'local_label': 'no label',
+                'localpref': 100,
+                'metric': 0,
+                'nexthop': '0.0.0.0',
+                'origin': 'incomplete',
+                'original_rd': '1:2',
+                'path_identifier': '/0',
+                'peer_address': '0.0.0.0',
+                'peer_id': '220.0.0.1',
+                'remote_label': 'no label',
+                'route_source': 'Local',
+                'route_type': 'sourced',
+                'valid': True,
+                'weight': 32768
+            }
+        }
+    }
+}

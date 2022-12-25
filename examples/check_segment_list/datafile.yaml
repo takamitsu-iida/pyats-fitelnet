@@ -1,0 +1,38 @@
+---
+
+#
+# 参考
+# https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
+#
+
+# モジュールレベルのパラメータ
+# これらはグローバル変数として利用できる
+# module_var_a: some string value
+# module_var_b: 99999
+
+# スクリプトパラメータ
+# これらは関数の引数として受け取ることができる
+parameters:
+
+  core_routers:
+    - fx201-p
+    - f220-p
+    - fx201-pe1
+    - f220-pe2
+
+  segment_list:
+    - '3ffe:201:1:1:46::'
+    - '3ffe:201:1:1:47::'
+    - '3ffe:201:1:1:48::'
+    - '3ffe:201:1:1:49::'
+
+    - '3ffe:201:0:1:46::'
+    - '3ffe:201:0:1:42::'
+
+    - '3ffe:220:0:1:46::'
+    - '3ffe:220:0:1:42::'
+
+    - '3ffe:220:1:1:46::'
+    - '3ffe:220:1:1:48::'
+    - '3ffe:220:1:1:47::'
+    - '3ffe:220:1:1:49::'

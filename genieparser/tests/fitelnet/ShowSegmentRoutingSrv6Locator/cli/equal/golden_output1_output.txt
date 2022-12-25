@@ -1,0 +1,5 @@
+f220-pe2#show segment-routing srv6 locator
+
+Name                  Prefix                    Status
+--------------------  ------------------------  ------
+prefix1               3ffe:220:1:1::/64         Up

@@ -1,0 +1,15 @@
+f220-pe2#show segment-routing srv6 sid
+
+show segment-routing srv6 sid
+SID                         Function     Context                                             Owner  State
+--------------------------  -----------  --------------------------------------------------  -----  ---------
+3ffe:220:1:1:40::           End                                                              IS-IS  InUse
+3ffe:220:1:1:41::           End (PSP)                                                        IS-IS  InUse
+3ffe:220:1:1:42::           End.X        [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+3ffe:220:1:1:43::           End.X (PSP)  [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+3ffe:220:1:1:44::           End.X        [Port-channel 1010000, Link-Local]                  IS-IS  InUse
+3ffe:220:1:1:45::           End.X (PSP)  [Port-channel 1010000, Link-Local]                  IS-IS  InUse
+3ffe:220:1:1:46::           End.DT4      '1'                                                 BGP    InUse
+3ffe:220:1:1:47::           End.DT4      '2'                                                 BGP    InUse
+3ffe:220:1:1:48::           End.DT6      '1'                                                 BGP    InUse
+3ffe:220:1:1:49::           End.DT6      '2'                                                 BGP    InUse

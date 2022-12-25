@@ -1,0 +1,4 @@
+pyats[full]
+
+jinja2
+tabulate

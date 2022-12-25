@@ -1,0 +1,50 @@
+f220-pe2#show segment-routing srv6 sid detail
+
+SID                         Function     Context                                             Owner  State
+--------------------------  -----------  --------------------------------------------------  -----  ---------
+3ffe:220:1:1:40::           End                                                              IS-IS  InUse
+  Locator : prefix1
+  Created : Wed Dec 14 18:03:30 2022 (01:32:45 ago)
+3ffe:220:1:1:41::           End (PSP)                                                        IS-IS  InUse
+  Locator : prefix1
+  Created : Wed Dec 14 18:03:30 2022 (01:32:45 ago)
+3ffe:220:1:1:46::           End.DT4      '1'                                                 BGP    InUse
+  Locator : prefix1
+  VRF     : 1
+  Created : Wed Dec 14 18:05:36 2022 (01:30:39 ago)
+3ffe:220:1:1:47::           End.DT4      '2'                                                 BGP    InUse
+  Locator : prefix1
+  VRF     : 2
+  Created : Wed Dec 14 18:05:36 2022 (01:30:39 ago)
+3ffe:220:1:1:48::           End.DT6      '1'                                                 BGP    InUse
+  Locator : prefix1
+  VRF     : 1
+  Created : Wed Dec 14 18:05:36 2022 (01:30:39 ago)
+3ffe:220:1:1:49::           End.DT6      '2'                                                 BGP    InUse
+  Locator : prefix1
+  VRF     : 2
+  Created : Wed Dec 14 18:05:36 2022 (01:30:39 ago)
+3ffe:220:1:1:4a::           End.X        [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4c:b2a3
+  Link-ID : 19
+  OUT-RFID: 65538
+  Created : Wed Dec 14 18:10:07 2022 (01:26:08 ago)
+3ffe:220:1:1:4b::           End.X (PSP)  [Port-channel 1020000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4c:b2a3
+  Link-ID : 19
+  OUT-RFID: 65538
+  Created : Wed Dec 14 18:10:07 2022 (01:26:08 ago)
+3ffe:220:1:1:4c::           End.X        [Port-channel 1010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5e10
+  Link-ID : 22
+  OUT-RFID: 65537
+  Created : Wed Dec 14 18:11:19 2022 (01:24:56 ago)
+3ffe:220:1:1:4d::           End.X (PSP)  [Port-channel 1010000, Link-Local]                  IS-IS  InUse
+  Locator : prefix1
+  Nexthop : fe80::280:bdff:fe4d:5e10
+  Link-ID : 22
+  OUT-RFID: 65537
+  Created : Wed Dec 14 18:11:19 2022 (01:24:56 ago)
