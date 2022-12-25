@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+#
+# test-script.py
+#
+
 import argparse
 import os
-import sys
 
 from pprint import pprint
 
