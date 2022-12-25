@@ -9,11 +9,8 @@ from pprint import pprint
 from unicon.core.errors import StateMachineError
 from genie.testbed import load
 
+# app_home is where testbed.yaml exists
 app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-external_parser_dir = os.path.join(app_home, 'genieparser_fitelnet/external_parser')
-if external_parser_dir not in sys.path:
-    sys.path.append(external_parser_dir)
 
 testbed_path = os.path.join(app_home, 'testbed.yaml')
 
@@ -36,14 +33,13 @@ def run(uut):
         except StateMachineError:
             return
 
-    #parsed = uut.parse('show interface', interface='Tunnel 1')
-    #pprint(parsed)
-
-    from external_parser.fitelnet.show_interface import ShowInterface
-    parser = ShowInterface(device=uut)
-    parsed = parser.parse(interface='Tunnel 1')
+    parsed = uut.parse('show interface', interface='Tunnel 1')
     pprint(parsed)
 
+    # from external_parser.fitelnet.show_interface import ShowInterface
+    # parser = ShowInterface(device=uut)
+    # parsed = parser.parse(interface='Tunnel 1')
+    # pprint(parsed)
 
     # from fitelnet.ping import Ping
     # ping = Ping(device=uut)

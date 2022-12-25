@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+# see https://developer.cisco.com/docs/unicon/
+
 import os
 from setuptools import setup, find_packages
 
@@ -9,7 +11,8 @@ def get_readme():
 
 setup(
 
-    # プラグイン名 = パッケージの名前
+    # name of the package
+    # this name is displayed in 'pip list' output
     name='unicon.plugins.fitelnet',
 
     version='1.0',
@@ -54,9 +57,19 @@ setup(
 
     package_data={},
 
-    # see https://developer.cisco.com/docs/unicon/
     # entry_points = {'unicon.plugins': ['<platform_name> = <module_name>']},
-    entry_points={'unicon.plugins': ['fitelnet=unicon.plugins.fitelnet']},
+    #
+    # module_name is a name of the directory under src
+    #
+    # ├── Makefile
+    # ├── README.md
+    # ├── setup.py
+    # └── src
+    #     ├── fitelnet
+    #
+    # in this case module_name is 'fitelnet'
+
+    entry_points={'unicon.plugins': ['fitelnet = fitelnet']},
     install_requires=['setuptools', 'unicon'],
     extras_require={},
     data_files=[],

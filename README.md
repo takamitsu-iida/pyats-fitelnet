@@ -1,8 +1,10 @@
 # PyATS for FITELnet
 
-FITELnet機器をPyATSで利用するためのuniconプラグインとgenieパーサーです。
+FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパーサー、Genie confライブラリです。
 
-# 環境構築
+<br><br>
+
+## 環境構築
 
 これが一番悩むところです。
 
@@ -13,7 +15,7 @@ FITELnet機器をPyATSで利用するためのuniconプラグインとgenieパ�
 3. FITELnet機器のコマンド出力をパースするためのGenieパーサー(どこかに配置して利用)
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
-2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は、利用に手間がかかります。
+2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は、利用にひと手間必要です。
 
 環境変数を使って設定しますのでdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
@@ -24,33 +26,43 @@ FITELnet機器をPyATSで利用するためのuniconプラグインとgenieパ�
 このリポジトリをクローンします。
 
 ```bash
-git clone https://github.com/takamitsu-iida/fitelnet.git
+git clone https://github.com/takamitsu-iida/pyats_fitelnet.git
 ```
 
-fitelnetディレクトリができますので、そこに移動してPython仮想環境を作ります。
+pyats_fitelnetディレクトリができますので、そこに移動してPython仮想環境を作ります。
 
 ```bash
-cd fitelnet
-
-python3 -m venv .venv
+cd pyats_fitelnet
 ```
 
-このリポジトリには.envrcが含まれています。
+venvを使ってこのディレクトリ配下だけで有効なPython環境を作ります。
 
-環境変数 `PYTHONPATH` のパスを修正します。
+```bash
+/usr/bin/python3 -m venv .venv
+```
+
+この環境を有効にするには `source .venv/bin/activate` コマンドを実行するわけですが、direnvを使うことでその作業を省略できます。
+
+このリポジトリには.envrcが含まれていますので、内容を確認して問題なければ `direnv allow` します。
+
+- .envrc
 
 ```
 source .venv/bin/activate
 unset PS1
 
+# PYTHONPATH
+export PYTHONPATH=$PWD/genieparser:$PWD/genielibs:$PYTHONPATH
+
 # pyATS external genie parser
-export PYTHONPATH=/home/iida/git/fitelnet/genieparser_fitelnet:$PYTHONPATH
 export PYATS_LIBS_EXTERNAL_PARSER=external_parser
 ```
 
-修正したら `direnv allow` コマンドで反映します。
+<br>
 
-pyatsをインストールします
+### pyATSのインストール
+
+Python仮想環境を有効にしたらpyATSをインストールします。
 
 ```bash
 pip install pyats[full]
@@ -62,19 +74,23 @@ pip install pyats[full]
 pip install -r requirements.txt
 ```
 
-これで fitelnet ディレクトリ配下にいる間はpyatsが利用できます。
+これで pyats_fitelnet ディレクトリ配下にいる間はpyatsが利用できます。
 
-続いて追加のリポジトリをクローンします。
+<br>
+
+### Uniconプラグインのインストール
+
+続いてFITELnet機器に接続するためのUniconプラグインをインストールします。
+
+unicon.pluginsにソースコードがあります。
 
 ```bash
-git clone https://github.com/takamitsu-iida/genieparser_fitelnet.git
-git clone https://github.com/takamitsu-iida/unicon_plugin_fitelnet.git
+cd unicon.plugins
 ```
 
-Uniconのプラグインはインストールが必要です。
+make developコマンドでインストールします。
 
 ```bash
-cd unicon_plugin_fitelnet
 make develop
 ```
 
@@ -84,21 +100,63 @@ makeコマンドがなければ次のようにsetup.pyスクリプトを実行�
 python setup.py develop --no-deps
 ```
 
+実行例です。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$ make develop
+
+--------------------------------------------------------------------
+Building and installing unicon.plugins.fitelnet development distributable: develop
+
+WARNING: Skipping unicon.plugins.fitelnet as it is not installed.
+running develop
+running egg_info
+creating src/unicon.plugins.fitelnet.egg-info
+writing src/unicon.plugins.fitelnet.egg-info/PKG-INFO
+writing dependency_links to src/unicon.plugins.fitelnet.egg-info/dependency_links.txt
+writing entry points to src/unicon.plugins.fitelnet.egg-info/entry_points.txt
+writing requirements to src/unicon.plugins.fitelnet.egg-info/requires.txt
+writing top-level names to src/unicon.plugins.fitelnet.egg-info/top_level.txt
+writing manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
+reading manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
+writing manifest file 'src/unicon.plugins.fitelnet.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/iida/git/pyats_fitelnet/.venv/lib/python3.8/site-packages/unicon.plugins.fitelnet.egg-link (link to src)
+Adding unicon.plugins.fitelnet 1.0 to easy-install.pth file
+
+Installed /home/iida/git/pyats_fitelnet/unicon.plugins/src
+
+Completed building and installing: develop
+
+Done.
+```
+
+unicon.plugins/srcディレクトリにegg-infoが作られています。
+何らかの理由でこのPython環境からプラグインを取り除きたくなったときにegg-infoは必要ですので、消さないようにしておきます。
+
 インストールされているかどうかは、pip listコマンドで確認できます。
 
 ```bash
-iida@FCCLS0008993-00:~/git/fitelnet$ pip list | grep unicon
-unicon                       22.11
-unicon-plugin-fitelnet       1.0         /home/iida/git/fitelnet/unicon_plugin_fitelnet/src
-unicon.plugins               22.11
+iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$ pip list
+Package                 Version Location
+----------------------- ------- ------------------------------------------------
+pip                     20.0.2
+pkg-resources           0.0.0
+setuptools              44.0.0
+unicon.plugins.fitelnet 1.0     /home/iida/git/pyats_fitelnet/unicon.plugins/src
+iida@FCCLS0008993-00:~/git/pyats_fitelnet/unicon.plugins$
 ```
 
 これでFITELnetの機器に接続できるようになります。
 
+<br>
+
+### Visual Studio Codeの設定
+
 続いてVisual Studio Codeに設定を加えます。
 
-追加で配置したGenieパーサーのクラス（たとえばgenieparser_fitelnet/external_parser/filtenet/show_version.py）を利用する際に、
-vscodeにその存在を教えておかないと補完が効かず、開発効率が悪いためです。
+追加で配置したGenieパーサーのクラス（たとえばgenieparser/external_parser/filtenet/show_version.py）を利用する際に、
+vscodeにその存在を教えておかないと補完が効かず、開発効率が悪いです。
 
 vscodeの設定メニューからextra pathsを検索します。
 
@@ -113,19 +171,21 @@ vscodeの設定メニューからextra pathsを検索します。
     ],
     "settings": {
         "python.analysis.extraPaths": [
-            "genieparser_fitelnet",
+            "genieparser",
             "genielibs",
         ]
     }
 }```
 
-これでvscodeの補完が効くようになります。
+これでvscodeで補完できるようになります。
 
-ワークスペースをファイル名で保存します。
+「ファイル」→「名前をつけてワークスペースを保存」を選択して、ワークスペースをファイル名で保存します。
 
 次回以降は「ファイルでワークスペースを開く」を使ってワークスペースを開きます。
 
-### 参考リンク
+<br>
+
+### 環境作りのための参考リンク
 
 > External Parsers/APIs
 > https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html#step-by-step-guide-for-local-genie-library-implementation
@@ -141,6 +201,7 @@ F220のマニュアル一式
 
 https://www.furukawa.co.jp/fitelnet/product/f220/manual/index.html
 
+<br><br>
 
 ## boot.cfgとcurrent.cfgとworking.cfg
 
@@ -163,7 +224,9 @@ config terminalで入るのは working.cfg = candidate-config です。これは
 saveコマンドはworking.cfg = candidate-config を書き出すコマンドなので、これは要注意。running-configが保存されるわけではない。
 
 
-## disconnect
+<br>
+
+### disconnect
 
 残ってしまったSSHを切断する場合はこうします。
 
