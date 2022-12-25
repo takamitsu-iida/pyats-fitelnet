@@ -10,8 +10,8 @@ testbed:
   # common credentials
   credentials:
     default:
-      username: 'user'
-      password: 'user'
+      username: ''
+      password: ''
     enable:
       password: ''
 
@@ -29,6 +29,9 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-p --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
 
   fx201-p:
     os: fitelnet
@@ -40,6 +43,9 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-p --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
 
   fx201-pe1:
     os: fitelnet
@@ -51,6 +57,9 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/fx201-pe1 --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
 
   f220-pe2:
     os: fitelnet
@@ -62,6 +71,9 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/f220-pe2 --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
 
   f221-ce1:
     os: fitelnet
@@ -73,6 +85,9 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce1 --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
 
   f221-ce2:
     os: fitelnet
@@ -84,3 +99,6 @@ devices:
       cli:
         command: mock_device_cli --os fitelnet --mock_data_dir mock/f221-ce2 --state connect
         protocol: unknown
+        arguments:
+          init_exec_commands: []
+          init_config_commands: []
