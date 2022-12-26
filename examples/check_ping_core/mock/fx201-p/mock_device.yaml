@@ -1,0 +1,44 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: fx201-p(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: fx201-p(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: fx201-p#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    ping 3ffe:201:1::1: "Sending 5, 100-byte ICMP Echos to 3ffe:201:1::1(3ffe:201:1::1),\
+      \ timeout is 2 seconds:\r\n!!!!!\r\n\r\nSuccess rate is 100 percent (5/5), round-trip\
+      \ min/avg/max = 0.487/0.512/0.603 ms"
+    ping 3ffe:220:1::1: "Sending 5, 100-byte ICMP Echos to 3ffe:220:1::1(3ffe:220:1::1),\
+      \ timeout is 2 seconds:\r\n!!!!!\r\n\r\nSuccess rate is 100 percent (5/5), round-trip\
+      \ min/avg/max = 0.600/0.782/1.108 ms"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: fx201-p#

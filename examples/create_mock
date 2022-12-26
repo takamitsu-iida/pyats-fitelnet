@@ -9,13 +9,12 @@ ${SCRIPT_DIR}/check_interface_status/test.py
 ${SCRIPT_DIR}/check_ping_ce/test.py
 ${SCRIPT_DIR}/check_ping_core/test.py
 ${SCRIPT_DIR}/check_segment_list/test.py
-${SCRIPT_DIR}/check_segment_list/test.py
 "
 
 # SCRIPTS=${ALL_SCRIPTS}
 
 SCRIPTS="
-${SCRIPT_DIR}/check_interface_status/test.py
+${SCRIPT_DIR}/check_segment_list/test.py
 "
 
 DEVICES="f220-p fx201-p fx201-pe1 f220-pe2 f221-ce1 f221-ce2"

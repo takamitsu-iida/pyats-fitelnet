@@ -1,0 +1,57 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: fx201-pe1(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: fx201-pe1(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: fx201-pe1#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    show segment-routing srv6 sid: "SID                         Function     Context\
+      \                                             Owner  State    \r\r\n--------------------------\
+      \  -----------  --------------------------------------------------  -----  ---------\r\
+      \r\n3ffe:201:1:1:40::           End                                        \
+      \                      IS-IS  InUse    \r\r\n3ffe:201:1:1:41::           End\
+      \ (PSP)                                                        IS-IS  InUse\
+      \    \r\r\n3ffe:201:1:1:46::           End.DT4      '1'                    \
+      \                             BGP    InUse    \r\r\n3ffe:201:1:1:47::      \
+      \     End.DT4      '2'                                                 BGP \
+      \   InUse    \r\r\n3ffe:201:1:1:48::           End.DT6      '1'            \
+      \                                     BGP    InUse    \r\r\n3ffe:201:1:1:49::\
+      \           End.DT6      '2'                                               \
+      \  BGP    InUse    \r\r\n3ffe:201:1:1:4a::           End.X        [Port-channel\
+      \ 3010000, Link-Local]                  IS-IS  InUse    \r\r\n3ffe:201:1:1:4b::\
+      \           End.X (PSP)  [Port-channel 3010000, Link-Local]                \
+      \  IS-IS  InUse    \r\r\n3ffe:201:1:1:4c::           End.X        [Port-channel\
+      \ 1010000, Link-Local]                  IS-IS  InUse    \r\r\n3ffe:201:1:1:4d::\
+      \           End.X (PSP)  [Port-channel 1010000, Link-Local]                \
+      \  IS-IS  InUse"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: fx201-pe1#

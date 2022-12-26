@@ -2,19 +2,19 @@
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 JOB=$SCRIPT_DIR/job.py
-TESTBED=$SCRIPT_DIR/../testbed.yaml
-MOCK=$SCRIPT_DIR/mock.yaml
+TESTBED_REAL=$SCRIPT_DIR/../testbed.yaml
+TESTBED_MOCK=$SCRIPT_DIR/../mock.yaml
 
 while getopts cpm option; do
     case $option in
         c)
             echo "record job"
-            pyats run job $JOB --testbed-file $TESTBED --record record
+            pyats run job $JOB --testbed-file $TESTBED_REAL --record record
             exit
             ;;
         p)
             echo "replay job"
-            pyats run job $JOB --testbed-file $TESTBED --replay record
+            pyats run job $JOB --testbed-file $TESTBED_REAL --replay record
             exit
             ;;
         m)
@@ -22,7 +22,7 @@ while getopts cpm option; do
             # テストベッド mock.yaml のこの部分
             # command: mock_device_cli --os fitelnet --mock_data_dir %CLI{mock_data_dir}/f221-ce2 --state connect
             echo "run using mock devices"
-            pyats run job $JOB --testbed-file $MOCK --mock_data_dir $SCRIPT_DIR/mock
+            pyats run job $JOB --testbed-file $TESTBED_MOCK --mock_data_dir $SCRIPT_DIR/mock
             exit
             ;;
         \?)
@@ -32,4 +32,4 @@ while getopts cpm option; do
     esac
 done
 
-pyats run job $JOB --testbed-file $TESTBED
+pyats run job $JOB --testbed-file $TESTBED_REAL

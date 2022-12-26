@@ -1,0 +1,50 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: f221-ce1(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: f221-ce1(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: f221-ce1#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    ping vrf 1 220.0.1.2 repeat 2: "Sending 2, 100-byte ICMP Echos to 220.0.1.2(220.0.1.2),\
+      \ timeout is 2 seconds\r\n!!\r\nSuccess rate is 100 percent(2/2),round-trip\
+      \ min/avg/max = 2.863/2.952/3.041 ms"
+    ping vrf 1 220:1::2 repeat 2: "Sending 2, 100-byte ICMP Echos to 220:1::2(220:1::2),\
+      \ timeout is 2 seconds:\r\n!!\r\n\r\nSuccess rate is 100 percent (2/2), round-trip\
+      \ min/avg/max = 2.437/10.361/18.284 ms"
+    ping vrf 2 220.0.2.2 repeat 2: "Sending 2, 100-byte ICMP Echos to 220.0.2.2(220.0.2.2),\
+      \ timeout is 2 seconds\r\n!!\r\nSuccess rate is 100 percent(2/2),round-trip\
+      \ min/avg/max = 2.569/2.736/2.902 ms"
+    ping vrf 2 220:2::2 repeat 2: "Sending 2, 100-byte ICMP Echos to 220:2::2(220:2::2),\
+      \ timeout is 2 seconds:\r\n!!\r\n\r\nSuccess rate is 100 percent (2/2), round-trip\
+      \ min/avg/max = 2.701/2.993/3.285 ms"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: f221-ce1#

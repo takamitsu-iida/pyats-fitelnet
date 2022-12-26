@@ -1,0 +1,44 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: f220-pe2(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: f220-pe2(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: f220-pe2#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    ping 3ffe:201:1::1: "Sending 5, 100-byte ICMP Echos to 3ffe:201:1::1(3ffe:201:1::1),\
+      \ timeout is 2 seconds:\r\n!!!!!\r\n\r\nSuccess rate is 100 percent (5/5), round-trip\
+      \ min/avg/max = 1.360/1.861/2.281 ms"
+    ping 3ffe:220:1::1: "Sending 5, 100-byte ICMP Echos to 3ffe:220:1::1(3ffe:220:1::1),\
+      \ timeout is 2 seconds:\r\n!!!!!\r\n\r\nSuccess rate is 100 percent (5/5), round-trip\
+      \ min/avg/max = 1.694/2.146/2.520 ms"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: f220-pe2#

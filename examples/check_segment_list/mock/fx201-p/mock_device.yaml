@@ -1,0 +1,53 @@
+configure:
+  commands:
+    end:
+      new_state: execute
+    line console 0:
+      new_state: configure_line
+    no logging console: ''
+  prompt: fx201-p(config)#
+configure_line:
+  commands:
+    end:
+      new_state: execute
+    exec-timeout 0: ''
+  prompt: fx201-p(config-line)#
+connect:
+  commands:
+    ? ''
+    : new_state: execute
+  preface: 'Trying mock_device ...
+
+    Connected to mock_device.
+
+    Escape character is ''^]''.'
+  prompt: ''
+disconnect:
+  commands:
+    null: null
+  prompt: fx201-p#
+execute:
+  commands:
+    config term:
+      new_state: configure
+    config-transaction:
+      new_state: configure
+    show segment-routing srv6 sid: "SID                         Function     Context\
+      \                                             Owner  State    \r\r\n--------------------------\
+      \  -----------  --------------------------------------------------  -----  ---------\r\
+      \r\n3ffe:201:0:1:40::           End                                        \
+      \                      IS-IS  InUse    \r\r\n3ffe:201:0:1:41::           End\
+      \ (PSP)                                                        IS-IS  InUse\
+      \    \r\r\n3ffe:201:0:1:42::           End.X        [Port-channel 1020000, Link-Local]\
+      \                  IS-IS  InUse    \r\r\n3ffe:201:0:1:43::           End.X (PSP)\
+      \  [Port-channel 1020000, Link-Local]                  IS-IS  InUse    \r\r\n\
+      3ffe:201:0:1:44::           End.X        [Port-channel 2010000, Link-Local]\
+      \                  IS-IS  InUse    \r\r\n3ffe:201:0:1:45::           End.X (PSP)\
+      \  [Port-channel 2010000, Link-Local]                  IS-IS  InUse    \r\r\n\
+      3ffe:201:0:1:46::           End.X        [Port-channel 3010000, Link-Local]\
+      \                  IS-IS  InUse    \r\r\n3ffe:201:0:1:47::           End.X (PSP)\
+      \  [Port-channel 3010000, Link-Local]                  IS-IS  InUse"
+    show version: ''
+    term length 0: ''
+    term width 0: ''
+  prompt: fx201-p#
