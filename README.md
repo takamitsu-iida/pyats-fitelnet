@@ -1,6 +1,6 @@
 # PyATS for FITELnet
 
-FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパーサー、Genie confライブラリです。
+FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパーサー、Genie confライブラリ、および動作させるサンプルスクリプトです。
 
 <br><br>
 
@@ -8,7 +8,7 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 
 pyATSの利用に必要な環境を準備します。
 
-Linux上が必要です。Windows + WSLの組み合わせでも動作します。
+Linuxが必要です。Windows + WSLの組み合わせでも動作します（おすすめ）。
 
 必要なPythonモジュールは次の４個です。
 
@@ -17,10 +17,11 @@ Linux上が必要です。Windows + WSLの組み合わせでも動作します�
 3. FITELnet機器のコマンド出力をパースするためのGenieパーサー(どこかに配置して利用)
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
-2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要で、環境変数を使って設定します。
-4はPYTHONPATH(もしくはsys.path)さえ通っていれば利用できます。
+2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要です。環境変数を使って設定します。
 
-Pythonの仮想環境にvenvを利用しますので、direnvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
+4は環境変数PYTHONPATH(もしくはスクリプト内のsys.path)さえ通っていれば利用できます。
+
+Pythonの仮想環境を作るのにvenvを利用しますので、合わせてdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
 <br>
 
