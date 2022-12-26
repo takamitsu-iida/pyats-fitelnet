@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import sys
 import unittest
 
 from pprint import pprint
@@ -12,13 +10,8 @@ from genie.conf.base import Testbed
 # from genie.conf.base import Interface
 from genie.tests.conf import TestCase
 
-# load l3vpn.py
-here = os.path.dirname(__file__)
-genielibs_dir = os.path.join(here, '../../../')
-if genielibs_dir not in sys.path:
-    sys.path.append(genielibs_dir)
-from l3vpn import L3vpn
-
+# load external_libs/conf/l3vpn.py
+from external_libs.conf.l3vpn import L3vpn
 
 class test_l3vpn(TestCase):
 
@@ -31,12 +24,12 @@ class test_l3vpn(TestCase):
         dev1 = Device(testbed=testbed, name='PE1', os='fitelnet')
         dev2 = Device(testbed=testbed, name='PE2', os='fitelnet')
 
-        # create L3vpn object
-        l3vpn = L3vpn(name='blue')
+        # create a L3vpn object with name '1'
+        l3vpn = L3vpn(name='1')
 
         self.assertIs(l3vpn.testbed, testbed)
 
-        # default device level vrf config
+        # default vrf config
         l3vpn.rd = '1:1'
         l3vpn.import_rt = '1:1'
         l3vpn.export_rt = '1:1'
@@ -51,13 +44,16 @@ class test_l3vpn(TestCase):
         l3vpn.device_attr[dev1.name].export_rt = '1:1_dev1'
         l3vpn.device_attr[dev1.name].srv6_locator = 'locator1_dev1'
 
-        # dev1 interface
+        # dev1 CE interface
         intf_name= 'Port-channel 1020000'
         l3vpn.device_attr[dev1.name].interface_attr[intf_name].ipv4_address = '1.1.1.1/32'
         l3vpn.device_attr[dev1.name].interface_attr[intf_name].if_ipv6_address = '1:1::1/64'
         # same as above
         intf = l3vpn.device_attr[dev1.name].interface_attr[intf_name]
         intf.ipv4_address = '1.1.1.1/32'
+        intf.ipv6_address = '1:1::1/64'
+        # same as above
+        setattr(intf, 'ipv4_address', '1.1.1.1/32')
         setattr(intf, 'ipv6_address', '1:1::1/64')
 
         # dev1 bgp address-family
@@ -71,12 +67,13 @@ class test_l3vpn(TestCase):
         print('')
 
         # unconfig dev1
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1], apply=False)
+        un_cfgs = l3vpn.build_unconfig(devices=[dev1, dev2], apply=False)
         print(f'{"="*10} unconfig all {"="*10}')
         print('PE1:\n' + str(un_cfgs[dev1.name]))
+        print('PE1:\n' + str(un_cfgs[dev2.name]))
         print('')
 
-        # unconfig dev1
+        # unconfig with attributes
         attributes = {
             'device_attr': {
                 '*': {

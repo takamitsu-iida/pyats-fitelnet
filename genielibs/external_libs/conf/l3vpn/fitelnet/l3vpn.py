@@ -17,20 +17,20 @@ class L3vpn:
             #
             if unconfig and attributes.iswildcard:
                 # delete vrf mode
-                with configurations.submode_context(attributes.format('vrf {name}', force=True)):
+                with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
                     configurations.submode_unconfig()
             elif unconfig and attributes.attributes and all(k in attributes.attributes.keys() for k in self.device_keys):
                 # delete vrf mode
                 with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
                     configurations.submode_unconfig()
             else:
-                need_config = False
+                need_vrf_mode = False
                 if attributes.iswildcard:
-                    need_config = True
+                    need_vrf_mode = True
                 if attributes.attributes and any(k in attributes.attributes.keys() for k in self.device_keys):
-                    need_config = True
+                    need_vrf_mode = True
 
-                if need_config:
+                if need_vrf_mode:
                     with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
 
                         if attributes.value('rd'):
@@ -81,16 +81,13 @@ class L3vpn:
                 #
                 with configurations.submode_context(attributes.format('interface {interface}', force=True)):
 
-                    if unconfig and attributes.iswildcard:
-                        configurations.append_line(attributes.format('ip vrf forwarding'))
-                    else:
-                        configurations.append_line(attributes.format('ip vrf forwarding {name}'))
+                    configurations.append_line(attributes.format('ip vrf forwarding {name}'))
 
-                        if attributes.value('ipv4_address'):
-                            configurations.append_line(attributes.format('ip address {ipv4_address}'))
+                    if attributes.value('ipv4_address'):
+                        configurations.append_line(attributes.format('ip address {ipv4_address}'))
 
-                        if attributes.value('ipv6_address'):
-                            configurations.append_line(attributes.format('ipv6 address {ipv6_address}'))
+                    if attributes.value('ipv6_address'):
+                        configurations.append_line(attributes.format('ipv6 address {ipv6_address}'))
 
                 return str(configurations)
 
@@ -106,9 +103,11 @@ class L3vpn:
                 attributes = AttributesHelper(self, attributes)
                 configurations = CliConfigBuilder(unconfig=unconfig)
 
+                # router bgp 65000
                 with configurations.submode_context(attributes.format('router bgp {bgp_asn}', force=True)):
-                    configurations.append_line(attributes.format('aaaaaaaa'))
 
+                    # address-family ipv4 vrf
+                    # address-family ipv6 vrf
                     for sub, attributes2 in attributes.mapping_values('af_attr', sort=True, keys=self.af_attr):
                         configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
 
@@ -129,6 +128,7 @@ class L3vpn:
                     with configurations.submode_context(attributes.format('address-family {address_family} {name}', force=True)):
 
                         if unconfig and attributes.iswildcard:
+                            # no address-family {address_family} vrf
                             configurations.submode_unconfig()
                         else:
                             if attributes.value('redistribute'):
