@@ -6,6 +6,10 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 
 ## 環境構築
 
+pyATSの利用に必要な環境を準備します。
+
+Linux上が必要です。Windows + WSLの組み合わせでも動作します。
+
 必要なPythonモジュールは次の４個です。
 
 1. pyATS本体(pipでインストール)
@@ -14,7 +18,7 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
 2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要で、環境変数を使って設定します。
-4はPYTHONPATHが通っていれば利用できます。
+4はPYTHONPATH(もしくはsys.path)さえ通っていれば利用できます。
 
 Pythonの仮想環境にvenvを利用しますので、direnvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
@@ -34,9 +38,7 @@ Pythonの仮想環境にvenvを利用しますので、direnvも導入してお�
 
 ### 1. このリポジトリをクローン
 
-```bash
-git clone https://github.com/takamitsu-iida/pyats-fitelnet.git
-```
+git cloneコマンドでクローンしてください。
 
 <br>
 
