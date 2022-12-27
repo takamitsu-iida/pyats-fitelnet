@@ -4,11 +4,11 @@ DEFAULT_L3VPN_STATE: present
 
 # device name should exist in testbed
 #
-# testbed core routers
+# core routers
 #  fx201-p
 #  f220-p
 #
-# testbed edge routers
+# edge routers
 #  fx201-pe1
 #  f220-pe2
 
@@ -19,10 +19,6 @@ parameters:
 
       # vrfの名前
       '1':
-
-        # presentなら作成(build), absentなら削除(unbuild)
-        state: present
-        #state: absent
 
         # route distinguisher
         rd: '1:1'
@@ -52,43 +48,35 @@ parameters:
             # インタフェース固有の設定
             interface_attr:
               'Port-channel 2010001':
-                if_ipv4_address: 201.0.1.1/24
-                if_ipv6_address: '201:1::1/32'
+                ipv4_address: 201.0.1.1/24
+                ipv6_address: '201:1::1/32'
 
-            # PE-CE BGP設定
-            af_attr:
-              'ipv4 vrf':
+            # BGP設定
+            # AS番号は datafile.yaml に記載の DEFAULT_BGP_AS: 65000 を利用
+            # router bgp <asn>
+            bgp_attr:
+
+              # PE-CE BGP設定
+              # address-family <af>
+              af_attr:
+                'ipv4 vrf':
+                    redistribute:
+                      - connected
+                'ipv6 vrf':
                   redistribute:
                     - connected
-              'ipv6 vrf':
-                redistribute:
-                  - connected
-
-              #router bgp 65000
-              # !
-              # address-family ipv4 vrf 1
-              #  redistribute connected
-              # exit
-              # !
-              # address-family ipv4 vrf 2
-              #  redistribute connected
-              # exit
-              # !
-              # address-family ipv6 vrf 1
-              #  redistribute connected
-              # exit
-              # !
-              # address-family ipv6 vrf 2
-              #  redistribute connected
-              # exit
-              # !
 
           f220-pe2:
             interface_attr:
               'Port-channel 2010001':
-                if_ipv4_address: 220.0.1.1/24
-                if_ipv6_address: '220:1::1/32'
-
+                ipv4_address: 220.0.1.1/24
+                ipv6_address: '220:1::1/32'
+            bgp_attr:
+              af_attr:
+                'ipv4 vrf':
+                  redistribute: [connected]
+                'ipv6 vrf':
+                  redistribute: [connected]
 
         # attributesを定義しない場合は、記載した全てのデータが対象
         apply_filter: true,
@@ -96,14 +84,14 @@ parameters:
         # 対象とするアトリビュートの定義
         filter_attributes:
           device_attr:
-            # '*' もしくは装置名を指定
+            # '*' は任意の装置名
             '*':
               rd:
               import_rt:
               export_rt:
               srv6_locator:
               interface_attr:
-                # '*' もしくはインタフェース名を指定
+                # '*' は任意の装置名
                 '*':
                   if_ipv4_address:
                   if_ipv6_address:

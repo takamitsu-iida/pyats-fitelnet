@@ -372,7 +372,7 @@ pipでインストールした外部ライブラリがvscodeで認識されな�
 > Where the extension looks for environments
 > https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
 
-settings.jsonに以下を入れておくとよいでしょう。
+settings.jsonに以下を入れておくとよいかもしれません。
 
 ```javascript
     "python.venvFolders": [

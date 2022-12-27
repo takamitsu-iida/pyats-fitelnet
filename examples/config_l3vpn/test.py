@@ -2,7 +2,6 @@
 
 import logging
 import os
-import sys
 
 from pprint import pformat, pprint
 
@@ -13,22 +12,12 @@ from pyats.log.utils import banner
 from genie.utils import Dq
 from genie.conf.base import Device
 
-# genieparser_fitelnet dir
-app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-parser_dir = os.path.join(app_home, 'genieparser_fitelnet/parser')
-if parser_dir not in sys.path:
-    sys.path.append(parser_dir)
-
-# geneilibs dir
-genielibs_dir = os.path.join(app_home, 'genielibs')
-if genielibs_dir not in sys.path:
-    sys.path.append(genielibs_dir)
 
 # load parser
 # from fitelnet.show_segment_routing_srv6_sid import ShowSegmentRoutingSrv6Sid
 
-# load L3vpn
-from conf.l3vpn import L3vpn
+# load genielibs/external_libs/conf/l3vpn.py
+from external_libs.conf.l3vpn import L3vpn
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +27,14 @@ logger = logging.getLogger(__name__)
 DEFAULT_L3VPN_STATE: None
 DEFAULT_BGP_AS: None
 SUPPORTED_OS: None
+
+#
+# set via script args
+# set via datafile
+#
+parameters = {
+    'genconf': False,
+}
 
 ###################################################################
 ###                  COMMON SETUP SECTION                       ###
@@ -54,11 +51,11 @@ class CommonSetup(aetest.CommonSetup):
             testbed (genie.libs.conf.testbed.Testbed): スクリプト実行時に渡されるテストベッド
             l3vpn (dict): see datafile.yaml
         """
-        parameters = [testbed, l3vpn_params]
-        for p in parameters:
-            assert p is not None
+        assert testbed is not None
+        assert l3vpn_params is not None
 
-        logger.info(pformat(l3vpn_params))
+        print(f"genconf={parameters.get('genconf')}")
+        print(parameters.get('l3vpn_params'))
 
 
 ###################################################################
@@ -114,12 +111,12 @@ class testcase_class(aetest.Testcase):
                         if d is not None:
                             setattr(l3vpn.device_attr[device_name].interface_attr[intf_name], param, d)
 
-                # set router bgp <as> specific config
+                # set router bgp <asn> specific config
                 bgp_attr = device_data.get('bgp_attr', {})
                 bgp_as = bgp_attr.get('bgp_as', DEFAULT_BGP_AS)
                 print(f'bgp_as = {bgp_as}')
 
-                setattr(l3vpn.device_attr[device_name].bgp_attr[bgp_as], 'bgp_as', bgp_as)
+                # setattr(l3vpn.device_attr[device_name].bgp_attr[bgp_as], 'bgp_as', bgp_as)
 
 
 
@@ -148,6 +145,8 @@ class testcase_class(aetest.Testcase):
     def apply_config(self, testbed):
         """
         """
+        if parameters.get('genconf') is True:
+            self.skipped()
 
         pprint(self.l3vpn_configs)
 
@@ -197,18 +196,14 @@ if __name__ == '__main__':
 
     # スクリプト実行時に受け取る引数
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--testbed',
-        dest='testbed',
-        help='testbed YAML file',
-        type=topology.loader.load,
-        default=DEFAULT_TESTBED,
-    )
+    parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=topology.loader.load, default=DEFAULT_TESTBED)
+    parser.add_argument('--genconf', dest='genconf', help='generate config', action='store_true')
     args, _ = parser.parse_known_args()
 
     # main()に渡す引数
     main_args = {
         'testbed': args.testbed,
+        'genconf': args.genconf,
     }
 
     # もしdatafile.yamlがあれば、それも渡す
