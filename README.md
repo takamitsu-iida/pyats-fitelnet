@@ -8,28 +8,19 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 
 pyATSを利用するために必要な環境を準備します。
 
-pyATSの実行にはLinuxが必要です。Windows + WSLの組み合わせでも動作します（おすすめ）。
+必要なもの
 
-Pythonが必要です。必要なPythonモジュールは次の４個です。
-
-1. pyATS本体(pipでインストール)
-2. FITELnet機器に接続するためのUniconプラグイン(pipでインストール)
-3. FITELnet機器のコマンド出力をパースするためのGenieパーサー(どこかに配置して利用)
-4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
-
-2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要です。
-環境変数を使ってpyATS本体にプラグインおよびパーサーの存在を通知します。
-
-4は環境変数PYTHONPATH(もしくはスクリプト内のsys.path)が通った場所に配置して利用します。
-
-Pythonの仮想環境を作るのにvenvを利用しますので、合わせてdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
+- Linux (Windows + WSLで可)
+- Python3
+- direnv
+- Git環境
+- このリポジトリ
 
 <br>
 
 ## このリポジトリの使い方
 
 環境構築の流れはこうなります。
-
 
 0. direnvをインストール(sudo apt install direnv)
 1. リポジトリをクローン(git clone)
@@ -341,11 +332,32 @@ Pro Tip
 
 <br>
 
-#### 環境作りのための参考リンク
+### うまくいかないとき
+
+pythonの環境を確認しましょう。
+PYTHONPATHで設定したパスが次のようにsys.pathに反映されるはずです。
+
+```python
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ python -m site
+sys.path = [
+    '/home/iida/git/pyats-fitelnet',
+    '/home/iida/git/pyats-fitelnet/genieparser',
+    '/home/iida/git/pyats-fitelnet/genielibs',
+    '/usr/lib/python38.zip',
+    '/usr/lib/python3.8',
+    '/usr/lib/python3.8/lib-dynload',
+    '/home/iida/git/pyats-fitelnet/.venv/lib/python3.8/site-packages',
+    '/home/iida/git/pyats-fitelnet/unicon.plugins/src',
+]
+USER_BASE: '/home/iida/.local' (exists)
+USER_SITE: '/home/iida/.local/lib/python3.8/site-packages' (exists)
+ENABLE_USER_SITE: False
+```
+
+参考リンク
 
 > External Parsers/APIs
 > https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html#step-by-step-guide-for-local-genie-library-implementation
-
 
 <br><br><br><br>
 
