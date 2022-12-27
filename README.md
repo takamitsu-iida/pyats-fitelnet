@@ -4,22 +4,23 @@ FITELnet機器をPyATSで利用するためのUniconプラグインとGenieパ�
 
 <br><br>
 
-## 環境構築
+## 環境構築の準備
 
-pyATSの利用に必要な環境を準備します。
+pyATSを利用するために必要な環境を準備します。
 
-Linuxが必要です。Windows + WSLの組み合わせでも動作します（おすすめ）。
+pyATSの実行にはLinuxが必要です。Windows + WSLの組み合わせでも動作します（おすすめ）。
 
-必要なPythonモジュールは次の４個です。
+Pythonが必要です。必要なPythonモジュールは次の４個です。
 
 1. pyATS本体(pipでインストール)
 2. FITELnet機器に接続するためのUniconプラグイン(pipでインストール)
 3. FITELnet機器のコマンド出力をパースするためのGenieパーサー(どこかに配置して利用)
 4. FITELnet機器の設定を生成するGenie confライブラリ(どこかに配置して利用)
 
-2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要です。環境変数を使って設定します。
+2と3は本家pyATSにpullリクエストを出して取り込まれるまでの間は利用にひと手間必要です。
+環境変数を使ってpyATS本体にプラグインおよびパーサーの存在を通知します。
 
-4は環境変数PYTHONPATH(もしくはスクリプト内のsys.path)さえ通っていれば利用できます。
+4は環境変数PYTHONPATH(もしくはスクリプト内のsys.path)が通った場所に配置して利用します。
 
 Pythonの仮想環境を作るのにvenvを利用しますので、合わせてdirenvも導入しておきます（超おすすめ ～ 事実上の必須レベル）。
 
@@ -27,13 +28,37 @@ Pythonの仮想環境を作るのにvenvを利用しますので、合わせてd
 
 ## このリポジトリの使い方
 
-概要はこうなります。
+環境構築の流れはこうなります。
 
-1. クローン(git clone)
+
+0. direnvをインストール(sudo apt install direnv)
+1. リポジトリをクローン(git clone)
 2. venvでPython環境を作成(python3 -m venv .venv)
 3. direnvを設定(direnv allow)
 4. Pythonモジュールをインストール(pip install -r requirements.txt)
 5. Uniconプラグインをインストール(make develop)
+6. Visual Studio Codeを設定
+
+<br>
+
+### 0. direnvをインストール
+
+すでにインストールしてあれば不要です。
+
+```bash
+sudo apt install direnv
+```
+
+ログインシェルがbashであれば~/.bashrcに下記を追記します。
+
+```bash
+## direnv
+eval "$(direnv hook bash)"
+```
+
+bash以外のシェルはこちらのページを参照してください。
+
+https://github.com/direnv/direnv/blob/master/docs/hook.md
 
 <br>
 
@@ -59,7 +84,7 @@ cd pyats-fitelnet
 
 venvで作成した環境を有効にするには `source .venv/bin/activate` コマンドを実行するわけですが、direnvを使うことでその作業を省略できます。
 
-このリポジトリには.envrcが含まれていますので、内容を確認して問題なければ `direnv allow` します。
+このリポジトリには.envrcが含まれていますので、内容を確認して問題なければ `direnv allow` を実行して有効にします。
 
 - .envrc
 
@@ -96,7 +121,7 @@ pip install -r requirements.txt
 
 ### 5. Uniconプラグインをインストール
 
-続いてFITELnet機器に接続するためのUniconプラグインをインストールします。
+続いてFITELnet機器に接続するための**Uniconプラグインをインストール**します（ソースコードを配置しただけでは利用できません）。
 
 unicon.pluginsディレクトリにソースコードがありますので、ディレクトリを移動します。
 
@@ -162,12 +187,11 @@ unicon.plugins               22.11
 
 <br>
 
-### Visual Studio Codeの設定
+### 6.Visual Studio Codeを設定
 
 続いてVisual Studio Codeに設定を加えます。
 
-追加で配置したGenieパーサーのクラス（たとえばgenieparser/external_parser/filtenet/show_version.py）を利用する際に、
-vscodeにその存在を教えておかないと補完が効かず、開発効率が悪いです。
+GenieパーサーとGenieライブラリをスクリプトの中で直接呼び出して使うのであればVisual Studio Codeの補完機能がないと開発効率が悪くなります。
 
 vscodeの設定メニューからextra pathsを検索します。
 
@@ -197,21 +221,137 @@ vscodeの設定メニューからextra pathsを検索します。
 
 <br>
 
-### 環境作りのための参考リンク
+## モックデバイスを使って試してみる
+
+構築した環境で期待通りに動作するかをモックデバイスで確認してみます。
+
+6台のFITELnetルータのインタフェースが期待通りリンクアップしているかを確認するテストを実行します。
+
+```bash
+./examples/check_interface_status/run -m
+```
+
+> 初回起動時はPythonのバイトコンパイルが走りますので若干遅いです。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/check_interface_status/run -m
+run using mock devices
+2022-12-27T10:21:31: %EASYPY-INFO: Starting job run: job
+2022-12-27T10:21:31: %EASYPY-INFO: Runinfo directory: /home/iida/.pyats/runinfo/job.2022Dec27_10:21:30.552528
+2022-12-27T10:21:31: %EASYPY-INFO: --------------------------------------------------------------------------------
+2022-12-27T10:21:39: %EASYPY-INFO: +------------------------------------------------------------------------------+
+2022-12-27T10:21:39: %EASYPY-INFO: |                              Clean Information                               |
+2022-12-27T10:21:39: %EASYPY-INFO: +------------------------------------------------------------------------------+
+
+...途中省略...
+
+2022-12-27T10:22:37: %EASYPY-INFO: +------------------------------------------------------------------------------+
+2022-12-27T10:22:37: %EASYPY-INFO: |                             Task Result Summary                              |
+2022-12-27T10:22:37: %EASYPY-INFO: +------------------------------------------------------------------------------+
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.common_setup                                 PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.check_interface_status_class[device_na...    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test.common_cleanup                               PASSED
+2022-12-27T10:22:37: %EASYPY-INFO:
+2022-12-27T10:22:37: %EASYPY-INFO: +------------------------------------------------------------------------------+
+2022-12-27T10:22:37: %EASYPY-INFO: |                             Task Result Details                              |
+2022-12-27T10:22:37: %EASYPY-INFO: +------------------------------------------------------------------------------+
+2022-12-27T10:22:37: %EASYPY-INFO: check_interface_status: test
+2022-12-27T10:22:37: %EASYPY-INFO: |-- common_setup                                                          PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- assert_datafile                                                   PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- connect                                                           PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=f220-p]                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 1/2                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 2: GigaEthernet 2/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 3: GigaEthernet 3/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=fx201-p]                     PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 1/2                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 2: GigaEthernet 2/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 3: GigaEthernet 3/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=fx201-pe1]                   PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 1/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 2: GigaEthernet 3/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 3: GigaEthernet 2/1.1                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 4: GigaEthernet 2/1.2                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=f220-pe2]                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 1/1                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 2: GigaEthernet 1/2                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 3: GigaEthernet 2/1.1                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 4: GigaEthernet 2/1.2                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=f221-ce1]                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 2/1.1                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 2: GigaEthernet 2/1.2                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |-- check_interface_status_class[device_name=f221-ce2]                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   |-- setup                                                             PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |   `-- check_status                                                      PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       |-- STEP 1: GigaEthernet 2/1.1                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: |       `-- STEP 2: GigaEthernet 2/1.2                                    PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: `-- common_cleanup                                                        PASSED
+2022-12-27T10:22:37: %EASYPY-INFO:     `-- disconnect                                                        PASSED
+2022-12-27T10:22:37: %EASYPY-INFO: Sending report email...
+2022-12-27T10:22:37: %EASYPY-INFO: Missing SMTP server configuration, or failed to reach/authenticate/send mail. Result notification email failed to send.
+2022-12-27T10:22:38: %EASYPY-INFO: Done!
+
+Pro Tip
+-------
+   Try the following command to view your logs:
+       pyats logs view
+```
+
+最後に出力されている通り `pyats logs view` を実行するとブラウザでテスト結果を確認できます。
+
+このような画面が出れば成功です。
+
+![テスト結果](img/fig2.PNG "テスト結果")
+
+
+他にもモックデバイスで動作するテストがありますので、実行してどのようにログ表示されるか確認してみるとよいでしょう。
+
+- CEルータ間でpingが通ることを確認するテスト
+
+```bash
+./examples/check_ping_ce/run -m
+```
+
+- コアルータ間でpingが通ることを確認するテスト
+
+```bash
+./examples/check_ping_core/run -m
+```
+
+- SRv6 SIDが期待通り網内に存在することを確認するテスト
+
+```bash
+./examples/check_segment_list/run -m
+```
+
+<br>
+
+#### 環境作りのための参考リンク
 
 > External Parsers/APIs
 > https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html#step-by-step-guide-for-local-genie-library-implementation
-
-> Write a parser
-> https://pubhub.devnetcloud.com/media/pyats-development-guide/docs/writeparser/writeparser.html#
-
 
 
 <br><br><br><br>
 
 # FITELnetメモ
 
-F220のマニュアル一式
+F220のマニュアル一式はこちらからダウンロードできます。
 
 https://www.furukawa.co.jp/fitelnet/product/f220/manual/index.html
 
@@ -233,10 +373,11 @@ commit = refresh
 
 discard = restore
 
-config terminalで入るのは working.cfg = candidate-config です。これはわかる。
+config terminalで入るのは working.cfg = candidate-config です。これはわかりやすいです。
 
-saveコマンドはworking.cfg = candidate-config を書き出すコマンドなので、これは要注意。running-configが保存されるわけではない。
+saveコマンドはworking.cfg = candidate-config を書き出すコマンドなので、これは注意が必要です（running-configが保存されるわけではない）。
 
+running-configを保存するのであれば、commitしてからsave、もしくはrestore boot.cfgを実行します（あまり自信ない・・・）。
 
 <br>
 
