@@ -334,8 +334,7 @@ Pro Tip
 
 ### うまくいかないとき
 
-pythonの環境を確認しましょう。
-PYTHONPATHで設定したパスが次のようにsys.pathに反映されるはずです。
+PYTHONPATHで設定したパスが次のようにsys.pathに反映されているか、確認しましょう。
 
 ```python
 iida@FCCLS0008993-00:~/git/pyats-fitelnet$ python -m site
@@ -354,10 +353,35 @@ USER_SITE: '/home/iida/.local/lib/python3.8/site-packages' (exists)
 ENABLE_USER_SITE: False
 ```
 
-参考リンク
+pipでインストールした外部ライブラリがvscodeで認識されない場合。
+このようにvscodeでみたときに波線が出てしまうことがあります。
 
-> External Parsers/APIs
-> https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html#step-by-step-guide-for-local-genie-library-implementation
+![外部ライブラリで波線](img/fig3-1.PNG "外部ライブラリで波線")
+
+このようなときは、vscodeが認識しているPythonが何かを確認しましょう。
+画面右下に注目。
+
+![Python Interpreter](img/fig3-2.PNG "Python Interpreter")
+
+ここがグローバルにインストールされているPython環境だとよろしくありません。
+'python -m venv <dirname>'で作成した仮想環境でなければいけません。
+
+基本的にvscodeは自動でvenvの環境を見つけてくれるのですが、グローバルのPython環境が選ばれてしまうことも発生しうることです。
+
+> 参照
+> Where the extension looks for environments
+> https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
+
+settings.jsonに以下を入れておくとよいでしょう。
+
+```javascript
+    "python.venvFolders": [
+        "envs",
+        ".venv",
+        ".pyenv",
+        ".direnv"
+    ],
+```
 
 <br><br><br><br>
 

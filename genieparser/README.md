@@ -8,6 +8,9 @@ genieのリポジトリをフォークすると重くて作業に支障がでる
 > https://pubhub.devnetcloud.com/media/genie-docs/docs/cookbooks/parsers.html#step-by-step-guide-for-local-genie-library-implementation
 
 
+
+
+
 ## 実装メモ
 
 - fitelnet/show_version.py
