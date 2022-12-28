@@ -1,0 +1,51 @@
+---
+
+parameters:
+
+  static_route_params:
+
+    # attributesを定義しない場合は、記載した全てのデータが対象
+    apply_filter: no
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        # '*' は任意の装置名
+        '*':
+          vrf_attr:
+            '*':
+              address_family_attr:
+                ipv4:
+                  route_attr:
+                    '*':
+                ipv6:
+                  route_attr:
+                    '*':
+
+    # 装置固有設定
+    device_attr:
+
+      # 注意
+      # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
+      # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
+
+      fx201-pe1:
+
+        vrf_attr:
+          'default':
+
+          '1':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '1.1.1.1/24':
+                    interface_attr: tunnel 1
+                    srv6_policy: 3
+
+              ipv6:
+                route_attr:
+                  '::0/32':
+                    interface_attr: tunnel 1
+                    srv6_policy: 3
+
+          '2':

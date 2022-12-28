@@ -6,11 +6,11 @@ JOB_SCRIPT=$SCRIPT_DIR/job.py
 TESTBED_REAL=$SCRIPT_DIR/../testbed.yaml
 TESTBED_MOCK=$SCRIPT_DIR/../mock.yaml
 
-while getopts cpmg option; do
+while getopts dcpm option; do
     case $option in
-        g)
-            echo "generate config"
-            python $TEST_SCRIPT --genconf
+        d)
+            echo "dry run, only generate config"
+            python $TEST_SCRIPT --check
             exit
             ;;
         c)

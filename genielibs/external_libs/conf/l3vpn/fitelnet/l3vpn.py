@@ -37,10 +37,10 @@ class L3vpn:
                             configurations.append_line(attributes.format('rd {rd}'))
 
                         if attributes.value('import_rt'):
-                            configurations.append_line(attributes.format('import route-target {import_rt}'))
+                            configurations.append_line(attributes.format('route-target import {import_rt}'))
 
                         if attributes.value('export_rt'):
-                            configurations.append_line(attributes.format('export route-target {export_rt}'))
+                            configurations.append_line(attributes.format('route-target export {export_rt}'))
 
                         if attributes.value('srv6_locator'):
                             configurations.append_line(attributes.format('segment-routing srv6 locator {srv6_locator}'))
@@ -83,17 +83,22 @@ class L3vpn:
 
                     configurations.append_line(attributes.format('ip vrf forwarding {name}'))
 
-                    if attributes.value('ipv4_address'):
-                        configurations.append_line(attributes.format('ip address {ipv4_address}'))
+                    ipv4_address = attributes.value('ipv4_address')
+                    if ipv4_address is not None:
+                        ipv4_address = ' '.join(ipv4_address.with_netmask.split('/'))
+                        configurations.append_line(attributes.format(f'ip address {ipv4_address}'))
 
-                    if attributes.value('ipv6_address'):
-                        configurations.append_line(attributes.format('ipv6 address {ipv6_address}'))
+                    ipv6_address = attributes.value('ipv6_address')
+                    if ipv6_address is not None:
+                        ipv6_address = ipv6_address.with_prefixlen
+                        configurations.append_line(attributes.format(f'ipv6 address {ipv6_address}'))
 
                 return str(configurations)
 
         #
         # +- DeviceAttributes
         #     +- BgpAttributes
+        #          +- AddressFamilyAttributes
         #
         class BgpAttributes:
 
@@ -133,9 +138,9 @@ class L3vpn:
                         else:
                             if attributes.value('redistribute'):
                                 redistribute = attributes.value('redistribute')
-                                if isinstance(redistribute, str):
+                                if not isinstance(redistribute, list):
                                     redistribute = [redistribute]
                                 for proto in redistribute:
-                                    configurations.append_line(attributes.format(f'redistribute {proto}'))
+                                    configurations.append_line(attributes.format(f'redistribute {proto.value}'))
 
                     return str(configurations)

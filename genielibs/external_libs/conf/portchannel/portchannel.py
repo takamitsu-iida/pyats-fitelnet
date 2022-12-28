@@ -1,24 +1,20 @@
 from enum import Enum
-from ipaddress import IPv4Interface, IPv6Interface
 
 from genie.conf.base.attributes import AttributesHelper
 from genie.conf.base.attributes import DeviceSubAttributes
 from genie.conf.base.attributes import KeyedSubAttributes
-from genie.conf.base.attributes import SubAttributes
+# from genie.conf.base.attributes import SubAttributes
 from genie.conf.base.attributes import SubAttributesDict
 from genie.conf.base.base import DeviceFeature
 from genie.decorator import managedattribute
 
-# L3vpn
+# Portchannel
 #   +--DeviceAttributes
 #        +-- InterfaceAttributes
-#        +-- BgpAttributes
-#               +-- AddressFamilyAttributes
 
-class L3vpn(DeviceFeature):
+class Portchannel(DeviceFeature):
 
-    def __init__(self, name, *args, **kwargs):
-        self._name = name
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     # =============================================
@@ -40,36 +36,6 @@ class L3vpn(DeviceFeature):
         def interface_attr(self):
             return SubAttributesDict(self.InterfaceAttributes, parent=self)
 
-        # =============================================
-        # Bgp attributes (no key)
-        # =============================================
-        class BgpAttributes(SubAttributes):
-            def __init__(self, parent):
-               super().__init__(parent)
-
-            # =============================================
-            # Address family attributes
-            # =============================================
-            class AddressFamilyAttributes(KeyedSubAttributes):
-                def __init__(self, parent, key):
-                    if key not in ['ipv4 vrf', 'ipv6 vrf']:
-                        raise ValueError(f'address-family {key} is not supported')
-                    self.address_family = key
-                    super().__init__(parent)
-
-            af_attr = managedattribute(name='af_attr', read_only=True, doc=AddressFamilyAttributes.__doc__)
-
-            @af_attr.initter
-            def af_attr(self):
-                return SubAttributesDict(self.AddressFamilyAttributes, parent=self)
-
-        bgp_attr = managedattribute(name='bgp_attr', read_only=True, doc=BgpAttributes.__doc__)
-
-        @bgp_attr.initter
-        def bgp_attr(self):
-            return self.BgpAttributes(parent=self)
-
-
     device_attr = managedattribute(name='device_attr', read_only=True, doc=DeviceAttributes.__doc__)
 
     @device_attr.initter
@@ -81,37 +47,17 @@ class L3vpn(DeviceFeature):
     #                           MANAGED ATTRIBUTES
     # ==========================================================================
 
-    device_keys = ['rd', 'import_rt', 'export_rt', 'srv6_locator']
-
     # device level attribute
 
-    name = managedattribute(name='name', default=None, read_only=True, doc='Name of the Vrf')
-
-    rd = managedattribute(name='rd', default=None, type=(None, managedattribute.test_istype(str)), doc='Route Distinguisher')
-
-    import_rt = managedattribute(name='import_rt', default=None, type=(None, managedattribute.test_istype(str)), doc='Import Route Target')
-
-    export_rt = managedattribute(name='export_rt', default=None, type=(None, managedattribute.test_istype(str)), doc='Export Route Target')
-
-    srv6_locator = managedattribute(name='srv6_locator', default=None, type=(None, managedattribute.test_istype(str)), doc='SRv6 locator')
-
-    bgp_asn = managedattribute(name='bgp_asn', default=None, type=(None, managedattribute.test_istype((int, str))), doc='bgp as number')
 
     # interface level attribute
 
-    ipv4_address = managedattribute(name='ipv4_address', default=None, type=(None, IPv4Interface), doc='ipv4 address')
+    channel_group = managedattribute(name='channel_group', default=None, type=(None, managedattribute.test_istype(int)), doc='channel-group number')
 
-    ipv6_address = managedattribute(name='ipv6_address', default=None, type=(None, IPv6Interface), doc='ipv6 address')
+    vlan_id = managedattribute(name='vlan_id', default=None, type=(None, managedattribute.test_istype(int)), doc='vlan-id')
 
-    # address-family <af> level attribute
+    bridge_group = managedattribute(name='bridge_group', default=None, type=(None, managedattribute.test_istype(int)), doc='bridge-group')
 
-    class Redistribute(Enum):
-        connected = 'connected'
-        static = 'static'
-        isakmp = 'isakmp'
-        ospf = 'ospf'
-
-    redistribute = managedattribute(name='redistribute', default=None, type=(None, Redistribute, managedattribute.test_list_of(Redistribute)), doc='redistribute')
 
     # ==========================================================================
     #                       BUILD_CONFIG & BUILD_UNCONFIG

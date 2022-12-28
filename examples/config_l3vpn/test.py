@@ -3,38 +3,26 @@
 import logging
 import os
 
+from distutils.util import strtobool
 from pprint import pformat, pprint
 
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from pyats import aetest
 from pyats.log.utils import banner
-
 from genie.utils import Dq
 from genie.conf.base import Device
 
-
-# load parser
-# from fitelnet.show_segment_routing_srv6_sid import ShowSegmentRoutingSrv6Sid
-
-# load genielibs/external_libs/conf/l3vpn.py
 from external_libs.conf.l3vpn import L3vpn
 
 logger = logging.getLogger(__name__)
 
-#
-# set via datafile.yaml
-#
-DEFAULT_L3VPN_STATE: None
-DEFAULT_BGP_AS: None
-SUPPORTED_OS: None
+# see datafile.yaml
+L3VPN_STATE = None
+DEFAULT_BGP_AS = None
+SUPPORTED_OS = None
 
-#
-# set via script args
-# set via datafile
-#
-parameters = {
-    'genconf': False,
-}
+# see datafile_l3vpn.yaml
+parameters = {}
 
 ###################################################################
 ###                  COMMON SETUP SECTION                       ###
@@ -54,8 +42,7 @@ class CommonSetup(aetest.CommonSetup):
         assert testbed is not None
         assert l3vpn_params is not None
 
-        print(f"genconf={parameters.get('genconf')}")
-        print(parameters.get('l3vpn_params'))
+        pprint(l3vpn_params)
 
 
 ###################################################################
@@ -68,25 +55,38 @@ class testcase_class(aetest.Testcase):
     def build_config(self, testbed, l3vpn_params):
         """
         """
-        vrf_params = ['rd', 'import_rt', 'export_rt', 'srv6_locator']
-        intf_params = ['if_ipv4_address', 'if_ipv6_address']
+        if parameters.get('check_mode') is True:
+            self.check_mode = True
+
+        self.l3vpn_configs = {}
 
         for vrf_name, vrf_data in l3vpn_params.get('vrf', {}).items():
 
-            l3vpn = L3vpn(vrf_name)
-
-            # state 'present' or 'absent'
-            state = vrf_data.get('state', DEFAULT_L3VPN_STATE)
-
             # filter attribute
             apply_filter = vrf_data.get('apply_filter', False)
+            #if isinstance(apply_filter, str):
+            #    apply_filter = strtobool(apply_filter)
+
+            print(f'apply_filter is {apply_filter}')
+
             attributes = vrf_data.get('filter_attributes')
 
-            # set default config
-            for param in vrf_params:
-                d = vrf_data.get(param)
-                if d is not None:
-                    setattr(l3vpn, param, d)
+            l3vpn = L3vpn(name=vrf_name)
+
+            # set default bgp as number
+            l3vpn.bgp_asn = DEFAULT_BGP_AS
+
+            if vrf_data.get('rd') is not None:
+                l3vpn.rd = vrf_data.get('rd')
+
+            if vrf_data.get('import_rt') is not None:
+                l3vpn.import_rt = vrf_data.get('import_rt')
+
+            if vrf_data.get('export_rt') is not None:
+                l3vpn.export_rt = vrf_data.get('export_rt')
+
+            if vrf_data.get('srv6_locator') is not None:
+                l3vpn.srv6_locator = vrf_data.get('srv6_locator')
 
             # set device specific config
             devices = []
@@ -95,49 +95,66 @@ class testcase_class(aetest.Testcase):
                 dev = testbed.devices.get(device_name)
                 if dev is None or dev.os not in SUPPORTED_OS:
                     continue
-
                 devices.append(dev)
 
-                for param in vrf_params:
-                    d = device_data.get(param)
-                    if d is not None:
-                        setattr(l3vpn.device_attr[device_name], param, d)
+                d = l3vpn.device_attr[device_name]
+
+                if device_data.get('rd') is not None:
+                    d.rd = device_data.get('rd')
+
+                if device_data.get('import_rt') is not None:
+                    d.import_rt = device_data.get('import_rt')
+
+                if device_data.get('export_rt') is not None:
+                    d.export_rt = device_data.get('export_rt')
+
+                if device_data.get('srv6_locator') is not None:
+                    d.srv6_locator = device_data.get('srv6_locator')
 
                 # set interface specific config
                 interface_attr = device_data.get('interface_attr', {})
                 for intf_name, intf_data in interface_attr.items():
-                    for param in intf_params:
-                        d = intf_data.get(param)
-                        if d is not None:
-                            setattr(l3vpn.device_attr[device_name].interface_attr[intf_name], param, d)
+
+                    intf = l3vpn.device_attr[device_name].interface_attr[intf_name]
+
+                    if intf_data.get('ipv4_address') is not None:
+                        intf.ipv4_address = intf_data.get('ipv4_address')
+
+                    if intf_data.get('ipv6_address') is not None:
+                        intf.ipv6_address = intf_data.get('ipv6_address')
 
                 # set router bgp <asn> specific config
                 bgp_attr = device_data.get('bgp_attr', {})
-                bgp_as = bgp_attr.get('bgp_as', DEFAULT_BGP_AS)
-                print(f'bgp_as = {bgp_as}')
+                af_attr = bgp_attr.get('af_attr', {})
+                for af_name, af_data in af_attr.items():
 
-                # setattr(l3vpn.device_attr[device_name].bgp_attr[bgp_as], 'bgp_as', bgp_as)
+                    af = l3vpn.device_attr[device_name].bgp_attr.af_attr[af_name]
 
+                    if af_data.get('redistribute') is not None:
 
-
+                        af.redistribute = af_data.get('redistribute')
 
             cfgs = {}
-            if state == 'present':
+            if L3VPN_STATE == 'present':
                 if apply_filter and attributes is not None:
                     cfgs = l3vpn.build_config(devices=devices, apply=False, attributes=attributes)
                 else:
                     cfgs = l3vpn.build_config(devices=devices, apply=False)
-            elif state == 'absent':
+            elif L3VPN_STATE == 'absent':
                 if apply_filter and attributes is not None:
                     cfgs = l3vpn.build_unconfig(devices=devices, apply=False, attributes=attributes)
                 else:
                     cfgs = l3vpn.build_unconfig(devices=devices, apply=False)
 
             for name, cfg in cfgs.items():
-                print(f'{name}\n{str(cfg)}\n')
+                if self.l3vpn_configs.get(name) is None:
+                    self.l3vpn_configs[name] = str(cfg)
+                else:
+                    self.l3vpn_configs[name] += '\n'
+                    self.l3vpn_configs[name] += str(cfg)
 
+        pprint(self.l3vpn_configs)
 
-        self.l3vpn_configs = {}
         self.passed()
 
 
@@ -145,7 +162,7 @@ class testcase_class(aetest.Testcase):
     def apply_config(self, testbed):
         """
         """
-        if parameters.get('genconf') is True:
+        if self.check_mode:
             self.skipped()
 
         pprint(self.l3vpn_configs)
@@ -197,13 +214,13 @@ if __name__ == '__main__':
     # スクリプト実行時に受け取る引数
     parser = argparse.ArgumentParser()
     parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=topology.loader.load, default=DEFAULT_TESTBED)
-    parser.add_argument('--genconf', dest='genconf', help='generate config', action='store_true')
+    parser.add_argument('--check', dest='check', help='check mode', action='store_true')
     args, _ = parser.parse_known_args()
 
     # main()に渡す引数
     main_args = {
         'testbed': args.testbed,
-        'genconf': args.genconf,
+        'check_mode': args.check,
     }
 
     # もしdatafile.yamlがあれば、それも渡す

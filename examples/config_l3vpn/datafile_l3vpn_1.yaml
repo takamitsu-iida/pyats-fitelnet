@@ -1,20 +1,11 @@
 ---
 
-DEFAULT_L3VPN_STATE: present
 
-# device name should exist in testbed
-#
-# core routers
-#  fx201-p
-#  f220-p
-#
-# edge routers
-#  fx201-pe1
-#  f220-pe2
 
 parameters:
 
   l3vpn_params:
+
     vrf:
 
       # vrfの名前
@@ -34,13 +25,13 @@ parameters:
         device_attr:
 
           # 注意
-          # testbedに存在しないdeviceは処理されない
-          # osがfitelnetでないものも処理されない
+          # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
+          # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
 
           fx201-pe1:
 
             # 指定がなければ親の設定を引き継ぐ
-            # rd:
+            rd: '1:1'
             # import_rt:
             # export_rt:
             # srv6_locator: prefix1
@@ -51,17 +42,18 @@ parameters:
                 ipv4_address: 201.0.1.1/24
                 ipv6_address: '201:1::1/32'
 
-            # BGP設定
-            # AS番号は datafile.yaml に記載の DEFAULT_BGP_AS: 65000 を利用
-            # router bgp <asn>
+            # BGP固有の設定
             bgp_attr:
 
-              # PE-CE BGP設定
+              # router bgp <asn>
+              # AS番号は datafile.yaml に記載の DEFAULT_BGP_AS: 65000 を利用
+
+              # PE-CE間設定
               # address-family <af>
+              # supported address-family is 'ipv4 vrf' and 'ipv6 vrf'
               af_attr:
                 'ipv4 vrf':
-                    redistribute:
-                      - connected
+                  redistribute: connected
                 'ipv6 vrf':
                   redistribute:
                     - connected
@@ -79,7 +71,7 @@ parameters:
                   redistribute: [connected]
 
         # attributesを定義しない場合は、記載した全てのデータが対象
-        apply_filter: true,
+        apply_filter: no
 
         # 対象とするアトリビュートの定義
         filter_attributes:
@@ -91,10 +83,10 @@ parameters:
               export_rt:
               srv6_locator:
               interface_attr:
-                # '*' は任意の装置名
+                # '*' は任意のインタフェース名
                 '*':
-                  if_ipv4_address:
-                  if_ipv6_address:
+                  ipv4_address:
+                  ipv6_address:
               bgp_attr:
                 af_attr:
                   '*':

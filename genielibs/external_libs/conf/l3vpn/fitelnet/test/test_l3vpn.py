@@ -2,12 +2,9 @@
 
 import unittest
 
-from pprint import pprint
-
 from genie.conf import Genie
 from genie.conf.base import Device
 from genie.conf.base import Testbed
-# from genie.conf.base import Interface
 from genie.tests.conf import TestCase
 
 # load external_libs/conf/l3vpn.py
@@ -22,7 +19,7 @@ class test_l3vpn(TestCase):
 
         # create device object
         dev1 = Device(testbed=testbed, name='PE1', os='fitelnet')
-        dev2 = Device(testbed=testbed, name='PE2', os='fitelnet')
+        # dev2 = Device(testbed=testbed, name='PE2', os='fitelnet')
 
         # create a L3vpn object with name '1'
         l3vpn = L3vpn(name='1')
@@ -60,18 +57,56 @@ class test_l3vpn(TestCase):
         l3vpn.device_attr[dev1.name].bgp_attr.af_attr['ipv4 vrf'].redistribute = ['connected', 'static']
 
         # config all
-        cfgs = l3vpn.build_config(devices=[dev1, dev2], apply=False)
+        cfgs = l3vpn.build_config(devices=[dev1], apply=False)
         print(f'{"="*10} config all {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
-        print('PE2:\n' + str(cfgs[dev2.name]))
         print('')
 
+        self.assertCountEqual(cfgs.keys(), [dev1.name])
+
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'ip vrf 1',
+                ' rd 1:1_dev1',
+                ' route-target import 1:1_dev1',
+                ' route-target export 1:1_dev1',
+                ' segment-routing srv6 locator locator1_dev1',
+                ' exit',
+                'interface Port-channel 1020000',
+                ' ip vrf forwarding 1',
+                ' ip address 1.1.1.1 255.255.255.255',
+                ' ipv6 address 1:1::1/64',
+                ' exit',
+                'router bgp 65001',
+                ' address-family ipv4 vrf 1',
+                '  redistribute connected',
+                '  redistribute static',
+                '  exit',
+                ' exit',
+            ]))
+
         # unconfig dev1
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1, dev2], apply=False)
+        cfgs = l3vpn.build_unconfig(devices=[dev1], apply=False)
         print(f'{"="*10} unconfig all {"="*10}')
-        print('PE1:\n' + str(un_cfgs[dev1.name]))
-        print('PE1:\n' + str(un_cfgs[dev2.name]))
+        print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
+
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'no ip vrf 1',
+                'interface Port-channel 1020000',
+                ' no ip vrf forwarding 1',
+                ' no ip address 1.1.1.1 255.255.255.255',
+                ' no ipv6 address 1:1::1/64',
+                ' exit',
+                'router bgp 65001',
+                ' no address-family ipv4 vrf 1',
+                ' exit',
+            ]))
 
         # unconfig with attributes
         attributes = {
@@ -92,10 +127,25 @@ class test_l3vpn(TestCase):
                 }
             }
         }
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1], attributes=attributes, apply=False)
+        cfgs = l3vpn.build_unconfig(devices=[dev1], attributes=attributes, apply=False)
         print(f'{"="*10} unconfig by attributes {"="*10}')
-        print('PE1:\n' + str(un_cfgs[dev1.name]))
+        print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
+
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'interface Port-channel 1020000',
+                ' no ip address 1.1.1.1 255.255.255.255',
+                ' exit',
+                'router bgp 65001',
+                ' address-family ipv4 vrf 1',
+                '  no redistribute connected',
+                '  no redistribute static',
+                '  exit',
+                ' exit',
+            ]))
 
 
         # dev1 interface only
@@ -108,10 +158,22 @@ class test_l3vpn(TestCase):
                 }
             }
         }
-        cfgs = l3vpn.build_config(devices=[dev1, dev2], apply=False, attributes=attributes)
+        cfgs = l3vpn.build_config(devices=[dev1], apply=False, attributes=attributes)
         print(f'{"="*10} config interface {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
+
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'interface Port-channel 1020000',
+                ' ip vrf forwarding 1',
+                ' ip address 1.1.1.1 255.255.255.255',
+                ' ipv6 address 1:1::1/64',
+                ' exit',
+            ]))
+
 
         # rd and interface
         attributes = {
@@ -126,17 +188,24 @@ class test_l3vpn(TestCase):
                 }
             }
         }
-        cfgs = l3vpn.build_config(devices=[dev1, dev2], apply=False, attributes=attributes)
+        cfgs = l3vpn.build_config(devices=[dev1], apply=False, attributes=attributes)
         print(f'{"="*10} config rd and interface {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
-        print('PE2:\n' + str(cfgs[dev2.name]))
         print('')
 
-        # unconfig dev1
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1], apply=False)
-        print(f'{"="*10} unconfig all {"="*10}')
-        print('PE1:\n' + str(un_cfgs[dev1.name]))
-        print('')
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'ip vrf 1',
+                ' rd 1:1_dev1',
+                ' exit',
+                'interface Port-channel 1020000',
+                ' ip vrf forwarding 1',
+                ' ip address 1.1.1.1 255.255.255.255',
+                ' ipv6 address 1:1::1/64',
+                ' exit',
+            ]))
 
         # unconfig dev1 rd
         attributes = {
@@ -147,23 +216,20 @@ class test_l3vpn(TestCase):
                 }
             }
         }
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1], attributes=attributes, apply=False)
+        cfgs = l3vpn.build_unconfig(devices=[dev1], attributes=attributes, apply=False)
         print(f'{"="*10} unconfig rd {"="*10}')
-        print('PE1:\n' + str(un_cfgs[dev1.name]))
+        print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
 
-        return
-
-        self.assertCountEqual(cfgs.keys(), [dev1.name])
-
         self.maxDiff = None
-        self.assertMultiLineEqual(str(cfgs[dev1.name]), '\n'.join(['vrf blue', ' description dev1 blue vrf', ' exit']))
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'ip vrf 1',
+                ' no rd 1:1_dev1',
+                ' exit',
+            ]))
 
-        un_cfgs = l3vpn.build_unconfig(devices=[dev1], apply=False)
-        self.assertCountEqual(un_cfgs.keys(), [dev1.name])
-
-        self.maxDiff = None
-        self.assertEqual(str(un_cfgs[dev1.name]), '\n'.join(['no vrf blue']))
 
 
 if __name__ == '__main__':
