@@ -122,8 +122,10 @@ class StaticRouting(DeviceFeature):
 
     interface = managedattribute(name='interface', default=None, type=(None, managedattribute.test_istype(str)), doc='Interface name')
 
+    # interface specific
     if_nexthop = managedattribute(name='if_nexthop', default=None, type=(None, managedattribute.test_istype(str)), doc='Next hop')
 
+    # interface specific
     if_srv6_policy = managedattribute(name='if_srv6_policy', default=None, type=(None, managedattribute.test_istype((int, str))), doc='Srv6 policy')
 
     nexthop = managedattribute(name='nexthop', default=None, type=(None, managedattribute.test_istype(str)), doc='Next hop')
