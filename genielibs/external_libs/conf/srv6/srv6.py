@@ -1,5 +1,4 @@
 from enum import Enum
-from ipaddress import IPv4Interface, IPv6Interface
 
 from genie.conf.base.attributes import AttributesHelper
 from genie.conf.base.attributes import DeviceSubAttributes
@@ -200,10 +199,11 @@ class Srv6(DeviceFeature):
 
     # policy <name> level
 
+    # color 1 end-point 3ffe:201:1:1:48::
     color = managedattribute(name='color', default=None, type=(None, managedattribute.test_istype((int, str))), doc='color <color> end-point <end_point>')
-
     end_point = managedattribute(name='end_point', default=None, type=(None, managedattribute.test_istype(str)), doc='color <color> end-point <end_point>')
 
+    # explicit segment-list 1
     explicit_segment_list = managedattribute(name='explicit_segment_list', default=None, type=(None, managedattribute.test_istype((int, str))), doc='explicit segment-list <list>')
 
     # segment-list

@@ -1,5 +1,4 @@
 from enum import Enum
-from ipaddress import IPv4Interface, IPv6Interface
 
 from genie.conf.base.attributes import AttributesHelper
 from genie.conf.base.attributes import DeviceSubAttributes
