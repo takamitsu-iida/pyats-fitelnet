@@ -69,6 +69,86 @@ class test_srv6(TestCase):
         print('')
 
 
+    def test_srv6_attributes(self):
+
+        Genie.testbed = testbed = Testbed()
+
+        dev1 = Device(testbed=testbed, name='PE1', os='fitelnet')
+
+        srv6 = Srv6()
+
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'interface_attr': {
+                        '*': {
+                            'tunnel_mode': None
+                        }
+                    },
+                    'sr_attr': {
+                        'srv6': {
+                            'locator_attr': {
+                                '*': None
+                            },
+                            'local_sid_attr': {
+                                '*': None
+                            },
+                            'policy_attr': {
+                                '*': None
+                            },
+                            'segment_list_attr': {
+                                '*': None
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        # interface tunnel 1
+        srv6.device_attr[dev1.name].interface_attr['tunnel 1'].tunnel_mode = 'srv6'
+
+        # locator
+        srv6.device_attr[dev1.name].sr_attr['srv6'].locator_attr['prefix1'].locator_prefix = '3ffe:220:1:1::/64'
+        srv6.device_attr[dev1.name].sr_attr['srv6'].locator_attr['prefix2'].locator_prefix = '3ffe:220:1:2::/64'
+
+        # local-sid
+        srv6.device_attr[dev1.name].sr_attr['srv6'].local_sid_attr['3ffe:220:1:1:46::'].action = 'end.dt4'
+        srv6.device_attr[dev1.name].sr_attr['srv6'].local_sid_attr['3ffe:220:1:1:46::'].vrf = '1'
+        srv6.device_attr[dev1.name].sr_attr['srv6'].local_sid_attr['3ffe:220:1:1:47::'].action = 'end.x'
+
+        # policy 1
+        #   color 1 end-point 3ffe:201:1:1:46::
+        srv6.device_attr[dev1.name].sr_attr['srv6'].policy_attr['1'].color = '1'
+        srv6.device_attr[dev1.name].sr_attr['srv6'].policy_attr['1'].end_point = '3ffe:201:1:1:46::'
+
+        # policy 1
+        #   explicit segment-list 1
+        srv6.device_attr[dev1.name].sr_attr['srv6'].policy_attr['1'].explicit_segment_list = '1'
+
+        #  segment-list 1
+        #  index 1 3ffe:201:0:1:46::
+        #  index 2 3ffe:201:0:1:47::
+        srv6.device_attr[dev1.name].sr_attr['srv6'].segment_list_attr['1'].index_attr['1'].index_sid = '3ffe:201:0:1:46::'
+        srv6.device_attr[dev1.name].sr_attr['srv6'].segment_list_attr['1'].index_attr['2'].index_sid = '3ffe:201:0:1:47::'
+
+        #
+        # config all
+        #
+        cfgs = srv6.build_config(devices=[dev1], attributes=attributes, apply=False)
+        print(f'{"="*10} config with attributes {"="*10}')
+        print('PE1:\n' + str(cfgs[dev1.name]))
+        print('')
+
+        #
+        # unconfig all
+        #
+        cfgs = srv6.build_unconfig(devices=[dev1], attributes=attributes, apply=False)
+        print(f'{"="*10} unconfig with attributes {"="*10}')
+        print('PE1:\n' + str(cfgs[dev1.name]))
+        print('')
+
+
 if __name__ == '__main__':
 
     unittest.main()
