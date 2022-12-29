@@ -356,12 +356,12 @@ ENABLE_USER_SITE: False
 pipでインストールした外部ライブラリがvscodeで認識されない場合。
 このようにvscodeでみたときに波線が出てしまうことがあります。
 
-![外部ライブラリで波線](img/fig3-1.PNG "外部ライブラリで波線")
+![外部ライブラリで波線](img/fig3_1.PNG "外部ライブラリで波線")
 
 このようなときは、vscodeが認識しているPythonが何かを確認しましょう。
 画面右下に注目。
 
-![Python Interpreter](img/fig3-2.PNG "Python Interpreter")
+![Python Interpreter](img/fig3_-_2.PNG "Python Interpreter")
 
 ここがグローバルにインストールされているPython環境だとよろしくありません。
 'python -m venv <dirname>'で作成した仮想環境でなければいけません。

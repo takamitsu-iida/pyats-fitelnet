@@ -1,0 +1,41 @@
+---
+
+parameters:
+
+  srv6_params:
+
+    # attributesを定義しない場合は、記載した全てのデータが対象
+    apply_filter: no
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        # '*' は任意の装置名
+        '*':
+          interface_attr:
+            '*':
+          sr_attr:
+            srv6:
+              locator_attr:
+                '*':
+              local_sid_attr:
+                '*':
+              policy_attr:
+                '*':
+              segment_list_attr:
+                '*':
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-pe1:
+        sr_attr:
+
+      f220-pe2:
+        sr_attr:
+
+      fx201-p:
+        sr_attr:
+
+      f220-p:
+        sr_attr:
