@@ -5,17 +5,13 @@
 # https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
 #
 
-# support only these os
-SUPPORTED_OS:
-  - fitelnet
-
-# default BGP AS number
-DEFAULT_BGP_AS: 65000
-
 # present or absent
+PORT_CHANNEL_STATE: present
+STATIC_ROUTE_STATE: present
 L3VPN_STATE: present
 
 extends:
-  - datafile_portchannel.yaml
+  - datafile_port_channel.yaml
+  - datafile_static_route.yaml
   - datafile_l3vpn_1.yaml
   - datafile_l3vpn_2.yaml

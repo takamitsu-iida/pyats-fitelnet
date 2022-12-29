@@ -25,27 +25,175 @@ parameters:
     # 装置固有設定
     device_attr:
 
-      # 注意
-      # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
-      # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
-
       fx201-pe1:
 
         vrf_attr:
           'default':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
 
           '1':
             address_family_attr:
               ipv4:
                 route_attr:
-                  '1.1.1.1/24':
-                    interface_attr: tunnel 1
-                    srv6_policy: 3
+                  '220.0.1.0 255.255.255.0':
+                    interface_attr:
+                     'tunnel 1':
+                        srv6_policy: 1
+
+                  '220.0.1.2 255.255.255.255':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 5
 
               ipv6:
                 route_attr:
-                  '::0/32':
-                    interface_attr: tunnel 1
-                    srv6_policy: 3
+                  '220:1::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 2
 
           '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '220.0.2.0 255.255.255.0':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 3
+
+              ipv6:
+                route_attr:
+                  '220:2::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 4
+
+      f220-pe2:
+        vrf_attr:
+          'default':
+            address_family_attr:
+              ipv4:
+                route_ttr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
+          '1':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '201.0.1.0/24':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 1
+                  '201.0.1.2/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 5
+              ipv6:
+                route_attr:
+                  '201:1::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 2
+                  '201:2::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 4
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '201.0.2.0/24':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 3
+              ipv6:
+                route_attr:
+                  '201:2::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 4
+
+      fx201-p:
+        vrf_attr:
+          'default':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
+
+      f220-p:
+        vrf_attr:
+          'default':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
+
+      f221-ce2:
+        vrf_attr:
+          'default':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
+          '1':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 220.0.1.1
+
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 220:1::1
+
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 220.0.2.1
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 220:2::1
+
+      f221-ce1:
+        vrf_attr:
+          'default':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 192.168.10.254
+
+          '1':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 201.0.1.1
+
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 201:1::1
+
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 201.0.2.1
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 201:2::1

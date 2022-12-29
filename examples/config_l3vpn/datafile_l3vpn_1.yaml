@@ -1,10 +1,10 @@
 ---
 
-
-
 parameters:
 
   l3vpn_params:
+
+    bgp_asn: 65000
 
     vrf:
 

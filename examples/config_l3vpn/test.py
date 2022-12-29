@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 import logging
-import os
 
-from distutils.util import strtobool
-from pprint import pformat, pprint
+from pprint import pprint  #, pformat
 
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from pyats import aetest
@@ -12,16 +10,17 @@ from pyats.log.utils import banner
 from genie.utils import Dq
 from genie.conf.base import Device
 
-from external_libs.conf.l3vpn import L3vpn
+from test_libs import build_static_route_config
+from test_libs import build_l3vpn_config
+from test_libs import build_port_channel_config
 
 logger = logging.getLogger(__name__)
 
 # see datafile.yaml
+PORT_CHANNEL_STATE = None
+STATIC_ROUTE_STATE = None
 L3VPN_STATE = None
-DEFAULT_BGP_AS = None
-SUPPORTED_OS = None
 
-# see datafile_l3vpn.yaml
 parameters = {}
 
 ###################################################################
@@ -31,16 +30,20 @@ parameters = {}
 class CommonSetup(aetest.CommonSetup):
 
     @aetest.subsection
-    def assert_datafile(self, testbed, l3vpn_params):
+    def assert_datafile(self, testbed, port_channel_params, l3vpn_params, static_route_params):
         """
         datafile.yamlが正しくロードされているか確認します
 
         Args:
             testbed (genie.libs.conf.testbed.Testbed): スクリプト実行時に渡されるテストベッド
-            l3vpn (dict): see datafile.yaml
+            portchannel_params (dict): see datafile.yaml
+            l3vpn_params (dict): see datafile.yaml
+            static_route_params (dict): see datafile.yaml
         """
         assert testbed is not None
+        assert port_channel_params is not None
         assert l3vpn_params is not None
+        assert static_route_params is not None
 
         pprint(l3vpn_params)
 
@@ -52,108 +55,42 @@ class CommonSetup(aetest.CommonSetup):
 class testcase_class(aetest.Testcase):
 
     @aetest.setup
-    def build_config(self, testbed, l3vpn_params):
+    def setup(self):
         """
         """
         if parameters.get('check_mode') is True:
             self.check_mode = True
 
-        self.l3vpn_configs = {}
 
-        for vrf_name, vrf_data in l3vpn_params.get('vrf', {}).items():
+    @aetest.test
+    def build_config(self, testbed):
+        """
+        """
+        port_channel_params = parameters.get('port_channel_params')
+        self.port_channel_configs = build_port_channel_config(testbed=testbed, port_channel_params=port_channel_params, state=PORT_CHANNEL_STATE)
 
-            # filter attribute
-            apply_filter = vrf_data.get('apply_filter', False)
-            #if isinstance(apply_filter, str):
-            #    apply_filter = strtobool(apply_filter)
+        static_route_params = parameters.get('static_route_params')
+        self.static_route_configs = build_static_route_config(testbed=testbed, static_route_params=static_route_params, state=STATIC_ROUTE_STATE)
 
-            print(f'apply_filter is {apply_filter}')
+        l3vpn_params = parameters.get('l3vpn_params')
+        self.l3vpn_configs = build_l3vpn_config(testbed=testbed, l3vpn_params=l3vpn_params, state=L3VPN_STATE)
 
-            attributes = vrf_data.get('filter_attributes')
+        self.passed()
 
-            l3vpn = L3vpn(name=vrf_name)
 
-            # set default bgp as number
-            l3vpn.bgp_asn = DEFAULT_BGP_AS
+    @aetest.test
+    def print_config(self):
+        """
+        """
 
-            if vrf_data.get('rd') is not None:
-                l3vpn.rd = vrf_data.get('rd')
+        logger.info(banner(f'{"="*10} port channel config {"="*10}'))
+        pprint(self.port_channel_configs, width=160)
 
-            if vrf_data.get('import_rt') is not None:
-                l3vpn.import_rt = vrf_data.get('import_rt')
+        logger.info(banner(f'{"="*10} static route config {"="*10}'))
+        pprint(self.static_route_configs, width=160)
 
-            if vrf_data.get('export_rt') is not None:
-                l3vpn.export_rt = vrf_data.get('export_rt')
-
-            if vrf_data.get('srv6_locator') is not None:
-                l3vpn.srv6_locator = vrf_data.get('srv6_locator')
-
-            # set device specific config
-            devices = []
-            device_attr = vrf_data.get('device_attr', {})
-            for device_name, device_data in device_attr.items():
-                dev = testbed.devices.get(device_name)
-                if dev is None or dev.os not in SUPPORTED_OS:
-                    continue
-                devices.append(dev)
-
-                d = l3vpn.device_attr[device_name]
-
-                if device_data.get('rd') is not None:
-                    d.rd = device_data.get('rd')
-
-                if device_data.get('import_rt') is not None:
-                    d.import_rt = device_data.get('import_rt')
-
-                if device_data.get('export_rt') is not None:
-                    d.export_rt = device_data.get('export_rt')
-
-                if device_data.get('srv6_locator') is not None:
-                    d.srv6_locator = device_data.get('srv6_locator')
-
-                # set interface specific config
-                interface_attr = device_data.get('interface_attr', {})
-                for intf_name, intf_data in interface_attr.items():
-
-                    intf = l3vpn.device_attr[device_name].interface_attr[intf_name]
-
-                    if intf_data.get('ipv4_address') is not None:
-                        intf.ipv4_address = intf_data.get('ipv4_address')
-
-                    if intf_data.get('ipv6_address') is not None:
-                        intf.ipv6_address = intf_data.get('ipv6_address')
-
-                # set router bgp <asn> specific config
-                bgp_attr = device_data.get('bgp_attr', {})
-                af_attr = bgp_attr.get('af_attr', {})
-                for af_name, af_data in af_attr.items():
-
-                    af = l3vpn.device_attr[device_name].bgp_attr.af_attr[af_name]
-
-                    if af_data.get('redistribute') is not None:
-
-                        af.redistribute = af_data.get('redistribute')
-
-            cfgs = {}
-            if L3VPN_STATE == 'present':
-                if apply_filter and attributes is not None:
-                    cfgs = l3vpn.build_config(devices=devices, apply=False, attributes=attributes)
-                else:
-                    cfgs = l3vpn.build_config(devices=devices, apply=False)
-            elif L3VPN_STATE == 'absent':
-                if apply_filter and attributes is not None:
-                    cfgs = l3vpn.build_unconfig(devices=devices, apply=False, attributes=attributes)
-                else:
-                    cfgs = l3vpn.build_unconfig(devices=devices, apply=False)
-
-            for name, cfg in cfgs.items():
-                if self.l3vpn_configs.get(name) is None:
-                    self.l3vpn_configs[name] = str(cfg)
-                else:
-                    self.l3vpn_configs[name] += '\n'
-                    self.l3vpn_configs[name] += str(cfg)
-
-        pprint(self.l3vpn_configs)
+        logger.info(banner(f'{"="*10} l3vpn config {"="*10}'))
+        pprint(self.l3vpn_configs, width=160)
 
         self.passed()
 
@@ -165,7 +102,7 @@ class testcase_class(aetest.Testcase):
         if self.check_mode:
             self.skipped()
 
-        pprint(self.l3vpn_configs)
+        pprint(self.l3vpn_configs, width=160)
 
         self.passed()
 

@@ -2,7 +2,7 @@
 
 parameters:
 
-  portchannel_params:
+  port_channel_params:
 
     # attributesを定義しない場合は、記載した全てのデータが対象
     apply_filter: no

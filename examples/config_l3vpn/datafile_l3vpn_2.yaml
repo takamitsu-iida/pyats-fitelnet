@@ -26,7 +26,6 @@ parameters:
                 ipv4_address: 201.0.2.1/24
                 ipv6_address: '201:2::1/32'
 
-            # BGP固有の設定
             bgp_attr:
               af_attr:
                 'ipv4 vrf':
