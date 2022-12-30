@@ -5,10 +5,104 @@ from external_libs.conf.srv6 import Srv6
 from external_libs.conf.portchannel import Portchannel
 from external_libs.conf.static_routing import StaticRouting
 from external_libs.conf.l3vpn import L3vpn
+from external_libs.conf.isis import Isis
 
 logger = logging.getLogger(__name__)
 
 SUPPORTED_OS = ['fitelnet']
+
+
+def build_isis_config(testbed: object, isis_params: dict, state: str) -> dict:
+
+    # filter attribute
+    apply_filter = isis_params.get('apply_filter', False)
+    attributes = isis_params.get('filter_attributes')
+
+    isis_tag = isis_params.get('isis_tag')
+    if isis_tag is None:
+        raise ValueError('required parameter isis_tag not found')
+
+    isis = Isis(isis_tag)
+
+    log_adjacency_changes = isis_params.get('log_adjacency_changes')
+    if log_adjacency_changes is not None:
+        isis.log_adjacency_changes = log_adjacency_changes
+
+    is_type = isis_params.get('is_type')
+    if is_type is not None:
+        isis.is_type = is_type
+
+    topology = isis_params.get('topology')
+    if topology is not None:
+        isis.topology = topology
+
+    devices = []
+    for device_name, device_data in isis_params.get('device_attr', {}).items():
+        dev = testbed.devices.get(device_name)
+        if dev is None or dev.os not in SUPPORTED_OS:
+            continue
+        devices.append(dev)
+
+        if device_data.get('log_adjacency_changes') is True:
+            isis.device_attr[device_name].log_adjacency_changes = True
+
+        if device_data.get('is_type') is not None:
+            isis.device_attr[device_name].is_type = device_data.get('is_type')
+
+        if device_data.get('topology') is not None:
+            isis.device_attr[device_name].topology = device_data.get('topology')
+
+        if device_data.get('net') is not None:
+            isis.device_attr[device_name].net = device_data.get('net')
+
+        for locator_name, locator_data in device_data.get('locator_attr', {}).items():
+            locator = isis.device_attr[device_name].locator_attr[locator_name]
+            if locator_data is not None and locator_data.get('algorithm') is not None:
+                locator.algorithm = locator_data.get('algorithm')
+
+        for flexalgo_name, flexalgo_data in device_data.get('flexalgo_attr', {}).items():
+            flexalgo = isis.device_attr[device_name].flexalgo_attr[flexalgo_name]
+            if flexalgo_data is not None and flexalgo_data.get('advertise') is True:
+                flexalgo.advertise = True
+            if flexalgo_data is not None and flexalgo_data.get('affinity_mode') is not None:
+                flexalgo.affinity_mode = flexalgo_data.get('affinity_mode')
+            if flexalgo_data is not None and flexalgo_data.get('affinity_names') is not None:
+                flexalgo.affinity_names = flexalgo_data.get('affinity_names')
+            if flexalgo_data is not None and flexalgo_data.get('priority') is not None:
+                flexalgo.priority = flexalgo_data.get('priority')
+
+        for intf_name, intf_data in device_data.get('interface_attr', {}).items():
+            intf = isis.device_attr[device_name].interface_attr[intf_name]
+            if intf_data is not None and intf_data.get('ipv4') is True:
+                intf.ipv4 = True
+            if intf_data is not None and intf_data.get('ipv6') is True:
+                intf.ipv6 = True
+            if intf_data is not None and intf_data.get('level_1_metric') is not None:
+                intf.level_1_metric = intf_data.get('level_1_metric')
+            if intf_data is not None and intf_data.get('level_2_metric') is not None:
+                intf.level_2_metric = intf_data.get('level_2_metric')
+            if intf_data is not None and intf_data.get('affinity_name') is not None:
+                intf.affinity_name = intf_data.get('affinity_name')
+
+    cfgs = {}
+    if state == 'present':
+        if apply_filter and attributes is not None:
+            cfgs = isis.build_config(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = isis.build_config(devices=devices, apply=False)
+    elif state == 'absent':
+        if apply_filter and attributes is not None:
+            cfgs = isis.build_unconfig(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = isis.build_unconfig(devices=devices, apply=False)
+
+    # convert to str
+    configs = {}
+    for name, cfg in cfgs.items():
+        configs[name] = str(cfg)
+
+    return configs
+
 
 
 def build_srv6_config(testbed: object, srv6_params: dict, state: str) -> dict:

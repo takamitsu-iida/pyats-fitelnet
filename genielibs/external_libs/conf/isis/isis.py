@@ -81,16 +81,16 @@ class Isis(DeviceFeature):
     # interface level
 
     # ip router isis
-    ipv4 = managedattribute(name='ipv4', default=False, type=(None, managedattribute.test_istype(bool)), doc='ip router isis <isis_tag>')
+    ipv4 = managedattribute(name='ipv4', default=None, type=(None, managedattribute.test_istype(bool)), doc='ip router isis <isis_tag>')
 
     # ipv6 router isis
-    ipv6 = managedattribute(name='ipv6', default=False, type=(None, managedattribute.test_istype(bool)), doc='ipv6 router isis <isis_tag>')
+    ipv6 = managedattribute(name='ipv6', default=None, type=(None, managedattribute.test_istype(bool)), doc='ipv6 router isis <isis_tag>')
 
     # isis metric <metric> level-1
-    level_1_metric = managedattribute(name='level_1_metric', default=10, type=(None, managedattribute.test_istype(int)), doc='isis metric <metric> level-1')
+    level_1_metric = managedattribute(name='level_1_metric', default=None, type=(None, managedattribute.test_istype(int)), doc='isis metric <metric> level-1')
 
     # isis metric <metric> level-2
-    level_2_metric = managedattribute(name='level_2_metric', default=10, type=(None, managedattribute.test_istype(int)), doc='isis metric <metric> level-2')
+    level_2_metric = managedattribute(name='level_2_metric', default=None, type=(None, managedattribute.test_istype(int)), doc='isis metric <metric> level-2')
 
     # isis affinity flex-algo <affinity name>
     affinity_name = managedattribute(name='affinity_name', default=None, type=(None, managedattribute.test_istype((int, str))), doc='isis affinity flex-algo <affinity name>')
@@ -113,7 +113,7 @@ class Isis(DeviceFeature):
     class Topology(Enum):
         ipv6_unicast = 'ipv6-unicast'
 
-    topology = managedattribute(name='net', default=None, type=(None, Topology), doc='ISIS topology')
+    topology = managedattribute(name='topology', default=None, type=(None, Topology), doc='ISIS topology')
 
     # srv6 locator <locator> algorithm <algorithm value>
     algorithm = managedattribute(name='algorithm', default=None, type=(None, managedattribute.test_istype(int)), doc='Srv6 locator algorithm value <128-255>')

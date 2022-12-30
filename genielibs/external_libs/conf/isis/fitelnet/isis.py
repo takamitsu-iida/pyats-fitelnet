@@ -176,10 +176,10 @@ class Isis:
                 with configurations.submode_context(attributes.format('interface {interface}', force=True), cancel_empty=True):
 
                     if attributes.value('ipv4') is True:
-                        configurations.append_line(attributes.format('ip router isis {tag}'))
+                        configurations.append_line(attributes.format('ip router isis {isis_tag}'))
 
                     if attributes.value('ipv6') is True:
-                        configurations.append_line(attributes.format('ipv6 router isis {tag}'))
+                        configurations.append_line(attributes.format('ipv6 router isis {isis_tag}'))
 
                     if attributes.value('level_1_metric'):
                         configurations.append_line(attributes.format('isis metric {level_1_metric} level-1'))

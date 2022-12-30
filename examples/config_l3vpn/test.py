@@ -14,6 +14,7 @@ from test_libs import build_srv6_config
 from test_libs import build_static_route_config
 from test_libs import build_l3vpn_config
 from test_libs import build_port_channel_config
+from test_libs import build_isis_config
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,8 @@ PORT_CHANNEL_STATE = None
 STATIC_ROUTE_STATE = None
 L3VPN_STATE = None
 SRV6_STATE = None
+ISIS_STATE = None
+
 parameters = {}
 
 ###################################################################
@@ -91,6 +94,12 @@ class testcase_class(aetest.Testcase):
         else:
             self.srv6_configs = None
 
+        isis_params = parameters.get('isis_params')
+        if isis_params is not None:
+            self.isis_configs = build_isis_config(testbed=testbed, isis_params=isis_params, state=ISIS_STATE)
+        else:
+            self.isis_configs = None
+
         self.passed()
 
 
@@ -111,6 +120,7 @@ class testcase_class(aetest.Testcase):
         print_config('static route', self.static_route_configs)
         print_config('l3vpn', self.l3vpn_configs)
         print_config('srv6', self.srv6_configs)
+        print_config('isis', self.isis_configs)
 
         self.passed()
 
