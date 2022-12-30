@@ -35,15 +35,6 @@ class Bgp:
                     if attributes.value('no_default_ipv4_unicast') is True:
                         configurations.append_line(attributes.format('no bgp default ipv4-unicast'), unconfig_cmd = attributes.format('bgp default ipv4-unicast'))
 
-
-
-
-
-
-
-
-
-
                     # neighbor
                     for sub, attributes2 in attributes.mapping_values('neighbor_attr', sort=True, keys=self.neighbor_attr):
                         configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
@@ -73,14 +64,20 @@ class Bgp:
                 if unconfig and attributes.iswildcard:
                     configurations.append_line(attributes.format('neighbor {neighbor}'))
                 else:
-                    pass
+
+                    # neighbor 3ffe:201:1::1 remote-as 65000
+                    if attributes.value('remote_as'):
+                        configurations.append_line(attributes.format('neighbor {neighbor} remote-as {remote_as}'))
+
+                    # neighbor 3ffe:201:1::1 update-source loopback 1
+                    if attributes.value('update_source'):
+                        configurations.append_line(attributes.format('neighbor {neighbor} update-source {update_source}'))
 
                 return str(configurations)
 
         #
         # +- DeviceAttributes
         #     +--AddressFamilyAttributes
-        #
         class AddressFamilyAttributes:
 
             def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
@@ -96,11 +93,36 @@ class Bgp:
                         configurations.submode_unconfig()
                     else:
 
+                        # segment-routing srv6
+                        if attributes.value('segment_routing') is True:
+                            configurations.append_line(attributes.format('segment-routing srv6'))
 
-
-
-                        # address-family
-                        for sub, attributes2 in attributes.mapping_values('af_attr', sort=True, keys=self.af_attr):
+                        # neighbor
+                        for sub, attributes2 in attributes.mapping_values('neighbor_attr', sort=True, keys=self.neighbor_attr):
                             configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
 
                 return str(configurations)
+
+
+            #
+            # +- DeviceAttributes
+            #     +--AddressFamilyAttributes
+            #          +--NeighborAttribute
+            class NeighborAttributes:
+
+                def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
+                    assert not kwargs, kwargs
+
+                    attributes = AttributesHelper(self, attributes)
+                    configurations = CliConfigBuilder(unconfig=unconfig)
+
+                    if unconfig and attributes.iswildcard:
+                        configurations.append_line(attributes.format('neighbor {neighbor}'))
+                    else:
+
+                        # segment-routing srv6
+                        if attributes.value('segment_routing') is True:
+                            configurations.append_line(attributes.format('segment-routing srv6'))
+
+
+                    return str(configurations)

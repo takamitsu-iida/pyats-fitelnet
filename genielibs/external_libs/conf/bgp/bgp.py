@@ -115,6 +115,17 @@ class Bgp(DeviceFeature):
     # no bgp default ipv4-unicast
     no_default_ipv4_unicast = managedattribute(name='no_default_ipv4_unicast', default=None, type=(None, managedattribute.test_istype(bool)), doc='no bgp default ipv4-unicast')
 
+    # neighbor 3ffe:201:1::1 remote-as 65000
+    remote_as = managedattribute(name='remote_as', default=None, type=(None, managedattribute.test_istype((int, str))), doc='neighbor <neighbor> remote-as <asn>')
+
+    # neighbor 3ffe:201:1::1 update-source loopback 1
+    update_source =  managedattribute(name='update_source', default=None, type=(None, managedattribute.test_istype(str)), doc='neighbor <neighbor> update-source <intf name>')
+
+    # segment-routing srv6
+    segment_routing =  managedattribute(name='segment_routing', default=None, type=(None, managedattribute.test_istype(bool)), doc='segment-routing srv6')
+
+
+
 
 
 

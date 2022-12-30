@@ -29,6 +29,23 @@ class test_bgp(TestCase):
         bgp.device_attr[dev1.name].log_neighbor_changes = True
         bgp.device_attr[dev1.name].no_default_ipv4_unicast = True
 
+        # neighbor
+        bgp.device_attr[dev1.name].neighbor_attr['3ffe:201:1::1'].remote_as = 65000
+        bgp.device_attr[dev1.name].neighbor_attr['3ffe:201:1::1'].update_source = 'Loopback 1'
+
+        # address-family vpnv4
+
+        # segment-routing srv6
+        bgp.device_attr[dev1.name].af_attr['vpnv4'].segment_routing = True
+
+
+        # address-family vpnv6
+
+        # segment-routing srv6
+        bgp.device_attr[dev1.name].af_attr['vpnv6'].segment_routing = True
+
+
+
 
         #
         # config all
