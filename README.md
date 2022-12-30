@@ -361,7 +361,7 @@ pipでインストールした外部ライブラリがvscodeで認識されな�
 このようなときは、vscodeが認識しているPythonが何かを確認しましょう。
 画面右下に注目。
 
-![Python Interpreter](img/fig3_-_2.PNG "Python Interpreter")
+![Python Interpreter](img/fig3_2.PNG "Python Interpreter")
 
 ここがグローバルにインストールされているPython環境だとよろしくありません。
 'python -m venv <dirname>'で作成した仮想環境でなければいけません。
