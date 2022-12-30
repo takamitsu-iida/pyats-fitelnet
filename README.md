@@ -415,6 +415,47 @@ saveコマンドはworking.cfg = candidate-config を書き出すコマンドな
 
 running-configを保存するのであれば、commitしてからsave、もしくはrestore boot.cfgを実行します（あまり自信ない・・・）。
 
+
+<br>
+
+## 設定の初期化
+
+何も設定されていない状態から設定するにはこのコマンドを使います。
+
+clear candidate-config = clear working.cfg
+
+初期化されるのはあくまで編集用のコンフィグなので、この状態で起動したければsaveしてから再起動します。
+
+commitして反映するとSSHの接続がどうなるのかわからないので、怖くて試していません。どうなるんだろう？
+
+<br>
+
+## 起動時のコンフィグの指定
+
+設定ではなく、指定です。
+
+boot configuration <ファイル名>
+
+で起動するファイルを指定します。
+
+<br>
+
+## 工場出荷状態に戻す
+
+reset clear
+
+を実行すると工場出荷状態で起動します。
+
+これを実際にやってしまうとSSHで接続できなくなるので、試してません。
+
+<br>
+
+## メモリ使用量の把握
+
+show buffer もしくは show processes memoryを使う。
+
+show memory というコマンドもあるが、これはモジュール内部のリソースを表示するものなので、見てもよくわからない。
+
 <br>
 
 ### disconnect

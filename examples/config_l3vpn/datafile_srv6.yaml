@@ -14,8 +14,10 @@ parameters:
         '*':
           interface_attr:
             '*':
+              tunnel_mode:
           sr_attr:
             srv6:
+              encap_source:
               locator_attr:
                 '*':
               local_sid_attr:
@@ -28,14 +30,119 @@ parameters:
     # 装置固有設定
     device_attr:
 
-      fx201-pe1:
-        sr_attr:
-
-      f220-pe2:
-        sr_attr:
-
       fx201-p:
         sr_attr:
+          'srv6':
+            locator_attr:
+              'prefix1':
+                locator_prefix: '3ffe:201:0:1::/64'
 
       f220-p:
         sr_attr:
+          'srv6':
+            locator_attr:
+              'prefix1':
+                locator_prefix: '3ffe:220:0:1::/64'
+
+      fx201-pe1:
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        sr_attr:
+          'srv6':
+            encap_source: '3ffe:201:1::1'
+            locator_attr:
+              'prefix1':
+                locator_prefix: '3ffe:201:1:1::/64'
+
+            policy_attr:
+              '1':
+                color: 1
+                end_point: '3ffe:220:1:1:46::'
+                explicit_segment_list: 1
+
+              '2':
+                color: 1
+                end_point: '3ffe:220:1:1:48::'
+                explicit_segment_list: 1
+
+              '3':
+                color: 1
+                end_point: '3ffe:220:1:1:47::'
+                explicit_segment_list: 2
+
+              '4':
+                color: 1
+                end_point: '3ffe:220:1:1:49::'
+                explicit_segment_list: 2
+
+              '5':
+                color: 1
+                end_point: '3ffe:220:1:1:46::'
+                explicit_segment_list: 2
+
+            segment_list_attr:
+              '1':
+                index_attr:
+                  '1':
+                    index_sid: '3ffe:201:0:1:42::'
+
+              '2':
+                index_attr:
+                  '1':
+                    index_sid: '3ffe:220:0:1:42::'
+
+      f220-pe2:
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        sr_attr:
+          'srv6':
+            encap_source: '3ffe:220:1::1'
+            local_sid_attr:
+              '3ffe:220:1:1:46::':
+                action: end.dt4
+                vrf: 1
+
+            locator_attr:
+              'prefix1':
+                locator_prefix: '3ffe:220:1:1::/64'
+
+            policy_attr:
+              '1':
+                color: 1
+                end_point: '3ffe:201:1:1:46::'
+                explicit_segment_list: 1
+
+              '2':
+                color: 1
+                end_point: '3ffe:201:1:1:48::'
+                explicit_segment_list: 1
+
+              '3':
+                color: 1
+                end_point: '3ffe:201:1:1:47::'
+                explicit_segment_list: 2
+
+              '4':
+                color: 1
+                end_point: '3ffe:201:1:1:49::'
+                explicit_segment_list: 2
+
+              '5':
+                color: 1
+                end_point: '3ffe:201:1:1:46::'
+                explicit_segment_list: 2
+
+            segment_list_attr:
+              '1':
+                index_attr:
+                  '1':
+                    index_sid: '3ffe:201:0:1:46::'
+
+              '2':
+                index_attr:
+                  '1':
+                    index_sid: '3ffe:220:0:1:46::'

@@ -15,35 +15,24 @@ class L3vpn:
             #
             # device level configuration
             #
-            if unconfig and attributes.iswildcard:
-                # delete vrf mode
-                with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
+            with configurations.submode_context(attributes.format('ip vrf {vrf_name}', force=True), cancel_empty=True):
+                if unconfig and attributes.iswildcard:
+                    # delete vrf mode
                     configurations.submode_unconfig()
-            elif unconfig and attributes.attributes and all(k in attributes.attributes.keys() for k in self.device_keys):
-                # delete vrf mode
-                with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
+                elif unconfig and attributes.value('vrf_name'):
                     configurations.submode_unconfig()
-            else:
-                need_vrf_mode = False
-                if attributes.iswildcard:
-                    need_vrf_mode = True
-                if attributes.attributes and any(k in attributes.attributes.keys() for k in self.device_keys):
-                    need_vrf_mode = True
+                else:
+                    if attributes.value('rd'):
+                        configurations.append_line(attributes.format('rd {rd}'))
 
-                if need_vrf_mode:
-                    with configurations.submode_context(attributes.format('ip vrf {name}', force=True)):
+                    if attributes.value('import_rt'):
+                        configurations.append_line(attributes.format('route-target import {import_rt}'))
 
-                        if attributes.value('rd'):
-                            configurations.append_line(attributes.format('rd {rd}'))
+                    if attributes.value('export_rt'):
+                        configurations.append_line(attributes.format('route-target export {export_rt}'))
 
-                        if attributes.value('import_rt'):
-                            configurations.append_line(attributes.format('route-target import {import_rt}'))
-
-                        if attributes.value('export_rt'):
-                            configurations.append_line(attributes.format('route-target export {export_rt}'))
-
-                        if attributes.value('srv6_locator'):
-                            configurations.append_line(attributes.format('segment-routing srv6 locator {srv6_locator}'))
+                    if attributes.value('srv6_locator'):
+                        configurations.append_line(attributes.format('segment-routing srv6 locator {srv6_locator}'))
 
             #
             # interface port-channel 2010000
@@ -81,7 +70,7 @@ class L3vpn:
                 #
                 with configurations.submode_context(attributes.format('interface {interface}', force=True)):
 
-                    configurations.append_line(attributes.format('ip vrf forwarding {name}'))
+                    configurations.append_line(attributes.format('ip vrf forwarding {vrf_name}'))
 
                     ipv4_address = attributes.value('ipv4_address')
                     if ipv4_address is not None:
@@ -130,7 +119,7 @@ class L3vpn:
                     #
                     # address-family {address_family}
                     #
-                    with configurations.submode_context(attributes.format('address-family {address_family} {name}', force=True)):
+                    with configurations.submode_context(attributes.format('address-family {address_family} {vrf_name}', force=True)):
 
                         if unconfig and attributes.iswildcard:
                             # no address-family {address_family} vrf

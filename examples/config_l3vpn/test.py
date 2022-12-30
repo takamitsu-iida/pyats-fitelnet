@@ -10,6 +10,7 @@ from pyats.log.utils import banner
 from genie.utils import Dq
 from genie.conf.base import Device
 
+from test_libs import build_srv6_config
 from test_libs import build_static_route_config
 from test_libs import build_l3vpn_config
 from test_libs import build_port_channel_config
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 PORT_CHANNEL_STATE = None
 STATIC_ROUTE_STATE = None
 L3VPN_STATE = None
-
+SRV6_STATE = None
 parameters = {}
 
 ###################################################################
@@ -67,13 +68,28 @@ class testcase_class(aetest.Testcase):
         """
         """
         port_channel_params = parameters.get('port_channel_params')
-        self.port_channel_configs = build_port_channel_config(testbed=testbed, port_channel_params=port_channel_params, state=PORT_CHANNEL_STATE)
+        if port_channel_params is not None:
+            self.port_channel_configs = build_port_channel_config(testbed=testbed, port_channel_params=port_channel_params, state=PORT_CHANNEL_STATE)
+        else:
+            self.port_channel_configs = None
 
         static_route_params = parameters.get('static_route_params')
-        self.static_route_configs = build_static_route_config(testbed=testbed, static_route_params=static_route_params, state=STATIC_ROUTE_STATE)
+        if static_route_params is not None:
+            self.static_route_configs = build_static_route_config(testbed=testbed, static_route_params=static_route_params, state=STATIC_ROUTE_STATE)
+        else:
+            self.static_route_configs = None
 
         l3vpn_params = parameters.get('l3vpn_params')
-        self.l3vpn_configs = build_l3vpn_config(testbed=testbed, l3vpn_params=l3vpn_params, state=L3VPN_STATE)
+        if l3vpn_params is not None:
+            self.l3vpn_configs = build_l3vpn_config(testbed=testbed, l3vpn_params=l3vpn_params, state=L3VPN_STATE)
+        else:
+            self.l3vpn_configs = None
+
+        srv6_params = parameters.get('srv6_params')
+        if srv6_params is not None:
+            self.srv6_configs = build_srv6_config(testbed=testbed, srv6_params=srv6_params, state=SRV6_STATE)
+        else:
+            self.srv6_configs = None
 
         self.passed()
 
@@ -83,14 +99,18 @@ class testcase_class(aetest.Testcase):
         """
         """
 
-        logger.info(banner(f'{"="*10} port channel config {"="*10}'))
-        pprint(self.port_channel_configs, width=160)
+        def print_config(name: str, configs: dict):
+            logger.info(banner(f'{"="*10} {name} config {"="*10}'))
+            if configs is None:
+                print('not found')
+            else:
+                pprint(configs, width=160)
+            print('')
 
-        logger.info(banner(f'{"="*10} static route config {"="*10}'))
-        pprint(self.static_route_configs, width=160)
-
-        logger.info(banner(f'{"="*10} l3vpn config {"="*10}'))
-        pprint(self.l3vpn_configs, width=160)
+        print_config('port channel', self.port_channel_configs)
+        print_config('static route', self.static_route_configs)
+        print_config('l3vpn', self.l3vpn_configs)
+        print_config('srv6', self.srv6_configs)
 
         self.passed()
 

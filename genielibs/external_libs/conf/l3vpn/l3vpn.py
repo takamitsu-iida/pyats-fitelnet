@@ -18,7 +18,7 @@ from genie.decorator import managedattribute
 class L3vpn(DeviceFeature):
 
     def __init__(self, name, *args, **kwargs):
-        self._name = name
+        self.vrf_name = name
         super().__init__(*args, **kwargs)
 
     # =============================================
@@ -81,11 +81,7 @@ class L3vpn(DeviceFeature):
     #                           MANAGED ATTRIBUTES
     # ==========================================================================
 
-    device_keys = ['rd', 'import_rt', 'export_rt', 'srv6_locator']
-
     # device level attribute
-
-    name = managedattribute(name='name', default=None, read_only=True, doc='Name of the Vrf')
 
     rd = managedattribute(name='rd', default=None, type=(None, managedattribute.test_istype(str)), doc='Route Distinguisher')
 

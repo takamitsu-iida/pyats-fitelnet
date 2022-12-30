@@ -92,7 +92,6 @@ class test_l3vpn(TestCase):
         print(f'{"="*10} unconfig all {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
-
         self.maxDiff = None
         self.assertMultiLineEqual(
             str(cfgs[dev1.name]),
@@ -131,7 +130,6 @@ class test_l3vpn(TestCase):
         print(f'{"="*10} unconfig by attributes {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
-
         self.maxDiff = None
         self.assertMultiLineEqual(
             str(cfgs[dev1.name]),
@@ -162,7 +160,6 @@ class test_l3vpn(TestCase):
         print(f'{"="*10} config interface {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
-
         self.maxDiff = None
         self.assertMultiLineEqual(
             str(cfgs[dev1.name]),
@@ -192,7 +189,6 @@ class test_l3vpn(TestCase):
         print(f'{"="*10} config rd and interface {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
-
         self.maxDiff = None
         self.assertMultiLineEqual(
             str(cfgs[dev1.name]),
@@ -220,7 +216,6 @@ class test_l3vpn(TestCase):
         print(f'{"="*10} unconfig rd {"="*10}')
         print('PE1:\n' + str(cfgs[dev1.name]))
         print('')
-
         self.maxDiff = None
         self.assertMultiLineEqual(
             str(cfgs[dev1.name]),
@@ -228,6 +223,25 @@ class test_l3vpn(TestCase):
                 'ip vrf 1',
                 ' no rd 1:1_dev1',
                 ' exit',
+            ]))
+
+
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'vrf_name': None,
+                }
+            }
+        }
+        cfgs = l3vpn.build_unconfig(devices=[dev1], apply=False, attributes=attributes)
+        print(f'{"="*10} unconfig vrf itself {"="*10}')
+        print('PE1:\n' + str(cfgs[dev1.name]))
+        print('')
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            str(cfgs[dev1.name]),
+            '\n'.join([
+                'no ip vrf 1'
             ]))
 
 

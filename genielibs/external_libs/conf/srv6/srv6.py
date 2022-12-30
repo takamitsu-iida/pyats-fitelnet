@@ -44,7 +44,7 @@ exit
 # Srv6
 #   +--DeviceAttributes
 #        +--InterfaceAttributes
-#        +-- SegmentRoutingAttributes
+#        +--SegmentRoutingAttributes
 #              +-- LocatorAttributes
 #              +-- LocalSidAttributes
 #              +-- PolicyAttributes
@@ -195,7 +195,7 @@ class Srv6(DeviceFeature):
     # segment-routing srv6
     #   local-sid <sid> action <action> vrf <vrf>
     action = managedattribute(name='action', default=None, type=(None, managedattribute.test_istype(str)), doc='local-sid <sid> action end.dt4 vrf <vrf>')
-    vrf = managedattribute(name='vrf', default=None, type=(None, managedattribute.test_istype(str)), doc='local-sid <sid> action end.dt4 vrf <vrf>')
+    vrf = managedattribute(name='vrf', default=None, type=(None, managedattribute.test_istype((int, str))), doc='local-sid <sid> action end.dt4 vrf <vrf>')
 
     # policy <name> level
 

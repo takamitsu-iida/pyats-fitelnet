@@ -28,6 +28,9 @@ class test_srv6(TestCase):
         # interface tunnel 1
         srv6.device_attr[dev1.name].interface_attr['tunnel 1'].tunnel_mode = 'srv6'
 
+        # encap_source
+        srv6.device_attr[dev1.name].sr_attr['srv6'].encap_source = '3ffe:201:1::1'
+
         # locator
         srv6.device_attr[dev1.name].sr_attr['srv6'].locator_attr['prefix1'].locator_prefix = '3ffe:220:1:1::/64'
         srv6.device_attr[dev1.name].sr_attr['srv6'].locator_attr['prefix2'].locator_prefix = '3ffe:220:1:2::/64'
@@ -87,6 +90,7 @@ class test_srv6(TestCase):
                     },
                     'sr_attr': {
                         'srv6': {
+                            'encap_source': None,
                             'locator_attr': {
                                 '*': None
                             },
@@ -107,6 +111,9 @@ class test_srv6(TestCase):
 
         # interface tunnel 1
         srv6.device_attr[dev1.name].interface_attr['tunnel 1'].tunnel_mode = 'srv6'
+
+        # encap_source
+        srv6.device_attr[dev1.name].sr_attr['srv6'].encap_source = '3ffe:201:1::1'
 
         # locator
         srv6.device_attr[dev1.name].sr_attr['srv6'].locator_attr['prefix1'].locator_prefix = '3ffe:220:1:1::/64'

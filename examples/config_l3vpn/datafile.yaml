@@ -9,9 +9,11 @@
 PORT_CHANNEL_STATE: present
 STATIC_ROUTE_STATE: present
 L3VPN_STATE: present
+SRV6_STATE: present
 
 extends:
   - datafile_port_channel.yaml
   - datafile_static_route.yaml
   - datafile_l3vpn_1.yaml
   - datafile_l3vpn_2.yaml
+  - datafile_srv6.yaml

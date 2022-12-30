@@ -96,6 +96,9 @@ class Srv6:
 
                 with configurations.submode_context(attributes.format('segment-routing {sr_proto}', force=True)):
 
+                    if attributes.value('encap_source'):
+                        configurations.append_line(attributes.format('encapsulation source-address {encap_source}'))
+
                     # LocatorAttributes
                     for sub, attributes2 in attributes.mapping_values('locator_attr', sort=True, keys=self.locator_attr):
                         configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
