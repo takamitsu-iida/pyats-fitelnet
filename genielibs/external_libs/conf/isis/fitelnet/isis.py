@@ -73,10 +73,7 @@ class Isis:
                         configurations.append_line(attributes.format('is-type {is_type}', transform=transform))
 
                     if attributes.value('net'):
-                        if unconfig:
-                            configurations.append_line(attributes.format('net'))
-                        else:
-                            configurations.append_line(attributes.format('net {net}'))
+                        configurations.append_line(attributes.format('net {net}'), unconfig_cmd=attributes.format('no net'))
 
                     if attributes.value('topology'):
                         transform = {
@@ -174,10 +171,10 @@ class Isis:
                 with configurations.submode_context(attributes.format('interface {interface}', force=True), cancel_empty=True):
 
                     if attributes.value('ipv4') is True:
-                        configurations.append_line(attributes.format('ip router isis {isis_tag}'))
+                        configurations.append_line(attributes.format(f'ip router isis {self.isis_tag}'))
 
                     if attributes.value('ipv6') is True:
-                        configurations.append_line(attributes.format('ipv6 router isis {isis_tag}'))
+                        configurations.append_line(attributes.format(f'ipv6 router isis {self.isis_tag}'))
 
                     if attributes.value('level_1_metric'):
                         configurations.append_line(attributes.format('isis metric {level_1_metric} level-1'))

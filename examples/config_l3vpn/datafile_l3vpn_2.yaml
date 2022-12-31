@@ -12,7 +12,8 @@ parameters:
         # override state
         # state: 'present'
 
-        apply_filter: no
+        # filter_attributesの有効・無効
+        apply_filter: true
 
         filter_attributes:
           device_attr:

@@ -12,20 +12,18 @@ parameters:
         # override state
         # state: 'present'
 
-        # attributesを定義しない場合は、記載した全てのデータが対象
-        apply_filter: no
+      # filter_attributesの有効・無効
+        apply_filter: true
 
         # 対象とするアトリビュートの定義
         filter_attributes:
           device_attr:
-            # '*' は任意の装置名
             '*':
               rd:
               import_rt:
               export_rt:
               srv6_locator:
               interface_attr:
-                # '*' は任意のインタフェース名
                 '*':
                   ipv4_address:
                   ipv6_address:

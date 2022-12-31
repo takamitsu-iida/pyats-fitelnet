@@ -24,6 +24,11 @@ class test_isis(TestCase):
 
         self.assertIs(isis.testbed, testbed)
 
+        # common settings
+        isis.log_adjacency_changes = True
+        isis.is_type = 'level-2'
+        isis.topology = 'ipv6-unicast'
+
         # interface Port-channel 1020000
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv4 = True
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv6 = True
@@ -32,10 +37,7 @@ class test_isis(TestCase):
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].affinity_name = 'blue'
 
         # router isis core
-        isis.device_attr[dev1.name].log_adjacency_changes = True
-        isis.device_attr[dev1.name].is_type = 'level-2'
         isis.device_attr[dev1.name].net = '49.0000.2201.0001.00'
-        isis.device_attr[dev1.name].topology = 'ipv6-unicast'
 
         isis.device_attr[dev1.name].locator_attr['prefix1'].algorithm = 128
         isis.device_attr[dev1.name].locator_attr['prefix2'].algorithm = 129
@@ -75,6 +77,11 @@ class test_isis(TestCase):
 
         isis = Isis('core')
 
+        # common settings
+        isis.log_adjacency_changes = True
+        isis.is_type = 'level-2'
+        isis.topology = 'ipv6-unicast'
+
         # interface Port-channel 1020000
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv4 = True
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv6 = True
@@ -83,10 +90,8 @@ class test_isis(TestCase):
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].affinity_name = 'blue'
 
         # router isis core
-        isis.device_attr[dev1.name].log_adjacency_changes = True
         isis.device_attr[dev1.name].is_type = 'level-2'
         isis.device_attr[dev1.name].net = '49.0000.2201.0001.00'
-        isis.device_attr[dev1.name].topology = 'ipv6-unicast'
 
         isis.device_attr[dev1.name].locator_attr['prefix1'].algorithm = 128
         isis.device_attr[dev1.name].locator_attr['prefix2'].algorithm = 129

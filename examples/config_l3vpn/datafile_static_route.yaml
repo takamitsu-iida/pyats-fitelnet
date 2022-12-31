@@ -7,8 +7,8 @@ parameters:
     # present or absent
     state: 'present'
 
-    # attributesを定義しない場合は、記載した全てのデータが対象
-    apply_filter: no
+    # filter_attributesの有効・無効
+    apply_filter: true
 
     # 対象とするアトリビュートの定義
     filter_attributes:
@@ -80,9 +80,10 @@ parameters:
           'default':
             address_family_attr:
               ipv4:
-                route_ttr:
+                route_attr:
                   '0.0.0.0 0.0.0.0':
                     next_hop_attr: 192.168.10.254
+
           '1':
             address_family_attr:
               ipv4:

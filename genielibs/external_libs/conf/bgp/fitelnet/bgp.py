@@ -31,7 +31,7 @@ class Bgp:
                         configurations.append_line(attributes.format('log-neighbor-changes'))
 
                     if attributes.value('no_default_ipv4_unicast') is True:
-                        configurations.append_line(attributes.format('no bgp default ipv4-unicast'), unconfig_cmd = attributes.format('bgp default ipv4-unicast'))
+                        configurations.append_line(attributes.format('no bgp default ipv4-unicast'), unconfig_cmd=attributes.format('bgp default ipv4-unicast'))
 
                     # neighbor
                     for sub, attributes2 in attributes.mapping_values('neighbor_attr', sort=True, keys=self.neighbor_attr):
