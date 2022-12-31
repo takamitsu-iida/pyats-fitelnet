@@ -1,0 +1,91 @@
+---
+
+parameters:
+
+  bgp_params:
+
+    # present or absent
+    state: 'present'
+
+    # filter_attributesの有効・無効
+    apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        '*':
+          router_id:
+          log_neighbor_changes:
+          no_default_ipv4_unicast:
+
+          neighbor_attr:
+            '*':
+              remote_as:
+              update_source:
+              route_refresh:
+
+          af_attr:
+            '*':
+              segment_routing:
+
+              neighbor_attr:
+                '*':
+                  activate:
+                  send_community:
+                  extended_nexthop_encoding:
+
+
+    # 共通設定
+    asn: 65000
+    log_neighbor_changes: true
+    no_default_ipv4_unicast: true
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-pe1:
+        router_id: 201.0.0.1
+        neighbor_attr:
+          '3ffe:220:1::1':
+            remote_as: 65000
+            update_source: 'Loopback 1'
+
+        af_attr:
+          vpnv4:
+            neighbor_attr:
+              '3ffe:220:1::1':
+                activate: true
+                extended_nexthop_encoding: true
+                send_community: both
+                segment_routing: true
+
+          vpnv6:
+            neighbor_attr:
+              '3ffe:220:1::1':
+                activate: true
+                send_community: both
+                segment_routing: true
+
+      f220-pe2:
+        router_id: 220.0.0.1
+        neighbor_attr:
+          '3ffe:201:1::1':
+            remote_as: 65000
+            update_source: 'Loopback 1'
+            route_refresh: true
+
+        af_attr:
+          vpnv4:
+            neighbor_attr:
+              '3ffe:201:1::1':
+                activate: true
+                extended_nexthop_encoding: true
+                send_community: both
+                segment_routing: true
+
+          vpnv6:
+            neighbor_attr:
+              '3ffe:201:1::1':
+                activate: true
+                send_community: both
+                segment_routing: true

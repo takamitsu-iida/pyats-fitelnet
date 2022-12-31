@@ -75,76 +75,89 @@ class Srv6(DeviceFeature):
         def interface_attr(self):
             return SubAttributesDict(self.InterfaceAttributes, parent=self)
 
-
         # =============================================
-        # Locator attributes
+        # SegmentRouting attributes
         # =============================================
-        class LocatorAttributes(KeyedSubAttributes):
+        class SegmentRoutingAttributes(KeyedSubAttributes):
             def __init__(self, parent, key):
-                self.locator_name = key
-                super().__init__(parent)
-
-        locator_attr = managedattribute(name='locator_attr', read_only=True, doc=LocatorAttributes.__doc__)
-
-        @locator_attr.initter
-        def locator_attr(self):
-            return SubAttributesDict(self.LocatorAttributes, parent=self)
-
-        # =============================================
-        # Local SID attributes
-        # =============================================
-        class LocalSidAttributes(KeyedSubAttributes):
-            def __init__(self, parent, key):
-                self.sid_name = key
-                super().__init__(parent)
-
-        local_sid_attr = managedattribute(name='local_sid_attr', read_only=True, doc=LocalSidAttributes.__doc__)
-
-        @local_sid_attr.initter
-        def local_sid_attr(self):
-            return SubAttributesDict(self.LocalSidAttributes, parent=self)
-
-        # =============================================
-        # Policy attributes
-        # =============================================
-        class PolicyAttributes(KeyedSubAttributes):
-            def __init__(self, parent, key):
-                self.policy_name = key
-                super().__init__(parent)
-
-        policy_attr = managedattribute(name='policy_attr', read_only=True, doc=PolicyAttributes.__doc__)
-
-        @policy_attr.initter
-        def policy_attr(self):
-            return SubAttributesDict(self.PolicyAttributes, parent=self)
-
-        # =============================================
-        # SegmentList attributes
-        # =============================================
-        class SegmentListAttributes(KeyedSubAttributes):
-            def __init__(self, parent, key):
-                self.segment_list_name = key
+                self.sr_proto = key
                 super().__init__(parent)
 
             # =============================================
-            # Index attributes
+            # Locator attributes
             # =============================================
-            class IndexAttributes(KeyedSubAttributes):
+            class LocatorAttributes(KeyedSubAttributes):
                 def __init__(self, parent, key):
-                    self.index = key
+                    self.locator_name = key
                     super().__init__(parent)
 
-            index_attr = managedattribute(name='index_attr', read_only=True, doc=IndexAttributes.__doc__)
+            locator_attr = managedattribute(name='locator_attr', read_only=True, doc=LocatorAttributes.__doc__)
 
-            @index_attr.initter
-            def index_attr(self):
-                return SubAttributesDict(self.IndexAttributes, parent=self)
+            @locator_attr.initter
+            def locator_attr(self):
+                return SubAttributesDict(self.LocatorAttributes, parent=self)
 
-        segment_list_attr = managedattribute(name='segment_list_attr', read_only=True, doc=SegmentListAttributes.__doc__)
+            # =============================================
+            # Local SID attributes
+            # =============================================
+            class LocalSidAttributes(KeyedSubAttributes):
+                def __init__(self, parent, key):
+                    self.sid_name = key
+                    super().__init__(parent)
 
-        @segment_list_attr.initter
-        def segment_list_attr(self):
-            return SubAttributesDict(self.SegmentListAttributes, parent=self)
+            local_sid_attr = managedattribute(name='local_sid_attr', read_only=True, doc=LocalSidAttributes.__doc__)
+
+            @local_sid_attr.initter
+            def local_sid_attr(self):
+                return SubAttributesDict(self.LocalSidAttributes, parent=self)
+
+            # =============================================
+            # Policy attributes
+            # =============================================
+            class PolicyAttributes(KeyedSubAttributes):
+                def __init__(self, parent, key):
+                    self.policy_name = key
+                    super().__init__(parent)
+
+            policy_attr = managedattribute(name='policy_attr', read_only=True, doc=PolicyAttributes.__doc__)
+
+            @policy_attr.initter
+            def policy_attr(self):
+                return SubAttributesDict(self.PolicyAttributes, parent=self)
+
+            # =============================================
+            # SegmentList attributes
+            # =============================================
+            class SegmentListAttributes(KeyedSubAttributes):
+                def __init__(self, parent, key):
+                    self.segment_list_name = key
+                    super().__init__(parent)
+
+                # =============================================
+                # Index attributes
+                # =============================================
+                class IndexAttributes(KeyedSubAttributes):
+                    def __init__(self, parent, key):
+                        self.index = key
+                        super().__init__(parent)
+
+                index_attr = managedattribute(name='index_attr', read_only=True, doc=IndexAttributes.__doc__)
+
+                @index_attr.initter
+                def index_attr(self):
+                    return SubAttributesDict(self.IndexAttributes, parent=self)
+
+            segment_list_attr = managedattribute(name='segment_list_attr', read_only=True, doc=SegmentListAttributes.__doc__)
+
+            @segment_list_attr.initter
+            def segment_list_attr(self):
+                return SubAttributesDict(self.SegmentListAttributes, parent=self)
+
+        sr_attr = managedattribute(name='sr_attr', read_only=True, doc=SegmentRoutingAttributes.__doc__)
+
+        @sr_attr.initter
+        def sr_attr(self):
+            return SubAttributesDict(self.SegmentRoutingAttributes, parent=self)
 
     device_attr = managedattribute(name='device_attr', read_only=True, doc=DeviceAttributes.__doc__)
 

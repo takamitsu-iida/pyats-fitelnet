@@ -1,6 +1,7 @@
 
 import logging
 
+from external_libs.conf.bgp import Bgp
 from external_libs.conf.srv6 import Srv6
 from external_libs.conf.portchannel import Portchannel
 from external_libs.conf.static_routing import StaticRouting
@@ -12,32 +13,108 @@ logger = logging.getLogger(__name__)
 SUPPORTED_OS = ['fitelnet']
 
 
-def build_isis_config(testbed: object, isis_params: dict, state: str) -> dict:
+def build_bgp_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
 
     # filter attribute
-    apply_filter = isis_params.get('apply_filter', False)
-    attributes = isis_params.get('filter_attributes')
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
 
-    isis_tag = isis_params.get('isis_tag')
+    asn = params.get('asn')
+    if asn is None:
+        raise ValueError('BGP AS Number is not found')
+
+    bgp = Bgp(asn)
+
+    if params.get('log_neighbor_changes') is not None:
+        bgp.log_neighbor_changes = params.get('log_neighbor_changes')
+
+    if params.get('no_default_ipv4_unicast') is not None:
+        bgp.no_default_ipv4_unicast = params.get('no_default_ipv4_unicast')
+
+    devices = []
+    for device_name, device_data in params.get('device_attr', {}).items():
+        dev = testbed.devices.get(device_name)
+        if dev is None or dev.os not in SUPPORTED_OS:
+            continue
+        devices.append(dev)
+
+        if device_data.get('log_neighbor_changes') is not None:
+            bgp.device_attr[device_name].log_neighbor_changes = device_data.get('log_neighbor_changes')
+
+        if device_data.get('no_default_ipv4_unicast') is not None:
+            bgp.device_attr[device_name].no_default_ipv4_unicast = device_data.get('no_default_ipv4_unicast')
+
+        if device_data.get('router_id') is not None:
+            bgp.device_attr[device_name].router_id = device_data.get('router_id')
+
+        for neighbor_name, neighbor_data in device_data.get('neighbor_attr', {}).items():
+            nbr = bgp.device_attr[device_name].neighbor_attr[neighbor_name]
+            if neighbor_data.get('remote_as') is not None:
+                nbr.remote_as = neighbor_data.get('remote_as')
+            if neighbor_data.get('update_source') is not None:
+                nbr.update_source = neighbor_data.get('update_source')
+
+        for af_name, af_data in device_data.get('af_attr', {}).items():
+            for neighbor_name, neighbor_data in af_data.get('neighbor_attr', {}).items():
+                nbr = bgp.device_attr[device_name].af_attr[af_name].neighbor_attr[neighbor_name]
+                if neighbor_data.get('activate') is not None:
+                    nbr.activate = neighbor_data.get('activate')
+                if neighbor_data.get('extended_nexthop_encoding') is not None:
+                    nbr.extended_nexthop_encoding = neighbor_data.get('extended_nexthop_encoding')
+                if neighbor_data.get('send_community') is not None:
+                    nbr.send_community = neighbor_data.get('send_community')
+                if neighbor_data.get('segment_routing') is not None:
+                    nbr.segment_routing = neighbor_data.get('segment_routing')
+
+    cfgs = {}
+    if state == 'present':
+        if apply_filter and attributes is not None:
+            cfgs = bgp.build_config(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = bgp.build_config(devices=devices, apply=False)
+    elif state == 'absent':
+        if apply_filter and attributes is not None:
+            cfgs = bgp.build_unconfig(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = bgp.build_unconfig(devices=devices, apply=False)
+
+    # convert to str
+    configs = {}
+    for name, cfg in cfgs.items():
+        configs[name] = str(cfg)
+
+    return configs
+
+
+def build_isis_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
+
+    # filter attribute
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
+
+    isis_tag = params.get('isis_tag')
     if isis_tag is None:
         raise ValueError('required parameter isis_tag not found')
 
     isis = Isis(isis_tag)
 
-    log_adjacency_changes = isis_params.get('log_adjacency_changes')
-    if log_adjacency_changes is not None:
-        isis.log_adjacency_changes = log_adjacency_changes
+    if params.get('log_adjacency_changes') is not None:
+        isis.log_adjacency_changes = params.get('log_adjacency_changes')
 
-    is_type = isis_params.get('is_type')
-    if is_type is not None:
-        isis.is_type = is_type
+    if params.get('is_type') is not None:
+        isis.is_type = params.get('is_type')
 
-    topology = isis_params.get('topology')
-    if topology is not None:
-        isis.topology = topology
+    if params.get('topology') is not None:
+        isis.topology = params.get('topology')
 
     devices = []
-    for device_name, device_data in isis_params.get('device_attr', {}).items():
+    for device_name, device_data in params.get('device_attr', {}).items():
         dev = testbed.devices.get(device_name)
         if dev is None or dev.os not in SUPPORTED_OS:
             continue
@@ -105,16 +182,34 @@ def build_isis_config(testbed: object, isis_params: dict, state: str) -> dict:
 
 
 
-def build_srv6_config(testbed: object, srv6_params: dict, state: str) -> dict:
+def build_srv6_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
 
     # filter attribute
-    apply_filter = srv6_params.get('apply_filter', False)
-    attributes = srv6_params.get('filter_attributes')
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
 
+    # create Srv6 object
     srv6 = Srv6()
 
+    # default settings
+
+    if params.get('mtu') is not None:
+        srv6.mtu = params.get('mtu')
+
+    if params.get('mss') is not None:
+        srv6.mss = params.get('mss')
+
+    if params.get('fragment') is not None:
+        srv6.fragment = params.get('fragment')
+
+    if params.get('propagate_tos') is not None:
+        srv6.propagate_tos = params.get('propagate_tos')
+
     devices = []
-    for device_name, device_data in srv6_params.get('device_attr', {}).items():
+    for device_name, device_data in params.get('device_attr', {}).items():
         dev = testbed.devices.get(device_name)
         if dev is None or dev.os not in SUPPORTED_OS:
             continue
@@ -124,35 +219,47 @@ def build_srv6_config(testbed: object, srv6_params: dict, state: str) -> dict:
             if intf_data.get('tunnel_mode') is not None:
                 srv6.device_attr[device_name].interface_attr[intf_name].tunnel_mode = intf_data.get('tunnel_mode')
 
-        for sr_name, sr_data in device_data.get('sr_attr', {}).items():
-            if sr_name != 'srv6':
-                continue
+        # override default setting for this device
 
-            if sr_data.get('encap_source') is not None:
-                srv6.device_attr[device_name].sr_attr[sr_name].encap_source = sr_data.get('encap_source')
+        if device_data.get('mtu') is not None:
+            srv6.mtu = device_data.get('mtu')
 
-            for locator_name, locator_data in sr_data.get('locator_attr', {}).items():
-                if locator_data.get('locator_prefix') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].locator_attr[locator_name].locator_prefix = locator_data.get('locator_prefix')
+        if device_data.get('mss') is not None:
+            srv6.mss = device_data.get('mss')
 
-            for local_sid_name, local_sid_data in sr_data.get('local_sid_attr', {}).items():
-                if local_sid_data.get('action') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].local_sid_attr[local_sid_name].action = local_sid_data.get('action')
-                if local_sid_data.get('vrf') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].local_sid_attr[local_sid_name].vrf = local_sid_data.get('vrf')
+        if device_data.get('fragment') is not None:
+            srv6.fragment = device_data.get('fragment')
 
-            for policy_name, policy_data in sr_data.get('policy_attr', {}).items():
-                if policy_data.get('color') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].policy_attr[policy_name].color = policy_data.get('color')
-                if policy_data.get('end_point') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].policy_attr[policy_name].end_point = policy_data.get('end_point')
-                if policy_data.get('explicit_segment_list') is not None:
-                    srv6.device_attr[device_name].sr_attr[sr_name].policy_attr[policy_name].explicit_segment_list = policy_data.get('explicit_segment_list')
+        if device_data.get('propagate_tos') is not None:
+            srv6.propagate_tos = device_data.get('propagate_tos')
 
-            for segment_list_name, segment_list_data in sr_data.get('segment_list_attr', {}).items():
-                for index_name, index_data in segment_list_data.get('index_attr', {}).items():
-                    if index_data.get('index_sid') is not None:
-                        srv6.device_attr[device_name].sr_attr[sr_name].segment_list_attr[segment_list_name].index_attr[index_name].index_sid = index_data.get('index_sid')
+        # device specific attribute
+
+        if device_data.get('encap_source') is not None:
+            srv6.device_attr[device_name].encap_source = device_data.get('encap_source')
+
+        for locator_name, locator_data in device_data.get('locator_attr', {}).items():
+            if locator_data.get('locator_prefix') is not None:
+                srv6.device_attr[device_name].locator_attr[locator_name].locator_prefix = locator_data.get('locator_prefix')
+
+        for local_sid_name, local_sid_data in device_data.get('local_sid_attr', {}).items():
+            if local_sid_data.get('action') is not None:
+                srv6.device_attr[device_name].local_sid_attr[local_sid_name].action = local_sid_data.get('action')
+            if local_sid_data.get('vrf') is not None:
+                srv6.device_attr[device_name].local_sid_attr[local_sid_name].vrf = local_sid_data.get('vrf')
+
+        for policy_name, policy_data in device_data.get('policy_attr', {}).items():
+            if policy_data.get('color') is not None:
+                srv6.device_attr[device_name].policy_attr[policy_name].color = policy_data.get('color')
+            if policy_data.get('end_point') is not None:
+                srv6.device_attr[device_name].policy_attr[policy_name].end_point = policy_data.get('end_point')
+            if policy_data.get('explicit_segment_list') is not None:
+                srv6.device_attr[device_name].policy_attr[policy_name].explicit_segment_list = policy_data.get('explicit_segment_list')
+
+        for segment_list_name, segment_list_data in device_data.get('segment_list_attr', {}).items():
+            for index_name, index_data in segment_list_data.get('index_attr', {}).items():
+                if index_data.get('index_sid') is not None:
+                    srv6.device_attr[device_name].segment_list_attr[segment_list_name].index_attr[index_name].index_sid = index_data.get('index_sid')
 
     cfgs = {}
     if state == 'present':
@@ -175,16 +282,19 @@ def build_srv6_config(testbed: object, srv6_params: dict, state: str) -> dict:
 
 
 
-def build_port_channel_config(testbed: object, port_channel_params: dict, state: str) -> dict:
+def build_port_channel_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
 
     # filter attribute
-    apply_filter = port_channel_params.get('apply_filter', False)
-    attributes = port_channel_params.get('filter_attributes')
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
 
     po = Portchannel()
 
     devices = []
-    for device_name, device_data in port_channel_params.get('device_attr', {}).items():
+    for device_name, device_data in params.get('device_attr', {}).items():
         dev = testbed.devices.get(device_name)
         if dev is None or dev.os not in SUPPORTED_OS:
             continue
@@ -219,16 +329,19 @@ def build_port_channel_config(testbed: object, port_channel_params: dict, state:
     return configs
 
 
-def build_static_route_config(testbed: object, static_route_params: dict, state: str) -> dict:
+def build_static_route_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
 
     # filter attribute
-    apply_filter = static_route_params.get('apply_filter', False)
-    attributes = static_route_params.get('filter_attributes')
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
 
     static_routing = StaticRouting()
 
     devices = []
-    for device_name, device_data in static_route_params.get('device_attr', {}).items():
+    for device_name, device_data in params.get('device_attr', {}).items():
         dev = testbed.devices.get(device_name)
         if dev is None or dev.os not in SUPPORTED_OS:
             continue
@@ -272,13 +385,19 @@ def build_static_route_config(testbed: object, static_route_params: dict, state:
 
 
 
-def build_l3vpn_config(testbed: object, l3vpn_params: dict, state: str) -> dict:
+def build_l3vpn_config(testbed: object, params: dict) -> dict:
+
+    # state
+    default_state = params.get('state', 'present')
 
     configs = {}
 
-    bgp_asn = l3vpn_params.get('bgp_asn')
+    bgp_asn = params.get('bgp_asn')
 
-    for vrf_name, vrf_data in l3vpn_params.get('vrf', {}).items():
+    for vrf_name, vrf_data in params.get('vrf', {}).items():
+
+        # state
+        state = vrf_data.get('state', default_state)
 
         # filter attribute
         apply_filter = vrf_data.get('apply_filter', False)

@@ -10,6 +10,7 @@ from pyats.log.utils import banner
 from genie.utils import Dq
 from genie.conf.base import Device
 
+from test_libs import build_bgp_config
 from test_libs import build_srv6_config
 from test_libs import build_static_route_config
 from test_libs import build_l3vpn_config
@@ -19,13 +20,18 @@ from test_libs import build_isis_config
 logger = logging.getLogger(__name__)
 
 # see datafile.yaml
-PORT_CHANNEL_STATE = None
-STATIC_ROUTE_STATE = None
-L3VPN_STATE = None
-SRV6_STATE = None
-ISIS_STATE = None
-
 parameters = {}
+
+
+# for debug purpose
+def print_config(name: str, configs: dict):
+    logger.info(banner(f'{"="*10} {name} config {"="*10}'))
+    if configs is None:
+        print('not found')
+    else:
+        pprint(configs, width=160)
+    print('')
+
 
 ###################################################################
 ###                  COMMON SETUP SECTION                       ###
@@ -34,22 +40,16 @@ parameters = {}
 class CommonSetup(aetest.CommonSetup):
 
     @aetest.subsection
-    def assert_datafile(self, testbed, port_channel_params, l3vpn_params, static_route_params):
+    def assert_datafile(self, testbed, description):
         """
         datafile.yamlが正しくロードされているか確認します
 
         Args:
             testbed (genie.libs.conf.testbed.Testbed): スクリプト実行時に渡されるテストベッド
-            portchannel_params (dict): see datafile.yaml
-            l3vpn_params (dict): see datafile.yaml
-            static_route_params (dict): see datafile.yaml
+            description (str): see datafile.yaml
         """
         assert testbed is not None
-        assert port_channel_params is not None
-        assert l3vpn_params is not None
-        assert static_route_params is not None
-
-        pprint(l3vpn_params)
+        assert description is not None
 
 
 ###################################################################
@@ -65,64 +65,93 @@ class testcase_class(aetest.Testcase):
         if parameters.get('check_mode') is True:
             self.check_mode = True
 
-
     @aetest.test
-    def build_config(self, testbed):
+    def build_port_channel_config(self, testbed):
         """
         """
         port_channel_params = parameters.get('port_channel_params')
-        if port_channel_params is not None:
-            self.port_channel_configs = build_port_channel_config(testbed=testbed, port_channel_params=port_channel_params, state=PORT_CHANNEL_STATE)
-        else:
+        if port_channel_params is None:
             self.port_channel_configs = None
-
-        static_route_params = parameters.get('static_route_params')
-        if static_route_params is not None:
-            self.static_route_configs = build_static_route_config(testbed=testbed, static_route_params=static_route_params, state=STATIC_ROUTE_STATE)
+            self.skipped('port_channel_params not found')
         else:
-            self.static_route_configs = None
-
-        l3vpn_params = parameters.get('l3vpn_params')
-        if l3vpn_params is not None:
-            self.l3vpn_configs = build_l3vpn_config(testbed=testbed, l3vpn_params=l3vpn_params, state=L3VPN_STATE)
-        else:
-            self.l3vpn_configs = None
-
-        srv6_params = parameters.get('srv6_params')
-        if srv6_params is not None:
-            self.srv6_configs = build_srv6_config(testbed=testbed, srv6_params=srv6_params, state=SRV6_STATE)
-        else:
-            self.srv6_configs = None
-
-        isis_params = parameters.get('isis_params')
-        if isis_params is not None:
-            self.isis_configs = build_isis_config(testbed=testbed, isis_params=isis_params, state=ISIS_STATE)
-        else:
-            self.isis_configs = None
-
-        self.passed()
+            self.port_channel_configs = build_port_channel_config(testbed=testbed, params=port_channel_params)
+            print_config('port channel', self.port_channel_configs)
+            self.passed()
 
 
     @aetest.test
-    def print_config(self):
+    def build_static_route_config(self, testbed):
         """
         """
+        static_route_params = parameters.get('static_route_params')
+        if static_route_params is None:
+            self.static_route_configs = None
+            self.skipped('static_route_params not found')
+        else:
+            self.static_route_configs = build_static_route_config(testbed=testbed, params=static_route_params)
+            print_config('static route', self.static_route_configs)
+            self.passed()
 
-        def print_config(name: str, configs: dict):
-            logger.info(banner(f'{"="*10} {name} config {"="*10}'))
-            if configs is None:
-                print('not found')
-            else:
-                pprint(configs, width=160)
-            print('')
 
-        print_config('port channel', self.port_channel_configs)
-        print_config('static route', self.static_route_configs)
-        print_config('l3vpn', self.l3vpn_configs)
-        print_config('srv6', self.srv6_configs)
-        print_config('isis', self.isis_configs)
+    @aetest.test
+    def build_srv6_config(self, testbed):
+        """
+        """
+        srv6_params = parameters.get('srv6_params')
+        if srv6_params is None:
+            self.srv6_configs = None
+            self.skipped('srv6_params not found')
+        else:
+            self.srv6_configs = build_srv6_config(testbed=testbed, params=srv6_params)
+            print_config('srv6', self.srv6_configs)
+            self.passed()
 
-        self.passed()
+
+    @aetest.test
+    def build_isis_config(self, testbed):
+        """
+        """
+        isis_params = parameters.get('isis_params')
+        if isis_params is None:
+            self.isis_configs = None
+            self.skipped('isis_params not found')
+        else:
+            self.isis_configs = build_isis_config(testbed=testbed, params=isis_params)
+            print_config('isis', self.isis_configs)
+            self.passed()
+
+
+    @aetest.test
+    def build_bgp_config(self, testbed):
+        """
+        """
+        bgp_params = parameters.get('bgp_params')
+        if bgp_params is None:
+            self.bgp_configs = None
+            self.skipped('bgp_params not found')
+        else:
+            self.bgp_configs = build_bgp_config(testbed=testbed, params=bgp_params)
+            print_config('bgp', self.bgp_configs)
+            self.passed()
+
+
+
+    @aetest.test
+    def build_l3vpn_config(self, testbed):
+        """
+        """
+        l3vpn_params = parameters.get('l3vpn_params')
+        if l3vpn_params is None:
+            self.l3vpn_configs = None
+            self.skipped('l3vpn_params not found')
+        else:
+            self.l3vpn_configs = build_l3vpn_config(testbed=testbed, params=l3vpn_params)
+            print_config('l3vpn', self.l3vpn_configs)
+            self.passed()
+
+
+
+
 
 
     @aetest.test
@@ -131,8 +160,6 @@ class testcase_class(aetest.Testcase):
         """
         if self.check_mode:
             self.skipped()
-
-        pprint(self.l3vpn_configs, width=160)
 
         self.passed()
 

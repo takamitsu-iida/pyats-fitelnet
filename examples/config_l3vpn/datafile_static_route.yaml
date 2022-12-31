@@ -4,6 +4,9 @@ parameters:
 
   static_route_params:
 
+    # present or absent
+    state: 'present'
+
     # attributesを定義しない場合は、記載した全てのデータが対象
     apply_filter: no
 
@@ -143,6 +146,7 @@ parameters:
                 route_attr:
                   '0.0.0.0 0.0.0.0':
                     next_hop_attr: 192.168.10.254
+
           '1':
             address_family_attr:
               ipv4:

@@ -1,0 +1,22 @@
+---
+
+parameters:
+
+  l3vpn_params:
+
+    # present or absent
+    state: 'present'
+
+    # iBGP AS Number
+    # router bgp <asn>
+    #   address-family ipv4 vrf 1
+    #   address-family ipv6 vrf 1
+    bgp_asn: 65000
+
+
+extends:
+  # define vrf 1
+  - datafile_l3vpn_1.yaml
+
+  # define vrf 2
+  - datafile_l3vpn_2.yaml

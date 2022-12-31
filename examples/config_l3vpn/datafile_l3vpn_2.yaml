@@ -9,6 +9,27 @@ parameters:
       # ip vrf 2
       '2':
 
+        # override state
+        # state: 'present'
+
+        apply_filter: no
+
+        filter_attributes:
+          device_attr:
+            '*':
+              rd:
+              import_rt:
+              export_rt:
+              srv6_locator:
+              interface_attr:
+                '*':
+                  ipv4_address:
+                  ipv6_address:
+              bgp_attr:
+                af_attr:
+                  '*':
+                    'redistribute':
+
         # route distinguisher
         rd: '1:2'
 
@@ -45,21 +66,3 @@ parameters:
                   redistribute: [connected]
                 'ipv6 vrf':
                   redistribute: [connected]
-
-        # attributesを定義しない場合は、記載した全てのデータが対象
-        apply_filter: no
-        filter_attributes:
-          device_attr:
-            '*':
-              rd:
-              import_rt:
-              export_rt:
-              srv6_locator:
-              interface_attr:
-                '*':
-                  ipv4_address:
-                  ipv6_address:
-              bgp_attr:
-                af_attr:
-                  '*':
-                    'redistribute':

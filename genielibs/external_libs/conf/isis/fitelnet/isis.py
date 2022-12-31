@@ -159,8 +159,6 @@ class Isis:
 
                 return str(configurations)
 
-
-
         #
         # +- DeviceAttributes
         #     +- InterfaceAttributes

@@ -58,6 +58,9 @@ class Bgp(DeviceFeature):
                 self.neighbor = key
                 super().__init__(parent)
 
+
+
+
         neighbor_attr = managedattribute(name='neighbor_attr', read_only=True, doc=NeighborAttributes.__doc__)
 
         @neighbor_attr.initter
@@ -115,20 +118,29 @@ class Bgp(DeviceFeature):
     # no bgp default ipv4-unicast
     no_default_ipv4_unicast = managedattribute(name='no_default_ipv4_unicast', default=None, type=(None, managedattribute.test_istype(bool)), doc='no bgp default ipv4-unicast')
 
-    # neighbor 3ffe:201:1::1 remote-as 65000
+    # neighbor
     remote_as = managedattribute(name='remote_as', default=None, type=(None, managedattribute.test_istype((int, str))), doc='neighbor <neighbor> remote-as <asn>')
 
-    # neighbor 3ffe:201:1::1 update-source loopback 1
+    # neighbor
     update_source =  managedattribute(name='update_source', default=None, type=(None, managedattribute.test_istype(str)), doc='neighbor <neighbor> update-source <intf name>')
 
-    # segment-routing srv6
-    segment_routing =  managedattribute(name='segment_routing', default=None, type=(None, managedattribute.test_istype(bool)), doc='segment-routing srv6')
+    # neighbor
+    activate = managedattribute(name='capability', default=None, type=(None, managedattribute.test_istype(bool)), doc='activate neighbor')
 
+    # neighbor
+    route_refresh = managedattribute(name='route_refresh', default=None, type=(None, managedattribute.test_istype(bool)), doc='capability route-refresh')
 
+    # af
+    segment_routing = managedattribute(name='segment_routing', default=None, type=(None, managedattribute.test_istype(bool)), doc='segment-routing srv6')
 
+    # af(ipv4 and ipv6)
+    graceful_restart = managedattribute(name='graceful_restart', default=None, type=(None, managedattribute.test_istype(bool)), doc='capability graceful-restart')
 
+    # af(vpnv4)
+    extended_nexthop_encoding = managedattribute(name='extended_nexthop_encoding', default=None, type=(None, managedattribute.test_istype(bool)), doc='capability extended-nexthop-encoding')
 
-
+    # af(vpnv4 and vpnv6)
+    send_community = managedattribute(name='send_community', default=None, type=(None, managedattribute.test_istype(str)), doc='Community attr sent in update message')
 
     # ==========================================================================
     #                       BUILD_CONFIG & BUILD_UNCONFIG
