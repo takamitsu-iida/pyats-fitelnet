@@ -6,9 +6,11 @@
 #
 
 parameters:
-  description: Minimum config
+  description: Base config
 
 
 extends:
 
   - datafile_base.yaml
+
+  - datafile_port_channel.yaml
