@@ -24,7 +24,7 @@ class Bgp:
                     configurations.submode_unconfig()
                 else:
 
-                    if attributes.value('router_id'):
+                    if attributes.value('router_id') is not None:
                         configurations.append_line(attributes.format('bgp router-id {router_id}'))
 
                     if attributes.value('log_neighbor_changes') is True:
@@ -64,11 +64,11 @@ class Bgp:
                 else:
 
                     # neighbor 3ffe:201:1::1 remote-as 65000
-                    if attributes.value('remote_as'):
+                    if attributes.value('remote_as') is not None:
                         configurations.append_line(attributes.format(f'neighbor {self.neighbor} remote-as {attributes.value("remote_as")}'))
 
                     # neighbor 3ffe:201:1::1 update-source loopback 1
-                    if attributes.value('update_source'):
+                    if attributes.value('update_source') is not None:
                         configurations.append_line(attributes.format(f'neighbor {self.neighbor} update-source {attributes.value("update_source")}'))
 
                     # neighbor 3ffe:201:1::1 capability route-refresh enable
@@ -135,7 +135,7 @@ class Bgp:
                             configurations.append_line(attributes.format(f'neighbor {self.neighbor} capability graceful-restart'))
 
                         # neighbor 3ffe:201:1::1 send-community both
-                        if attributes.value('send_community'):
+                        if attributes.value('send_community') is not None:
                             configurations.append_line(attributes.format(f'neighbor {self.neighbor} send-community {attributes.value("send_community")}'))
 
                     return str(configurations)

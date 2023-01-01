@@ -65,17 +65,17 @@ class Isis:
                     if attributes.value('log_adjacency_changes') is True:
                         configurations.append_line(attributes.format('log-adjacency-changes'))
 
-                    if attributes.value('is_type'):
+                    if attributes.value('is_type') is not None:
                         transform = {
                             _Isis.IsType.level_1: _Isis.IsType.level_1.value,
                             _Isis.IsType.level_2: _Isis.IsType.level_2.value
                         }
                         configurations.append_line(attributes.format('is-type {is_type}', transform=transform))
 
-                    if attributes.value('net'):
+                    if attributes.value('net') is not None:
                         configurations.append_line(attributes.format('net {net}'), unconfig_cmd=attributes.format('no net'))
 
-                    if attributes.value('topology'):
+                    if attributes.value('topology') is not None:
                         transform = {
                             _Isis.Topology.ipv6_unicast: _Isis.Topology.ipv6_unicast.value
                         }
@@ -114,7 +114,7 @@ class Isis:
                 if unconfig:
                     configurations.append_line(attributes.format('srv6 locator {locator}'))
                 else:
-                    if attributes.value('algorithm'):
+                    if attributes.value('algorithm') is not None:
                         configurations.append_line(attributes.format('srv6 locator {locator} algorithm {algorithm}'))
                     else:
                         configurations.append_line(attributes.format('srv6 locator {locator}'))
@@ -151,7 +151,7 @@ class Isis:
                             affinity_mode = affinity_mode.value
                             configurations.append_line(attributes.format(f'affinity {affinity_mode} {affinity_names}'))
 
-                        if attributes.value('priority'):
+                        if attributes.value('priority') is not None:
                             configurations.append_line(attributes.format('priority {priority}'))
 
                 return str(configurations)
@@ -176,13 +176,13 @@ class Isis:
                     if attributes.value('ipv6') is True:
                         configurations.append_line(attributes.format(f'ipv6 router isis {self.isis_tag}'))
 
-                    if attributes.value('level_1_metric'):
+                    if attributes.value('level_1_metric') is not None:
                         configurations.append_line(attributes.format('isis metric {level_1_metric} level-1'))
 
-                    if attributes.value('level_2_metric'):
+                    if attributes.value('level_2_metric') is not None:
                         configurations.append_line(attributes.format('isis metric {level_2_metric} level-2'))
 
-                    if attributes.value('affinity_name'):
+                    if attributes.value('affinity_name') is not None:
                         configurations.append_line(attributes.format('isis affinity flex-algo {affinity_name}'))
 
                 return str(configurations)

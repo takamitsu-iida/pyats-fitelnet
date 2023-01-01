@@ -23,19 +23,19 @@ class Srv6:
                     configurations.submode_unconfig()
                 else:
 
-                    if attributes.value('encap_source'):
+                    if attributes.value('encap_source') is not None:
                         configurations.append_line(attributes.format('encapsulation source-address {encap_source}'), unconfig_cmd = attributes.format('no encapsulation'))
 
-                    if attributes.value('mtu'):
+                    if attributes.value('mtu') is not None:
                         configurations.append_line(attributes.format('set mtu {mtu}'), unconfig_cmd = attributes.format('no set mtu'))
 
-                    if attributes.value('mss'):
+                    if attributes.value('mss') is not None:
                         configurations.append_line(attributes.format('set mss {mss}'), unconfig_cmd = attributes.format('no set mss'))
 
-                    if attributes.value('fragment'):
+                    if attributes.value('fragment') is not None:
                         configurations.append_line(attributes.format('fragment {fragment}'), unconfig_cmd = attributes.format('no fragment'))
 
-                    if attributes.value('propagate_tos'):
+                    if attributes.value('propagate_tos') is not None:
                         configurations.append_line(attributes.format('propagate-tos {propagate_tos}'), unconfig_cmd = attributes.format('no propagate-tos'))
 
                     # LocatorAttributes
@@ -77,9 +77,12 @@ class Srv6:
                 attributes = AttributesHelper(self, attributes)
                 configurations = CliConfigBuilder(unconfig=unconfig)
 
+                locator_name = self.locator_name
+
                 # locator prefix1 3ffe:220:1:1::/64
-                if attributes.value('locator_prefix'):
-                    configurations.append_line(attributes.format('locator {locator_name} {locator_prefix}'))
+                locator_prefix = attributes.value('locator_prefix')
+                if locator_prefix is not None:
+                    configurations.append_line(attributes.format(f'locator {locator_name} {locator_prefix}'))
 
                 return str(configurations)
 
@@ -94,13 +97,15 @@ class Srv6:
                 attributes = AttributesHelper(self, attributes)
                 configurations = CliConfigBuilder(unconfig=unconfig)
 
+                sid_name = self.sid_name
+
                 #  local-sid 3ffe:220:1:1:46:: action end.dt4 vrf 1
                 action = attributes.value('action')
                 vrf = attributes.value('vrf')
                 if action and vrf:
-                    configurations.append_line(attributes.format('local-sid {sid_name} {action} vrf {vrf}'))
+                    configurations.append_line(attributes.format(f'local-sid {sid_name} {action} vrf {vrf}'))
                 elif action:
-                    configurations.append_line(attributes.format('local-sid {sid_name} {action}'))
+                    configurations.append_line(attributes.format(f'local-sid {sid_name} {action}'))
 
                 return str(configurations)
 
@@ -124,10 +129,10 @@ class Srv6:
                     if unconfig and attributes.iswildcard:
                         configurations.submode_unconfig()
                     else:
-                        if attributes.value('color') and attributes.value('end_point'):
+                        if attributes.value('color') is not None and attributes.value('end_point') is not None:
                             configurations.append_line(attributes.format('color {color} end-point {end_point}'))
 
-                        if attributes.value('explicit_segment_list'):
+                        if attributes.value('explicit_segment_list') is not None:
                             configurations.append_line(attributes.format('explicit segment-list {explicit_segment_list}'))
 
 
@@ -171,7 +176,7 @@ class Srv6:
                     if unconfig and attributes.iswildcard:
                         configurations.append_line(attributes.format('index {index}'))
                     else:
-                        if attributes.value('index_sid'):
+                        if attributes.value('index_sid') is not None:
                             configurations.append_line(attributes.format('index {index} {index_sid}'))
 
                     return str(configurations)

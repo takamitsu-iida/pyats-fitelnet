@@ -222,7 +222,9 @@ vscodeの設定メニューからextra pathsを検索します。
 ./examples/check_interface_status/run -m
 ```
 
-> 初回起動時はPythonのバイトコンパイルが走りますので若干遅いです。
+:::note info
+初回起動時は若干遅いです。
+:::
 
 ```bash
 iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/check_interface_status/run -m
@@ -368,9 +370,12 @@ pipでインストールした外部ライブラリがvscodeで認識されな�
 
 基本的にvscodeは自動でvenvの環境を見つけてくれるのですが、グローバルのPython環境が選ばれてしまうことも発生しうることです。
 
-> 参照
-> Where the extension looks for environments
-> https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
+
+:::note info
+Where the extension looks for environments
+https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
+:::
+
 
 settings.jsonに以下を入れておくとよいかもしれません。
 

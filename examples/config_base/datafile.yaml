@@ -1,0 +1,14 @@
+---
+
+#
+# datafile
+# https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
+#
+
+parameters:
+  description: Minimum config
+
+
+extends:
+
+  - datafile_base.yaml

@@ -58,9 +58,6 @@ class Bgp(DeviceFeature):
                 self.neighbor = key
                 super().__init__(parent)
 
-
-
-
         neighbor_attr = managedattribute(name='neighbor_attr', read_only=True, doc=NeighborAttributes.__doc__)
 
         @neighbor_attr.initter

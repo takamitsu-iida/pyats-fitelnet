@@ -45,13 +45,13 @@ class Portchannel:
                 #
                 with configurations.submode_context(attributes.format('interface {interface}', force=True)):
 
-                    if attributes.value('vlan_id'):
+                    if attributes.value('vlan_id') is not None:
                         configurations.append_line(attributes.format('vlan-id {vlan_id}'))
 
-                    if attributes.value('bridge_group'):
+                    if attributes.value('bridge_group') is not None:
                         configurations.append_line(attributes.format('bridge-group {bridge_group}'))
 
-                    if attributes.value('channel_group'):
+                    if attributes.value('channel_group') is not None:
                         configurations.append_line(attributes.format('channel-group {channel_group}'))
 
                 return str(configurations)

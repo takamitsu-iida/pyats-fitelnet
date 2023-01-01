@@ -1,0 +1,137 @@
+---
+
+parameters:
+
+  base_params:
+
+    # present or absent
+    state: 'present'
+
+    # attributesを定義しない場合は、記載した全てのデータが対象
+    apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        '*':
+          required_cli:
+          hostname:
+          domain_name:
+          logging_level:
+          line_attr:
+            '*':
+              exec_timeout:
+          logging_attr:
+            '*':
+              disable_console:
+              facility:
+          aaa_login_attr:
+            '*':
+              login_method:
+          aaa_exec_attr:
+            '*':
+              exec_method:
+          username_attr:
+            '*':
+              privilege:
+              password:
+          interface_attr:
+            '*':
+              vlan_id:
+              bridge_group:
+              channel_group:
+              ipv4_address:
+
+    # 装置固有設定
+    device_attr:
+
+      # 共通の設定
+      common:
+
+        # 生成するのが面倒なものはコマンドラインをそのまま書き並べる
+        required_cli:
+          - 'ip route 0.0.0.0 0.0.0.0 192.168.10.254'
+
+        domain_name: 'srv6.local'
+
+        logging_level: 'informational'
+
+        line_attr:
+          'telnet':
+            exec_timeout: 0
+
+        logging_attr:
+          'console':
+            disable_console: True
+            facility: 'all'
+
+        aaa_login_attr:
+          'default':
+            login_method: ['local', 'login']
+
+        aaa_exec_attr:
+          'default':
+            exec_method: ['local']
+
+        username_attr:
+          'iida':
+            privilege: 15
+            password: '2 $1$WfofCXqw$nkdx.2.cqMfPTbWxBcqCK0'
+          'st':
+            privilege: 15
+            password: '2 $1$qDR/BSHa$4iSpgVR6awMhNoMC7i8qL/'
+          'user':
+            privilege: 15
+            password: '2 $1$wINPtBUG$OFzBNb.T3pCdeYrFCQWah.'
+
+      fx201-pe1:
+        hostname: 'fx201-pe1'
+        interface_attr:
+          'Management 1':
+            ipv4_address: '192.168.10.220/24'
+
+      f220-pe2:
+        hostname: 'f220-pe2'
+        interface_attr:
+          'GigaEthernet 1/8':
+            vlan_id: 108
+            bridge_group: 108
+            channel_group: 1080000
+          'Port-channel 1080000':
+            ipv4_address: '192.168.10.224/24'
+
+      fx201-p:
+        hostname: 'fx201-p'
+        interface_attr:
+          'Management 1':
+            ipv4_address: '192.168.10.221/24'
+
+      f220-p:
+        hostname: 'f220-p'
+        interface_attr:
+          'GigaEthernet 1/8':
+            vlan_id: 108
+            bridge_group: 108
+            channel_group: 1080000
+          'Port-channel 1080000':
+            ipv4_address: '192.168.10.225/24'
+
+      f221-ce1:
+        hostname: 'f221-ce1'
+        interface_attr:
+          'GigaEthernet 1/8':
+            vlan_id: 108
+            bridge_group: 108
+            channel_group: 1080000
+          'Port-channel 1080000':
+            ipv4_address: '192.168.10.222/24'
+
+      f221-ce2:
+        hostname: 'f221-ce2'
+        interface_attr:
+          'GigaEthernet 1/8':
+            vlan_id: 108
+            bridge_group: 108
+            channel_group: 1080000
+          'Port-channel 1080000':
+            ipv4_address: '192.168.10.223/24'

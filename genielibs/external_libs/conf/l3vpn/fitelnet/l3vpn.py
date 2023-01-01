@@ -22,16 +22,16 @@ class L3vpn:
                 elif unconfig and attributes.value('vrf_name'):
                     configurations.submode_unconfig()
                 else:
-                    if attributes.value('rd'):
+                    if attributes.value('rd') is not None:
                         configurations.append_line(attributes.format('rd {rd}'))
 
-                    if attributes.value('import_rt'):
+                    if attributes.value('import_rt') is not None:
                         configurations.append_line(attributes.format('route-target import {import_rt}'))
 
-                    if attributes.value('export_rt'):
+                    if attributes.value('export_rt') is not None:
                         configurations.append_line(attributes.format('route-target export {export_rt}'))
 
-                    if attributes.value('srv6_locator'):
+                    if attributes.value('srv6_locator') is not None:
                         configurations.append_line(attributes.format('segment-routing srv6 locator {srv6_locator}'))
 
             #
@@ -125,7 +125,7 @@ class L3vpn:
                             # no address-family {address_family} vrf
                             configurations.submode_unconfig()
                         else:
-                            if attributes.value('redistribute'):
+                            if attributes.value('redistribute') is not None:
                                 redistribute = attributes.value('redistribute')
                                 if not isinstance(redistribute, list):
                                     redistribute = [redistribute]
