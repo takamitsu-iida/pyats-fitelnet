@@ -40,6 +40,10 @@ class FitelnetPatterns:
         # load ok?[y/N]:
         self.confirm_load = r'^(.*?)load ok\?\[y/N\]:\s?$'
 
+        # load
+        # restore ok?[y/N]:
+        self.confirm_restore = r'^(.*?)restore ok\?\[y/N\]:\s?$'
+
         # reset
         # reset ok?[y/N]:
         self.confirm_reset = r'^(.*?)reset ok\?\[y/N\]:\s?$'

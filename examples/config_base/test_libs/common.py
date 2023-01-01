@@ -72,6 +72,14 @@ def build_base_config(testbed: object, params: dict) -> dict:
                 if intf_data.get('ipv4_address') is not None:
                     intf.ipv4_address = intf_data.get('ipv4_address')
 
+        if device_data.get('username_attr') is not None:
+            for username_name, username_data in device_data.get('username_attr').items():
+                if username_data.get('privilege') is not None:
+                    base.device_attr[device_name].username_attr[username_name].privilege = username_data.get('privilege')
+                if username_data.get('password') is not None:
+                    base.device_attr[device_name].username_attr[username_name].password = username_data.get('password')
+
+
     cfgs = {}
     if state == 'present':
         if apply_filter and attributes is not None:

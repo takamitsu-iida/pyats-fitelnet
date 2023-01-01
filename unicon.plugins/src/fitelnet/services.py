@@ -91,6 +91,23 @@ class FitelnetLoad(GenericExecute):
         super().call_service(command, **kwargs)
 
 
+class FitelnetRestore(GenericExecute):
+
+    def __init__(self, connection, context, **kwargs):
+        super().__init__(connection, context, **kwargs)
+        self.start_state = 'enable'
+        self.end_state = 'enable'
+
+    def call_service(self, *args, **kwargs):
+
+        if 'moff' not in args:
+            statements = FitelnetStatements()
+            self.dialog += Dialog([statements.restore_stmt])
+
+        command = ' '.join(['restore'] + list(args))
+        super().call_service(command, **kwargs)
+
+
 class FitelnetReset(GenericReload):
 
     def __init__(self, connection, context, **kwargs):
@@ -123,6 +140,7 @@ class FitelnetServiceList:
         self.configure = FitelnetConfigure
         self.save = FitelnetSave
         self.load = FitelnetLoad
+        self.restore = FitelnetRestore
         self.reset = FitelnetReset
 
         # mixin common services

@@ -13,10 +13,8 @@ parameters:
     # 対象とするアトリビュートの定義
     filter_attributes:
       device_attr:
-        # '*' は任意の装置名
         '*':
           interface_attr:
-            # '*' は任意のインタフェース名
             '*':
               vlan_id:
               bridge_group:
@@ -24,10 +22,6 @@ parameters:
 
     # 装置固有設定
     device_attr:
-
-      # 注意
-      # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
-      # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
 
       fx201-pe1:
 
@@ -64,11 +58,6 @@ parameters:
             bridge_group: 102
             channel_group: 1020000
 
-          'GigaEthernet 1/8':
-            vlan_id: 108
-            bridge_group: 108
-            channel_group: 1080000
-
           'GigaEthernet 2/1.1':
             vlan_id: 1
             bridge_group: 1
@@ -78,6 +67,11 @@ parameters:
             vlan_id: 2
             bridge_group: 2
             channel_group: 2010002
+
+          # 'GigaEthernet 1/8':
+          #   vlan_id: 108
+          #   bridge_group: 108
+          #   channel_group: 1080000
 
       fx201-p:
 
@@ -101,11 +95,6 @@ parameters:
             bridge_group: 102
             channel_group: 1020000
 
-          'GigaEthernet 1/8':
-            vlan_id: 108
-            bridge_group: 108
-            channel_group: 1080000
-
           'GigaEthernet 2/1':
             vlan_id: 201
             bridge_group: 201
@@ -116,29 +105,13 @@ parameters:
             bridge_group: 301
             channel_group: 3010000
 
-      f221-ce2:
-        interface_attr:
-          'GigaEthernet 1/8':
-            vlan_id: 108
-            bridge_group: 108
-            channel_group: 1080000
-
-          'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 1
-            channel_group: 2010001
-
-          'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 2
-            channel_group: 2010002
+          # 'GigaEthernet 1/8':
+          #   vlan_id: 108
+          #   bridge_group: 108
+          #   channel_group: 1080000
 
       f221-ce1:
         interface_attr:
-          'GigaEthernet 1/8':
-            vlan_id: 108
-            bridge_group: 108
-            channel_group: 1080000
 
           'GigaEthernet 2/1.1':
             vlan_id: 1
@@ -149,3 +122,26 @@ parameters:
             vlan_id: 2
             bridge_group: 2
             channel_group: 2010002
+
+          # 'GigaEthernet 1/8':
+          #   vlan_id: 108
+          #   bridge_group: 108
+          #   channel_group: 1080000
+
+      f221-ce2:
+        interface_attr:
+
+          'GigaEthernet 2/1.1':
+            vlan_id: 1
+            bridge_group: 1
+            channel_group: 2010001
+
+          'GigaEthernet 2/1.2':
+            vlan_id: 2
+            bridge_group: 2
+            channel_group: 2010002
+
+          # 'GigaEthernet 1/8':
+          #   vlan_id: 108
+          #   bridge_group: 108
+          #   channel_group: 1080000

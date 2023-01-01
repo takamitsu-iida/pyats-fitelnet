@@ -56,8 +56,8 @@ class testcase_class(aetest.Testcase):
     def setup(self):
         """
         """
-        if parameters.get('check_mode') is True:
-            self.check_mode = True
+        self.check_mode = True if parameters.get('check_mode') is True else False
+
 
     @aetest.test
     def build_base_channel_config(self, testbed):
@@ -86,7 +86,11 @@ class testcase_class(aetest.Testcase):
                 continue
 
             device.connect()
+
+            device.execute('clear working.cfg moff')
+
             device.configure(config_list)
+
             device.disconnect()
 
         self.passed()
@@ -111,11 +115,6 @@ class CommonCleanup(aetest.CommonCleanup):
         pass
 
 
-#
-# スタンドアロンでの実行
-#
-# python test.py --testbed ../testbed.yaml
-#
 if __name__ == '__main__':
 
     import argparse
@@ -129,13 +128,12 @@ if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(__file__)
     DATAFILE = 'datafile.yaml'
     DATAFILE_PATH = os.path.join(SCRIPT_DIR, DATAFILE)
-
     DEFAULT_TESTBED = os.path.join(SCRIPT_DIR, '../testbed.yaml')
 
     # スクリプト実行時に受け取る引数
     parser = argparse.ArgumentParser()
     parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=topology.loader.load, default=DEFAULT_TESTBED)
-    parser.add_argument('--check', dest='check', help='check mode', action='store_true')
+    parser.add_argument('--check', '-c', dest='check', help='check mode', action='store_true')
     args, _ = parser.parse_known_args()
 
     # main()に渡す引数
