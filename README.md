@@ -638,16 +638,12 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/refresh.py -y
 
 FITELnetのコマンドはrefresh <filename>です。
 
-
-> **Note**
-> show bootコマンドでどのファイルから起動しているか、確認してから実行しましょう。
-
-> **Note**
-> ファイル名はフルパスで指定してください。
-
 ファイルに保存されている設定を運用中の設定に反映させます。
 
 一括で操作するスクリプトは `examples/bin/refresh.py --filename <filename> -y` です。
+
+> **Note**
+> ファイル名はフルパスで指定してください。
 
 実行例。
 
