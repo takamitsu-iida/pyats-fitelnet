@@ -17,6 +17,7 @@ import sys
 
 from genie.testbed import load
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 try:
     from tabulate import tabulate
@@ -68,7 +69,7 @@ def refresh(uut: object, filename :str =None) -> bool:
             uut.refresh(filename)
         else:
             uut.refresh()
-    except (TimeoutError, StateMachineError, ConnectionError) as e:
+    except SubCommandFailure as e:
         logger.error(str(e))
         return False
     return True

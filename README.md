@@ -481,8 +481,7 @@ fx201-pe1#
 ```
 
 <!--
-総じて使いやすい。
-save/restore/load等、遷移図を頭に入れておかないと操作を間違えそうなので、これはマニュアルの先頭に書くべき。
+総じて使いやすいが、save/restore/load等、遷移図を頭に入れておかないと操作を間違えそうなので、これはマニュアルの先頭に書くべき。
 操作方法を一枚にまとめたシートがあるとよい。
 -->
 
@@ -649,6 +648,33 @@ FITELnetのコマンドはrefresh <filename>です。
 
 ```bash
 iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/refresh.py /drive/config/boot.cfg -y
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+<br><br>
+
+## ファイルから編集用の設定を読み込む
+
+FITELnetのコマンドはloadです。
+
+引数を指定しない場合はboot.cfgを読み込んで編集用設定に反映させます。
+
+一括で操作するスクリプトは `examples/bin/load.py --filename <filename> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/load.py -y
 
 （省略）
 
@@ -904,13 +930,15 @@ f221-ce2
 
 無事にminimum.cfgができています。
 
-この状態はworking.cfgが最小限のコンフィグになっているだけで、運用中のコンフィグには適用されていません。
+この状態はworking.cfgが最小限のコンフィグになっているだけで、運用中のコンフィグには反映していません。
 
-適用するには `examples/bin/refresh.py -y` です。
+運用中のコンフィグに適用するなら `examples/bin/refresh.py -y` です。
 
 これでSSHの接続しかできない最小限の状態から検証を始められます。
 
- <!--
- show file configuration /drive/config/minimum.cfg
- を一括で採取したい
- -->
+boot.cfgは変更していませんので、working.cfgを元に戻したいなら `examples/bin/load.py -y` を使ってboot.cfgの設定を編集用設定に取り込みます。
+
+<!--
+show file configuration /drive/config/minimum.cfg
+を一括で採取したい
+-->

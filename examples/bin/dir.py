@@ -13,6 +13,7 @@ import sys
 
 from genie.testbed import load
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 try:
     from tabulate import tabulate
@@ -74,7 +75,7 @@ def dir(uut: object, directory :str =None) -> dict:
         else:
             parsed = uut.parse('dir')
         return parsed
-    except (TimeoutError, StateMachineError, ConnectionError) as e:
+    except SubCommandFailure as e:
         logger.error(str(e))
 
     return None

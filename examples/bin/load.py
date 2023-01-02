@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""restore
+"""load
 
-運用中の設定情報を書き出します。
+ファイルの内容を編集用設定に反映させます。
 
-引数を省略した場合、編集用の設定情報(working.cfg)に書き出します。
+引数を省略した場合、boot.cfgの設定情報が読み込まれます。
 
 """
 
@@ -13,9 +13,10 @@ import logging
 import os
 import sys
 
-from genie.testbed import load
+from genie.testbed import load as load_testbed
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
+
 
 try:
     from tabulate import tabulate
@@ -61,12 +62,12 @@ def print_results(results: dict):
             print(f'{router_name} {result}')
 
 
-def restore(uut: object, filename :str =None) -> bool:
+def load(uut: object, filename :str =None) -> bool:
     try:
         if filename:
-            uut.restore(filename)
+            uut.load(filename)
         else:
-            uut.restore()
+            uut.load()
     except SubCommandFailure as e:
         logger.error(str(e))
         return False
@@ -86,10 +87,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=default_testbed_path)
     parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
-    parser.add_argument('-y', '--yes', action='store_true', default=False, help='restore from current.cfg')
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='load from file to working.cfg')
     args, _ = parser.parse_known_args()
 
-    testbed = load(args.testbed)
+    testbed = load_testbed(args.testbed)
 
     # define router type
     p_routers = ['fx201-p', 'f220-p']
@@ -116,7 +117,7 @@ if __name__ == '__main__':
                 if result is False:
                     continue
 
-                results[router_name] = restore(dev, filename)
+                results[router_name] = load(dev, filename)
 
                 disconnect(dev)
 

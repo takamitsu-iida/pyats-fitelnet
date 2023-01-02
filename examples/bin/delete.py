@@ -13,6 +13,7 @@ import sys
 
 from genie.testbed import load
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 try:
     from tabulate import tabulate
@@ -75,7 +76,7 @@ def delete(uut: object, filename :str =None) -> dict:
             else:
                 result['success'] = True
             return result
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
+        except SubCommandFailure as e:
             logger.error(str(e))
 
     return result

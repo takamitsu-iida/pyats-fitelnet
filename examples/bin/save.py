@@ -15,6 +15,7 @@ import sys
 
 from genie.testbed import load
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 try:
     from tabulate import tabulate
@@ -66,7 +67,7 @@ def save(uut: object, filename :str =None) -> bool:
             uut.save(filename)
         else:
             uut.save()
-    except (TimeoutError, StateMachineError, ConnectionError) as e:
+    except SubCommandFailure as e:
         logger.error(str(e))
         return False
     return True

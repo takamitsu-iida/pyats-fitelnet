@@ -5,20 +5,25 @@
 #
 
 import argparse
+import logging
 import os
 import sys
 
 from pprint import pprint
 
-from unicon.core.errors import StateMachineError
+from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 from genie.testbed import load
+
+
+logger = logging.getLogger(__name__)
 
 
 def connect(uut):
     if not uut.is_connected():
         try:
             uut.connect()
-        except StateMachineError:
+        except (TimeoutError, StateMachineError, ConnectionError) as e:
             pass
 
     return uut.is_connected()
@@ -29,8 +34,11 @@ def disconnect(uut):
 
 
 def test_execute(uut):
-    output = uut.execute('show running')
-    pprint(output)
+    try:
+        output = uut.execute('show running')
+        pprint(output)
+    except SubCommandFailure as e:
+        logger.error(str(e))
 
 
 def test_configure_from_str(uut):
@@ -42,16 +50,21 @@ def test_configure_from_str(uut):
     exit
     !
     '''.strip()
-
-    output = uut.configure(CONFIG)
-    pprint(output)
+    try:
+        output = uut.configure(CONFIG)
+        pprint(output)
+    except SubCommandFailure as e:
+        logger.error(str(e))
 
 
 def test_configure_from_list(uut):
-    output = uut.configure([
-        'username iida privilege 15 password iida',
-        ])
-    pprint(output)
+    try:
+        output = uut.configure([
+            'username iida privilege 15 password iida',
+            ])
+        pprint(output)
+    except SubCommandFailure as e:
+        logger.error(str(e))
 
 
 def test_reset(uut):
