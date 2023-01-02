@@ -11,6 +11,8 @@ parameters:
 
 extends:
 
+  - datafile_addr.yaml
+
   - datafile_port_channel.yaml
 
   - datafile_static_route.yaml

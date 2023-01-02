@@ -1,6 +1,7 @@
 
 import logging
 
+from external_libs.conf.addr import Addr
 from external_libs.conf.bgp import Bgp
 from external_libs.conf.srv6 import Srv6
 from external_libs.conf.portchannel import Portchannel
@@ -11,6 +12,57 @@ from external_libs.conf.isis import Isis
 logger = logging.getLogger(__name__)
 
 SUPPORTED_OS = ['fitelnet']
+
+
+def build_addr_config(testbed: object, params: dict) -> dict:
+
+    # state
+    state = params.get('state', 'present')
+
+    # filter attribute
+    apply_filter = params.get('apply_filter', False)
+    attributes = params.get('filter_attributes')
+
+    addr = Addr()
+
+    devices = []
+    for device_name, device_data in params.get('device_attr', {}).items():
+        dev = testbed.devices.get(device_name)
+        if dev is None or dev.os not in SUPPORTED_OS:
+            continue
+        devices.append(dev)
+
+        for intf_name, intf_data in device_data.get('interface_attr', {}).items():
+            intf = addr.device_attr[device_name].interface_attr[intf_name]
+            if intf_data is not None and intf_data.get('ipv4_address') is not None:
+                intf.ipv4_address = intf_data.get('ipv4_address')
+
+            if intf_data is not None and intf_data.get('ipv6_address') is not None:
+                intf.ipv6_address = intf_data.get('ipv6_address')
+
+            if intf_data is not None and intf_data.get('ipv6_enable') is True:
+                intf.ipv6_enable = True
+
+    cfgs = {}
+    if state == 'present':
+        if apply_filter and attributes is not None:
+            cfgs = addr.build_config(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = addr.build_config(devices=devices, apply=False)
+    elif state == 'absent':
+        if apply_filter and attributes is not None:
+            cfgs = addr.build_unconfig(devices=devices, apply=False, attributes=attributes)
+        else:
+            cfgs = addr.build_unconfig(devices=devices, apply=False)
+
+    # convert to str
+    configs = {}
+    for name, cfg in cfgs.items():
+        configs[name] = str(cfg)
+
+    return configs
+
+
 
 
 def build_bgp_config(testbed: object, params: dict) -> dict:

@@ -1,0 +1,82 @@
+---
+
+parameters:
+
+  addr_params:
+
+    # present or absent
+    state: 'present'
+
+    # filter_attributesの有効・無効
+    apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        '*':
+          interface_attr:
+            '*':
+              ipv4_address:
+              ipv6_address:
+              ipv6_enable:
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-pe1:
+
+        # インタフェース固有の設定
+        interface_attr:
+          'Loopback 1':
+            ipv6_address: '3ffe:201:1::1'
+
+          'Port-channel 1010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
+
+      f220-pe2:
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '3ffe:220:1::1'
+
+          'Port-channel 1010000':
+            ipv6_enable: true
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+      fx201-p:
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '3ffe:201::1'
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+          'Port-channel 2010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
+
+      f220-p:
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '3ffe:220::1'
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+          'Port-channel 2010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
