@@ -463,7 +463,7 @@ show memory というコマンドもあるが、これはモジュール内部�
 
 <br>
 
-### disconnect
+## disconnect
 
 残ってしまったSSHを切断する場合はこうします。
 
@@ -482,4 +482,482 @@ fx201-pe1#disconnect ssh 2
 Disconnect OK?[y/N]:yes
 
 fx201-pe1#
+```
+
+<!--
+総じて使いやすい。
+save/restore/load等、遷移図を頭に入れておかないと操作を間違えそうなので、これはマニュアルの先頭に書くべき。
+操作方法を一枚にまとめたシートがあるとよい。
+-->
+
+<br><br><br>
+
+# 複数のルータを一括操作
+
+ルータが複数あるときは、スクリプトで一括で操作した方が効率的です。
+
+<br><br>
+
+## 編集中の設定を破棄する
+
+FITELnetのコマンドはrestoreです。
+
+working.cfgをcurrent.cfgの内容で復元します（つまり編集内容を破棄してworking.cfgを動作中の設定に戻すことになります）。
+
+一括で操作するスクリプトは `examples/bin/restore.py -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/restore.py -y
+
+2023-01-02 11:01:34,751: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T110134748.log +++
+
+2023-01-02 11:01:34,751: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:01:35,801: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 140157956507968 +++
+
+2023-01-02 11:01:35,801: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:01:36,000: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:01:36,071: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:01:36,311: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'restore' +++
+restore
+WARNING: Another users has already edited working.cfg.
+         Please check working.cfg.
+restore ok?[y/N]:yes
+% reading configuration file
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+<br><br>
+
+## 動作中の設定をファイルに保存する
+
+FITELnetのコマンドはrestore <filename>です。
+
+今動いている設定(current.cfg)をファイルに保存します。
+
+一括で操作するスクリプトは `examples/bin/restore.py --filename <filename> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/restore.py --filename /drive/config/iida.cfg -y
+
+2023-01-02 11:12:07,312: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T111207310.log +++
+
+2023-01-02 11:12:07,313: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:12:08,379: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 139981954464160 +++
+
+2023-01-02 11:12:08,380: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:12:08,592: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:12:08,662: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:12:08,898: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'restore /drive/config/iida.cfg' +++
+restore /drive/config/iida.cfg
+WARNING: Another users has already edited working.cfg.
+         Please check working.cfg.
+restore ok?[y/N]:yes
+
+% saving current-config(running-config)
+100% |*************************************************|    70 /    70 ( Lines)
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+<br><br>
+
+## 編集中の設定をboot.cfgとして保存する
+
+:::note info
+これを実行するときは慎重に！
+
+commitして動作することを確認した後にしましょう。
+:::
+
+FITELnetのコマンドはsaveです。
+
+今編集している設定(working.cfg)を起動用の設定(boot.cfg)として保存します。
+
+一括で操作するスクリプトは `examples/bin/save.py -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py -y
+
+2023-01-02 11:32:24,199: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T113224197.log +++
+
+2023-01-02 11:32:24,200: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:32:25,169: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 140498727786912 +++
+
+2023-01-02 11:32:25,169: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:32:25,334: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:32:25,404: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:32:25,626: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'save' +++
+save
+WARNING: Another users has already edited working.cfg.
+         Please check working.cfg.
+save ok?[y/N]:yes
+
+% saving working-config
+100% |*************************************************|    70 /    70 ( Lines)
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+
+<br><br>
+
+## 編集中の設定をファイルに保存する
+
+FITELnetのコマンドはsave <filename>です。
+
+今編集している設定(working.cfg)をファイルとして保存します。
+
+一括で操作するスクリプトは `examples/bin/save.py --filename <filename> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py --filename /drive/config/iida.cfg -y
+
+2023-01-02 11:36:44,813: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T113644810.log +++
+
+2023-01-02 11:36:44,814: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:36:45,785: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 139965936740672 +++
+
+2023-01-02 11:36:45,785: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:36:45,972: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:36:46,042: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:36:46,261: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'save /drive/config/iida.cfg' +++
+save /drive/config/iida.cfg
+WARNING: Another users has already edited working.cfg.
+         Please check working.cfg.
+save ok?[y/N]:yes
+
+% saving working-config
+100% |*************************************************|    70 /    70 ( Lines)
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+
+<br><br>
+
+## 編集中の設定を運用中の設定に反映させる
+
+FITELnetのコマンドはrefreshです（commitと同じです）。
+
+今編集している設定(working.cfg)を運用中の設定に反映させます。
+
+一括で操作するスクリプトは `examples/bin/refresh.py -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/refresh.py -y
+
+2023-01-02 11:48:33,256: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T114833253.log +++
+
+2023-01-02 11:48:33,257: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:48:34,227: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 139909476170816 +++
+
+2023-01-02 11:48:34,228: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:48:34,388: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:48:34,457: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:48:34,684: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'refresh' +++
+refresh
+WARNING: Another users has already edited working.cfg.
+         Please check working.cfg.
+refresh ok?[y/N]:yes
+.........................Done
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+<br><br>
+
+## ファイルの内容を運用中の設定に反映させる
+
+FITELnetのコマンドはrefresh <filename>です。
+
+:::note info
+refresh boot.cfgとしても起動用コンフィグを反映できません。
+
+% Can't open file : No such file or directory
+
+のようになってしまいますので、/drive/config/boot.cfgのようにフルパスを指定しましょう。
+:::
+
+ファイルに保存されている設定を運用中の設定に反映させます。
+
+一括で操作するスクリプトは `examples/bin/refresh.py --filename <filename> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/refresh.py /drive/config/boot.cfg -y
+
+2023-01-02 11:57:13,047: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T115713045.log +++
+
+2023-01-02 11:57:13,048: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 11:57:14,018: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 140463917612000 +++
+
+2023-01-02 11:57:14,019: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 11:57:14,189: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 11:57:14,258: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 11:57:14,479: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'refresh' +++
+refresh
+refresh ok?[y/N]:yes
+.........................Done
+
+（省略）
+
+| device    | result   |
+|-----------|----------|
+| fx201-p   | Success  |
+| f220-p    | Success  |
+| fx201-pe1 | Success  |
+| f220-pe2  | Success  |
+| f221-ce1  | Success  |
+| f221-ce2  | Success  |
+```
+
+<br><br>
+
+## ファイル一覧を表示する
+
+FITELnetのコマンドはdir <directory>です。
+
+一括で操作するスクリプトは `examples/bin/dir.py --dirname <dirname> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/dir.py --dirname /drive/config -y
+
+2023-01-02 13:23:03,350: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T132303347.log +++
+
+2023-01-02 13:23:03,352: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 13:23:04,392: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 140147622407376 +++
+
+2023-01-02 13:23:04,394: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 13:23:04,569: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 13:23:04,637: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 13:23:08,478: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'dir /drive/config' +++
+dir /drive/config
+total 32
+drwxrwxrwx 2 root  root  4096 Jan  2 11:32 .
+drwxrwxrwx 5 root  root  4096 Nov  8 18:05 ..
+-rw-r--r-- 1 guest guest 1249 Jan  2 11:32 boot.cfg
+-rw-r--r-- 1 guest guest 1375 Nov 16 14:47 fx201p-srv6-flexalgo.cfg
+-rw-r--r-- 1 guest guest  887 Nov 16 16:30 fx201p-srv6-l2vpn.cfg
+-rw-r--r-- 1 guest guest  881 Nov 16 15:28 fx201p-srv6-l3vpn.cfg
+-rw-r--r-- 1 guest guest 1021 Nov 15 21:02 fx201p-srv6-static.cfg
+-rw-r--r-- 1 guest guest 1249 Jan  2 11:36 iida.cfg
+
+（省略）
+fx201-p
+| filename                 |   length | date         |
+|--------------------------|----------|--------------|
+| boot.cfg                 |     1249 | Jan  2 11:32 |
+| fx201p-srv6-flexalgo.cfg |     1375 | Nov 16 14:47 |
+| fx201p-srv6-l2vpn.cfg    |      887 | Nov 16 16:30 |
+| fx201p-srv6-l3vpn.cfg    |      881 | Nov 16 15:28 |
+| fx201p-srv6-static.cfg   |     1021 | Nov 15 21:02 |
+| iida.cfg                 |     1249 | Jan  2 11:36 |
+
+f220-p
+| filename                |   length | date         |
+|-------------------------|----------|--------------|
+| boot.cfg                |     1367 | Jan  2 11:32 |
+| f220p-srv6-flexalgo.cfg |     1530 | Nov 16 14:47 |
+| f220p-srv6-l2vpn.cfg    |     1083 | Nov 16 16:30 |
+| f220p-srv6-l3vpn.cfg    |     1077 | Nov 16 15:28 |
+| f220p-srv6-static.cfg   |     1140 | Nov 15 21:02 |
+| iida.cfg                |     1367 | Jan  2 11:36 |
+（省略）
+```
+
+
+<br><br>
+
+## ファイルを削除する
+
+FITELnetのコマンドはdelete <filename>です。
+
+一括で操作するスクリプトは `examples/bin/delete.py --filename <filename> -y` です。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/bin/delete.py --filename /drive/config/iida.cfg -y
+
+2023-01-02 13:49:33,796: %UNICON-INFO: +++ fx201-p logfile /tmp/fx201-p-cli-20230102T134933794.log +++
+
+2023-01-02 13:49:33,797: %UNICON-INFO: +++ Unicon plugin fitelnet (fitelnet) +++
+user@10.77.165.211's password:
+
+2023-01-02 13:49:34,904: %UNICON-INFO: +++ connection to spawn: ssh -l user 10.77.165.211 -p 50221, id: 139735476190272 +++
+
+2023-01-02 13:49:34,905: %UNICON-INFO: connection to fx201-p
+
+fx201-p#
+
+2023-01-02 13:49:35,105: %UNICON-INFO: +++ initializing handle +++
+
+2023-01-02 13:49:35,174: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'no more' +++
+no more
+more : off
+
+fx201-p#
+
+2023-01-02 13:49:35,410: %UNICON-INFO: +++ fx201-p with via 'cli': executing command 'delete /drive/config/iida.cfg' +++
+delete /drive/config/iida.cfg
+
+（省略）
+
+| device    | result   | output   |
+|-----------|----------|----------|
+| fx201-p   | Success  |          |
+| f220-p    | Success  |          |
+| fx201-pe1 | Success  |          |
+| f220-pe2  | Success  |          |
+| f221-ce1  | Success  |          |
+| f221-ce2  | Success  |          |
+```
+
+存在しないファイルを消そうとして失敗した場合はこのように表示されます。
+
+```bash
+| device    | result   | output                                                                |
+|-----------|----------|-----------------------------------------------------------------------|
+| fx201-p   | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
+| f220-p    | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
+| fx201-pe1 | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
+| f220-pe2  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
+| f221-ce1  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
+| f221-ce2  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
 ```

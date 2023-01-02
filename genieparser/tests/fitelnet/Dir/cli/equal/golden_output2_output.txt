@@ -1,0 +1,12 @@
+f220-p#dir config
+
+total 32
+drwxrwxrwx 2 root  root  4096 Jan  2 11:32 .
+drwxrwxrwx 7 root  root  4096 Nov  7 14:56 ..
+-rw-r--r-- 1 guest guest 1367 Jan  2 11:32 boot.cfg
+-rw-r--r-- 1 guest guest 1530 Nov 16 14:47 f220p-srv6-flexalgo.cfg
+-rw-r--r-- 1 guest guest 1083 Nov 16 16:30 f220p-srv6-l2vpn.cfg
+-rw-r--r-- 1 guest guest 1077 Nov 16 15:28 f220p-srv6-l3vpn.cfg
+-rw-r--r-- 1 guest guest 1140 Nov 15 21:02 f220p-srv6-static.cfg
+-rw-r--r-- 1 guest guest 1367 Jan  2 11:36 iida.cfg
+f220-p#

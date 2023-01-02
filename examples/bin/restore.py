@@ -1,50 +1,91 @@
 #!/usr/bin/env python
 
+"""restore
+
+運用中の設定情報を書き出します。
+
+引数を省略した場合、編集用の設定情報(working.cfg)に書き出します。
+
+"""
+
 import argparse
 import logging
 import os
 import sys
 
-from pprint import pprint
-
-from unicon.core.errors import StateMachineError
 from genie.testbed import load
+from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 
-# app_home is .. from this file
-app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-# load genie external_parser
 try:
-    from external_parser.fitelnet.common import Common
+    from tabulate import tabulate
+    HAS_TABULATE = True
 except ImportError:
-    print('failed to import parser, please check sys.path')
-    print(sys.path)
-    sys.exit(1)
+    HAS_TABULATE = False
 
 
-def restore(uut: object):
+logger = logging.getLogger(__name__)
 
+
+def connect(uut: object) -> bool:
     if not uut.is_connected():
         try:
             uut.connect()
-        except StateMachineError:
-            return None
+        except (TimeoutError, StateMachineError, ConnectionError) as e:
+            logger.error(str(e))
+            return False
+    return True
 
-    uut.restore()
 
+def disconnect(uut: object) -> bool:
     if uut.is_connected():
-        uut.disconnect()
+        try:
+            uut.disconnect()
+        except (TimeoutError, StateMachineError, ConnectionError) as e:
+            logger.error(str(e))
+            return False
+    return True
+
+
+def print_results(results: dict):
+
+    for router_name, result in results.items():
+        results[router_name] = 'Success' if result is True else 'Fail'
+
+    if HAS_TABULATE:
+        headers = ['device', 'result']
+        print(tabulate(list(results.items()), headers=headers, tablefmt='github'))
+    else:
+        for router_name, result in results.items():
+            print('='*10 + ' results ' + '='*10)
+            print(f'{router_name} {result}')
+
+
+def restore(uut: object, filename :str =None) -> bool:
+    try:
+        if filename:
+            uut.restore(filename)
+        else:
+            uut.restore()
+    except (TimeoutError, StateMachineError, ConnectionError) as e:
+        logger.error(str(e))
+        return False
+    return True
 
 
 if __name__ == '__main__':
 
     logging.basicConfig()
 
+    # app_home is .. from this file
+    app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
     # default testbed file
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=default_testbed_path)
+    parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='restore from current.cfg')
     args, _ = parser.parse_known_args()
 
     testbed = load(args.testbed)
@@ -58,9 +99,30 @@ if __name__ == '__main__':
 
     def main():
 
-        for _name, dev in testbed.devices.items():
-            restore(dev)
+        results = {}
 
+        if args.filename:
+            filename = args.filename if args.filename.startswith('/') else '/drive/config/' + args.filename
+        else:
+            filename = None
+
+        if args.yes:
+            for router_name in all_routers:
+                dev = testbed.devices.get(router_name)
+
+                result = connect(dev)
+                results[router_name] = result
+                if result is False:
+                    continue
+
+                results[router_name] = restore(dev, filename)
+
+                disconnect(dev)
+
+            print_results(results)
+            return 0
+
+        parser.print_help()
         return 0
 
 

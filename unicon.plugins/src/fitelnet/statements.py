@@ -72,6 +72,13 @@ class FitelnetStatements():
                                    continue_timer=False)
 
         # see services.py
+        self.refresh_stmt = Statement(pattern=patterns.confirm_refresh,
+                                   action='sendline(y)',
+                                   args=None,
+                                   loop_continue=True,
+                                   continue_timer=False)
+
+        # see services.py
         self.reset_stmt = Statement(pattern=patterns.confirm_reset,
                                    action='sendline(y)',
                                    args=None,

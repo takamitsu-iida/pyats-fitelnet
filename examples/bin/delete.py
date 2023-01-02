@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-"""save
+"""delete
 
-編集用の設定情報を書き出します。
-
-引数を省略した場合、boot configurationコマンドで指定された起動時設定情報ファイルに設定情報を書き出します。
+ファイルを削除します。
 
 """
 
@@ -21,6 +19,7 @@ try:
     HAS_TABULATE = True
 except ImportError:
     HAS_TABULATE = False
+    from pprint import pprint
 
 
 logger = logging.getLogger(__name__)
@@ -48,28 +47,38 @@ def disconnect(uut: object) -> bool:
 
 def print_results(results: dict):
 
+    result_list = []
     for router_name, result in results.items():
-        results[router_name] = 'Success' if result is True else 'Fail'
+        success = result.get('success', False)
+        success = 'Success' if success is True else 'Fail'
+        output = result.get('output', '')
+        result_list.append([router_name, success, output])
 
     if HAS_TABULATE:
-        headers = ['device', 'result']
-        print(tabulate(list(results.items()), headers=headers, tablefmt='github'))
+        headers = ['device', 'result', 'output']
+        print(tabulate(result_list, headers=headers, tablefmt='github'))
     else:
-        for router_name, result in results.items():
-            print('='*10 + ' results ' + '='*10)
-            print(f'{router_name} {result}')
+        pprint(result_list)
 
 
-def save(uut: object, filename :str =None) -> bool:
-    try:
-        if filename:
-            uut.save(filename)
-        else:
-            uut.save()
-    except (TimeoutError, StateMachineError, ConnectionError) as e:
-        logger.error(str(e))
-        return False
-    return True
+def delete(uut: object, filename :str =None) -> dict:
+    result = {
+        'success': False,
+        'output': ''
+    }
+
+    if filename:
+        try:
+            output = uut.execute(f'delete {filename}')
+            if output:
+                result['output'] = output
+            else:
+                result['success'] = True
+            return result
+        except (TimeoutError, StateMachineError, ConnectionError) as e:
+            logger.error(str(e))
+
+    return result
 
 
 if __name__ == '__main__':
@@ -83,10 +92,10 @@ if __name__ == '__main__':
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
-    parser.add_argument('--filename', dest='filename', type=str, default=None, help='save filename')
-    parser.add_argument('-y', '--yes', action='store_true', default=False, help='save working.cfg to filename')
-    args = parser.parse_args()
+    parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=default_testbed_path)
+    parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='show directory')
+    args, _ = parser.parse_known_args()
 
     testbed = load(args.testbed)
 
@@ -101,21 +110,16 @@ if __name__ == '__main__':
 
         results = {}
 
-        if args.filename:
-            filename = args.filename if args.filename.startswith('/') else '/drive/config/' + args.filename
-        else:
-            filename = None
-
         if args.yes:
             for router_name in all_routers:
                 dev = testbed.devices.get(router_name)
 
                 result = connect(dev)
-                results[router_name] = result
                 if result is False:
+                    results[router_name] = {}
                     continue
 
-                results[router_name] = save(dev, filename)
+                results[router_name] = delete(dev, filename=args.filename)
 
                 disconnect(dev)
 

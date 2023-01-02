@@ -1,0 +1,10 @@
+f220-p#dir
+
+total 28
+drwxrwxrwx  7 root root  4096 Nov  7 14:56 .
+drwxr-xr-x 26 root root  4096 Nov  1 16:20 ..
+drwxrwxrwx  2 root root  4096 Jan  2 11:32 config
+drwxrwxrwx  2 root root  4096 Nov 26 15:01 core
+drwxrwxrwx  3 root root  4096 Nov  7 14:56 l2swbcm
+drwxr-xr-x  2 root root  4096 Dec 14 17:25 log
+drwxr-xr-x 16 root guest 4096 Nov  7 14:55 lxd

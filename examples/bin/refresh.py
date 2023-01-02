@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
-"""save
+"""refresh
 
-編集用の設定情報を書き出します。
+運用中の設定情報に反映させます。commitと同じ動作です。
 
-引数を省略した場合、boot configurationコマンドで指定された起動時設定情報ファイルに設定情報を書き出します。
+引数を省略した場合、編集用の設定情報(working.cfg)を運用中の設定(current.cfg)に反映させます。
+
+引数を指定した場合はそのファイルから運用中の設定(current.cfg)に反映させます。
 
 """
 
@@ -60,12 +62,12 @@ def print_results(results: dict):
             print(f'{router_name} {result}')
 
 
-def save(uut: object, filename :str =None) -> bool:
+def refresh(uut: object, filename :str =None) -> bool:
     try:
         if filename:
-            uut.save(filename)
+            uut.refresh(filename)
         else:
-            uut.save()
+            uut.refresh()
     except (TimeoutError, StateMachineError, ConnectionError) as e:
         logger.error(str(e))
         return False
@@ -83,10 +85,10 @@ if __name__ == '__main__':
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
-    parser.add_argument('--filename', dest='filename', type=str, default=None, help='save filename')
-    parser.add_argument('-y', '--yes', action='store_true', default=False, help='save working.cfg to filename')
-    args = parser.parse_args()
+    parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=default_testbed_path)
+    parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='restore from current.cfg')
+    args, _ = parser.parse_known_args()
 
     testbed = load(args.testbed)
 
@@ -115,7 +117,7 @@ if __name__ == '__main__':
                 if result is False:
                     continue
 
-                results[router_name] = save(dev, filename)
+                results[router_name] = refresh(dev, filename)
 
                 disconnect(dev)
 
