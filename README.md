@@ -222,9 +222,8 @@ vscodeの設定メニューからextra pathsを検索します。
 ./examples/check_interface_status/run -m
 ```
 
-:::note info
-初回起動時は若干遅いです。
-:::
+> **Note**
+> 初回起動時は若干遅いです。
 
 ```bash
 iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/check_interface_status/run -m
@@ -370,12 +369,9 @@ pipでインストールした外部ライブラリがvscodeで認識されな�
 
 基本的にvscodeは自動でvenvの環境を見つけてくれるのですが、グローバルのPython環境が選ばれてしまうことも発生しうることです。
 
-
-:::note info
-Where the extension looks for environments
-https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
-:::
-
+> **Note**
+> Where the extension looks for environments
+> https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
 
 settings.jsonに以下を入れておくとよいかもしれません。
 
@@ -554,11 +550,8 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/restore.py --filename 
 
 ## 編集中の設定をboot.cfgとして保存する
 
-:::note info
-これを実行するときは慎重に！
-
-commitして動作することを確認した後にしましょう。
-:::
+> **Warning**
+> この作業は慎重に実行しましょう。commitして動作することを確認した後の方がよろしいかと思います。
 
 FITELnetのコマンドはsaveです。
 
@@ -645,13 +638,12 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/refresh.py -y
 
 FITELnetのコマンドはrefresh <filename>です。
 
-:::note info
-refresh boot.cfgとしても起動用コンフィグを反映できません。
 
-% Can't open file : No such file or directory
+> **Note**
+> show bootコマンドでどのファイルから起動しているか、確認してから実行しましょう。
 
-のようになってしまいますので、/drive/config/boot.cfgのようにフルパスを指定しましょう。
-:::
+> **Note**
+> ファイル名はフルパスで指定してください。
 
 ファイルに保存されている設定を運用中の設定に反映させます。
 
