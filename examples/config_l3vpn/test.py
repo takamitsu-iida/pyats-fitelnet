@@ -72,11 +72,18 @@ class CommonSetup(aetest.CommonSetup):
 class testcase_class(aetest.Testcase):
 
     @aetest.setup
-    def setup(self):
+    def setup(self, testbed):
         """
         """
         if parameters.get('check_mode') is True:
             self.check_mode = True
+        else:
+            for device_name, dev in testbed.devices.items():
+                try:
+                    dev.connect()
+                except (TimeoutError, StateMachineError, ConnectionError) as e:
+                    logger.error(f'{device_name} connect failed')
+                    logger.error(str(e))
 
 
     @aetest.test
@@ -84,7 +91,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('port_channel', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         port_channel_params = parameters.get('port_channel_params')
         if port_channel_params is None:
@@ -96,11 +103,29 @@ class testcase_class(aetest.Testcase):
 
 
     @aetest.test
+    def apply_port_channel_config(self, testbed):
+        """
+        """
+        if execute_map.get('port_channel', False) is False:
+            self.skipped('execute_map')
+
+        if self.check_mode:
+            self.skipped('check_mode')
+
+        if not self.port_channel_configs:
+            self.skipped('port_channel_configs not found')
+
+        self.passed()
+
+
+
+
+    @aetest.test
     def build_addr_config(self, testbed):
         """
         """
         if execute_map.get('addr', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         addr_params = parameters.get('addr_params')
         if addr_params is None:
@@ -116,7 +141,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('static_route', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         static_route_params = parameters.get('static_route_params')
         if static_route_params is None:
@@ -132,7 +157,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('srv6', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         srv6_params = parameters.get('srv6_params')
         if srv6_params is None:
@@ -148,7 +173,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('isis', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         isis_params = parameters.get('isis_params')
         if isis_params is None:
@@ -164,7 +189,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('bgp', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         bgp_params = parameters.get('bgp_params')
         if bgp_params is None:
@@ -180,7 +205,7 @@ class testcase_class(aetest.Testcase):
         """
         """
         if execute_map.get('l3vpn', False) is False:
-            self.skipped('skipped by execute_map')
+            self.skipped('execute_map')
 
         l3vpn_params = parameters.get('l3vpn_params')
         if l3vpn_params is None:

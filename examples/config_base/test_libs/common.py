@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 SUPPORTED_OS = ['fitelnet']
 
 
-def build_base_config(testbed: object, params: dict) -> dict:
+def build_base_configs(testbed: object, params: dict) -> dict:
 
     # state
     state = params.get('state', 'present')

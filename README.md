@@ -490,7 +490,7 @@ save/restore/load等、遷移図を頭に入れておかないと操作を間違
 
 # 複数のルータを一括操作
 
-ルータが複数あるときは、スクリプトで一括で操作した方が効率的です。
+ルータが複数あるときは、スクリプトで一括操作した方が効率的です。
 
 <br><br>
 
@@ -738,3 +738,179 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/bin/delete.py --filename /dr
 | f221-ce1  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
 | f221-ce2  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
 ```
+
+<br><br><br><br>
+
+# 一連の動作を実行する
+
+pyATSのaetestを使うことで容易に一連の動作をスクリプト化できます。
+
+<br>
+
+## 最小限のコンフィグを作る
+
+1. 各装置のworking.cfgをクリアする
+2. パラメータシート(datafile.yaml)をもとにして最低限必要なコンフィグを生成する
+3. 生成したコンフィグを流し込む
+4. working.cfgを/drive/config/minimum.cfgというファイル名で保存する
+
+この作業を自動で実施します。
+
+使うスクリプトは examples/config_base/test.py です。
+
+コンフィグの生成だけを実施する場合は--checkを引数に与えます。
+
+実行例。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/config_base/test.py --check
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: |                            Starting common setup                             |
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: |                     Starting subsection assert_datafile                      |
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: The result of subsection assert_datafile is => PASSED
+2023-01-02T22:08:57: %AETEST-INFO: The result of common setup is => PASSED
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: |                        Starting testcase BuildConfig                         |
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %AETEST-INFO: |                      Starting section build_base_config                      |
+2023-01-02T22:08:57: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %SCRIPT-INFO: +------------------------------------------------------------------------------+
+2023-01-02T22:08:57: %SCRIPT-INFO: |                  ========== base configs config ==========                   |
+2023-01-02T22:08:57: %SCRIPT-INFO: +------------------------------------------------------------------------------+
+{'f220-p': ['hostname f220-p',
+            'interface GigaEthernet 1/8',
+            ' vlan-id 108',
+            ' bridge-group 108',
+            ' channel-group 1080000',
+            ' exit',
+            'interface Port-channel 1080000',
+            ' ip address 192.168.10.225 255.255.255.0',
+            ' exit',
+            'ip route 0.0.0.0 0.0.0.0 192.168.10.254',
+            'ip domain-name srv6.local',
+            'no logging console',
+            'logging console facility all',
+            'line telnet',
+            ' exec-timeout 0',
+            ' exit',
+            'username iida privilege 15 password 2 $1$WfofCXqw$nkdx.2.cqMfPTbWxBcqCK0',
+            'username st privilege 15 password 2 $1$qDR/BSHa$4iSpgVR6awMhNoMC7i8qL/',
+            'username user privilege 15 password 2 $1$wINPtBUG$OFzBNb.T3pCdeYrFCQWah.'],
+ 'f220-pe2': ['hostname f220-pe2',
+
+（省略）
+
+```
+
+（--checkを指定せずに）実際に適用すると、最後にこのように表示されます。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/config_base/test.py
+
+（省略）
+
+2023-01-02T21:57:24: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T21:57:24: %AETEST-INFO: |                               Detailed Results                               |
+2023-01-02T21:57:24: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T21:57:24: %AETEST-INFO:  SECTIONS/TESTCASES                                                      RESULT
+2023-01-02T21:57:24: %AETEST-INFO: --------------------------------------------------------------------------------
+2023-01-02T21:57:24: %AETEST-INFO: .
+2023-01-02T21:57:24: %AETEST-INFO: |-- common_setup                                                          PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- assert_datafile                                                   PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |-- BuildConfig                                                           PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- build_base_config                                                 PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |-- ConnectDevices                                                        PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- connect_devices                                                   PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 1: f220-p                                                PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 2: f220-pe2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 3: f221-ce1                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 4: f221-ce2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 5: fx201-p                                               PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       `-- Step 6: fx201-pe1                                             PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |-- ClearWorkingConfig                                                    PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- clear_working_config                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 1: f220-p                                                PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 2: f220-pe2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 3: f221-ce1                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 4: f221-ce2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 5: fx201-p                                               PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       `-- Step 6: fx201-pe1                                             PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |-- ApplyConfig                                                           PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- apply_config                                                      PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 1: f220-p                                                PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 2: f220-pe2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 3: f221-ce1                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 4: f221-ce2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 5: fx201-p                                               PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       `-- Step 6: fx201-pe1                                             PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |-- SaveWorkingConfig                                                     PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |   `-- save_working_config                                               PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 1: f220-p                                                PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 2: f220-pe2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 3: f221-ce1                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 4: f221-ce2                                              PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       |-- Step 5: fx201-p                                               PASSED
+2023-01-02T21:57:24: %AETEST-INFO: |       `-- Step 6: fx201-pe1                                             PASSED
+2023-01-02T21:57:24: %AETEST-INFO: `-- common_cleanup                                                        PASSED
+2023-01-02T21:57:24: %AETEST-INFO:     `-- disconnect                                                        PASSED
+2023-01-02T21:57:24: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T21:57:24: %AETEST-INFO: |                                   Summary                                    |
+2023-01-02T21:57:24: %AETEST-INFO: +------------------------------------------------------------------------------+
+2023-01-02T21:57:24: %AETEST-INFO:  Number of ABORTED                                                            0
+2023-01-02T21:57:24: %AETEST-INFO:  Number of BLOCKED                                                            0
+2023-01-02T21:57:24: %AETEST-INFO:  Number of ERRORED                                                            0
+2023-01-02T21:57:24: %AETEST-INFO:  Number of FAILED                                                             0
+2023-01-02T21:57:24: %AETEST-INFO:  Number of PASSED                                                             7
+2023-01-02T21:57:24: %AETEST-INFO:  Number of PASSX                                                              0
+2023-01-02T21:57:24: %AETEST-INFO:  Number of SKIPPED                                                            0
+2023-01-02T21:57:24: %AETEST-INFO:  Total Number                                                                 7
+2023-01-02T21:57:24: %AETEST-INFO:  Success Rate                                                            100.0%
+2023-01-02T21:57:24: %AETEST-INFO: --------------------------------------------------------------------------------
+```
+
+ちゃんとminimum.cfgができているかを確認するには examples/bin/dir.py を使います。
+
+```bash
+iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/dir.py --dirname /drive/config -y
+
+（省略）
+
+fx201-p
+| filename                 |   length | date         |
+|--------------------------|----------|--------------|
+| boot.cfg                 |     1249 | Jan  2 11:32 |
+| fx201p-srv6-flexalgo.cfg |     1375 | Nov 16 14:47 |
+| fx201p-srv6-l2vpn.cfg    |      887 | Nov 16 16:30 |
+| fx201p-srv6-l3vpn.cfg    |      881 | Nov 16 15:28 |
+| fx201p-srv6-static.cfg   |     1021 | Nov 15 21:02 |
+| minimum.cfg              |      595 | Jan  2 21:57 |
+
+（省略）
+
+f221-ce2
+| filename                  |   length | date         |
+|---------------------------|----------|--------------|
+| boot.cfg                  |     1286 | Jan  2 11:32 |
+| f221ce2-srv6-flexalgo.cfg |     1062 | Nov 16 14:47 |
+| f221ce2-srv6-l2vpn.cfg    |      926 | Nov 16 16:30 |
+| f221ce2-srv6-l3vpn.cfg    |     1238 | Nov 16 15:28 |
+| f221ce2-srv6-static.cfg   |     1062 | Nov 15 21:02 |
+| minimum.cfg               |      692 | Jan  2 21:57 |
+```
+
+無事にminimum.cfgができています。
+
+この状態はworking.cfgが最小限のコンフィグになっているだけで、運用中のコンフィグには適用されていません。
+
+適用するには `examples/bin/refresh.py -y` です。
+
+これでSSHの接続しかできない最小限の状態から検証を始められます。
+
+ <!--
+ show file configuration /drive/config/minimum.cfg
+ を一括で採取したい
+ -->

@@ -12,5 +12,3 @@ parameters:
 extends:
 
   - datafile_base.yaml
-
-  - datafile_port_channel.yaml

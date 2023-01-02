@@ -5,17 +5,31 @@ import logging
 from pprint import pprint  #, pformat
 
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 from pyats import aetest
 from pyats.log.utils import banner
 from genie.utils import Dq
 from genie.conf.base import Device
 
-from test_libs import build_base_config
+from test_libs import build_base_configs
 
 logger = logging.getLogger(__name__)
 
+
 # see datafile.yaml
-parameters = {}
+parameters = {
+    'base_configs': None,
+    'check_mode': False,
+}
+
+
+def is_check_mode() -> bool:
+    return parameters.get('check_mode', False)
+
+
+def get_base_configs() -> dict:
+    return parameters.get('base_configs', None)
+
 
 # for debug purpose
 def print_config(name: str, configs: dict):
@@ -50,50 +64,126 @@ class CommonSetup(aetest.CommonSetup):
 ###                     TESTCASES SECTION                       ###
 ###################################################################
 
-class testcase_class(aetest.Testcase):
+class BuildConfig(aetest.Testcase):
 
-    @aetest.setup
-    def setup(self):
-        """
-        """
-        self.check_mode = True if parameters.get('check_mode') is True else False
-
+    # passできなければCommonCleanupにGotoする指定
+    must_pass = True
 
     @aetest.test
-    def build_base_channel_config(self, testbed):
+    def build_base_config(self, testbed):
         """
         """
         base_params = parameters.get('base_params')
         if base_params is None:
             self.base_configs = None
-            self.skipped('base_params not found')
-        else:
-            self.base_configs = build_base_config(testbed=testbed, params=base_params)
-            print_config('base config', self.base_configs)
-            self.passed()
+            reason = 'base_params not found'
+            self.skipped(reason)
 
+        base_configs = build_base_configs(testbed=testbed, params=base_params)
+        print_config('base configs', base_configs)
+
+        # store in parameters
+        parameters['base_configs'] = base_configs
+
+
+class ConnectDevices(aetest.Testcase):
 
     @aetest.test
-    def apply_config(self, testbed):
+    def connect_devices(self, testbed, steps):
         """
         """
-        if self.check_mode:
+
+        if is_check_mode():
             self.skipped()
 
-        for device_name, device in testbed.devices.items():
-            config_list = self.base_configs.get(device_name)
-            if config_list is None:
+        base_configs = get_base_configs()
+
+        for device_name in base_configs.keys():
+            with steps.start(device_name, continue_=False) as device_step:
+                device = testbed.devices[device_name]
+                try:
+                    device.connect()
+                except (TimeoutError, StateMachineError, ConnectionError) as e:
+                    logger.error(banner(f'connect failed {device_name}'))
+                    logger.error(banner(str(e)))
+                    device_step.failed()
+
+
+class ClearWorkingConfig(aetest.Testcase):
+
+    @aetest.test
+    def clear_working_config(self, testbed, steps):
+        """
+        """
+
+        if is_check_mode():
+            self.skipped()
+
+        base_configs = get_base_configs()
+
+        for device_name, config_list in base_configs.items():
+            if not config_list:
+                continue
+            with steps.start(device_name, continue_=False) as device_step:
+                device = testbed.devices[device_name]
+                try:
+                    device.execute('clear working.cfg moff')
+                except SubCommandFailure as e:
+                    logger.error(banner(f'execute failed {device_name}'))
+                    logger.error(banner(str(e)))
+                    device_step.failed()
+
+
+class ApplyConfig(aetest.Testcase):
+
+    @aetest.test
+    def apply_config(self, testbed, steps):
+        """
+        """
+
+        if is_check_mode():
+            self.skipped()
+
+        base_configs = get_base_configs()
+
+        for device_name, config_list in base_configs.items():
+            if not config_list:
                 continue
 
-            device.connect()
+            with steps.start(device_name, continue_=True) as device_step:
+                device = testbed.devices[device_name]
+                try:
+                    device.configure(config_list)
+                except SubCommandFailure as e:
+                    logger.error(banner(f'execute failed {device_name}'))
+                    logger.error(banner(str(e)))
+                    device_step.failed()
 
-            device.execute('clear working.cfg moff')
 
-            device.configure(config_list)
 
-            device.disconnect()
+class SaveWorkingConfig(aetest.Testcase):
 
-        self.passed()
+    @aetest.test
+    def save_working_config(self, testbed, steps):
+        """
+        """
+
+        if is_check_mode():
+            self.skipped()
+
+        base_configs = get_base_configs()
+
+        for device_name, config_list in base_configs.items():
+            if not config_list:
+                continue
+            with steps.start(device_name, continue_=False) as device_step:
+                device = testbed.devices[device_name]
+                try:
+                    device.save(parameters.get('save_filename', '/drive/config/minimum.cfg'))
+                except SubCommandFailure as e:
+                    logger.error(banner(f'execute failed {device_name}'))
+                    logger.error(banner(str(e)))
+                    device_step.failed()
 
 
 #####################################################################
@@ -111,8 +201,9 @@ class CommonCleanup(aetest.CommonCleanup):
         Args:
             testbed (genie.libs.conf.testbed.Testbed): スクリプト実行時に渡されるテストベッド
         """
-        # testbed.disconnect()
-        pass
+        if not is_check_mode():
+            testbed.disconnect()
+
 
 
 if __name__ == '__main__':
