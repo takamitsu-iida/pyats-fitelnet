@@ -42,9 +42,9 @@ def print_config(name: str, configs: dict):
 execute_map = {
     'port_channel': True,
     'addr':         True,
+    'isis':         True,
     'static_route': True,
     'srv6':         True,
-    'isis':         True,
     'bgp':          True,
     'l3vpn':        True,
 }
@@ -171,6 +171,40 @@ class BuildConfigApply(aetest.Testcase):
 
 
     @aetest.test
+    def build_isis_config(self, testbed):
+        """
+        """
+        if execute_map.get('isis', False) is False:
+            self.skipped('execute_map')
+
+        isis_params = parameters.get('isis_params')
+        if isis_params is None:
+            self.isis_configs = None
+            self.skipped('isis_params not found')
+
+        self.isis_configs = build_isis_config(testbed=testbed, params=isis_params)
+        print_config('isis', self.isis_configs)
+
+
+    @aetest.test
+    def apply_isis_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('isis', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.isis_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
     def build_static_route_config(self, testbed):
         """
         """
@@ -232,40 +266,6 @@ class BuildConfigApply(aetest.Testcase):
             self.skipped('check_mode')
 
         configs = self.srv6_configs
-
-        if not configs:
-            self.skipped('configs not found')
-
-        self.apply_config(testbed, configs, steps)
-
-
-    @aetest.test
-    def build_isis_config(self, testbed):
-        """
-        """
-        if execute_map.get('isis', False) is False:
-            self.skipped('execute_map')
-
-        isis_params = parameters.get('isis_params')
-        if isis_params is None:
-            self.isis_configs = None
-            self.skipped('isis_params not found')
-
-        self.isis_configs = build_isis_config(testbed=testbed, params=isis_params)
-        print_config('isis', self.isis_configs)
-
-
-    @aetest.test
-    def apply_isis_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('isis', False) is False:
-            self.skipped('execute_map')
-
-        if is_check_mode():
-            self.skipped('check_mode')
-
-        configs = self.isis_configs
 
         if not configs:
             self.skipped('configs not found')

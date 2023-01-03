@@ -113,6 +113,8 @@ def build_bgp_config(testbed: object, params: dict) -> dict:
 
         af_attr = device_data.get('af_attr', {}) if device_data.get('af_attr', {}) else {}
         for af_name, af_data in af_attr.items():
+            if af_data.get('segment_routing') is True:
+                bgp.device_attr[device_name].af_attr[af_name].segment_routing = True
             neighbor_attr = af_data.get('neighbor_attr', {}) if af_data.get('neighbor_attr', {}) else {}
             for neighbor_name, neighbor_data in neighbor_attr.items():
                 nbr = bgp.device_attr[device_name].af_attr[af_name].neighbor_attr[neighbor_name]
@@ -367,13 +369,16 @@ def build_port_channel_config(testbed: object, params: dict) -> dict:
 
         interface_attr = device_data.get('interface_attr', {}) if device_data.get('interface_attr', {}) else {}
         for intf_name, intf_data in interface_attr.items():
+            intf = po.device_attr[device_name].interface_attr[intf_name]
+
             if intf_data.get('channel_group') is not None:
-                intf = po.device_attr[device_name].interface_attr[intf_name]
                 intf.channel_group = intf_data.get('channel_group')
-                if device_data.get('vlan_id') is not None:
-                    intf.vlan_id = device_data.get('vlan_id')
-                if device_data.get('bridge_group') is not None:
-                    intf.bridge_group = device_data.get('bridge_group')
+
+            if intf_data.get('vlan_id') is not None:
+                intf.vlan_id = intf_data.get('vlan_id')
+
+            if intf_data.get('bridge_group') is not None:
+                intf.bridge_group = intf_data.get('bridge_group')
 
     cfgs = {}
     if state == 'present':

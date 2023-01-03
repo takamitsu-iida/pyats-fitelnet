@@ -27,7 +27,6 @@ parameters:
           af_attr:
             '*':
               segment_routing:
-
               neighbor_attr:
                 '*':
                   activate:
@@ -52,19 +51,19 @@ parameters:
 
         af_attr:
           vpnv4:
+            segment_routing: true
             neighbor_attr:
               '3ffe:220:1::1':
                 activate: true
                 extended_nexthop_encoding: true
                 send_community: both
-                segment_routing: true
 
           vpnv6:
+            segment_routing: true
             neighbor_attr:
               '3ffe:220:1::1':
                 activate: true
                 send_community: both
-                segment_routing: true
 
       f220-pe2:
         router_id: 220.0.0.1
@@ -76,16 +75,16 @@ parameters:
 
         af_attr:
           vpnv4:
+            segment_routing: true
             neighbor_attr:
               '3ffe:201:1::1':
                 activate: true
                 extended_nexthop_encoding: true
                 send_community: both
-                segment_routing: true
 
           vpnv6:
+            segment_routing: true
             neighbor_attr:
               '3ffe:201:1::1':
                 activate: true
                 send_community: both
-                segment_routing: true

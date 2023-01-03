@@ -25,6 +25,9 @@ parameters:
                   route_attr:
                     '*':
 
+    # 注意
+    # 装置管理用のデフォルトルートはここに書かないこと
+
     # 装置固有設定
     device_attr:
 
@@ -50,14 +53,14 @@ parameters:
                   '220.0.1.2 255.255.255.255':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 5
+                        srv6_policy: 1
 
               ipv6:
                 route_attr:
                   '220:1::/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 2
+                        srv6_policy: 1
 
           '2':
             address_family_attr:
@@ -66,14 +69,14 @@ parameters:
                   '220.0.2.0 255.255.255.0':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 3
+                        srv6_policy: 1
 
               ipv6:
                 route_attr:
                   '220:2::/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 4
+                        srv6_policy: 1
 
       f220-pe2:
         vrf_attr:
@@ -95,17 +98,17 @@ parameters:
                   '201.0.1.2/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 5
+                        srv6_policy: 1
               ipv6:
                 route_attr:
                   '201:1::/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 2
+                        srv6_policy: 1
                   '201:2::/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 4
+                        srv6_policy: 1
           '2':
             address_family_attr:
               ipv4:
@@ -113,31 +116,31 @@ parameters:
                   '201.0.2.0/24':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 3
+                        srv6_policy: 1
               ipv6:
                 route_attr:
                   '201:2::/32':
                     interface_attr:
                       'tunnel 1':
-                        srv6_policy: 4
+                        srv6_policy: 1
 
-      fx201-p:
-        vrf_attr:
-          # 'default':
-          #   address_family_attr:
-          #     ipv4:
-          #       route_attr:
-          #         '0.0.0.0 0.0.0.0':
-          #           next_hop_attr: 192.168.10.254
+      #fx201-p:
+      #  vrf_attr:
+      #    'default':
+      #      address_family_attr:
+      #        ipv4:
+      #          route_attr:
+      #            '0.0.0.0 0.0.0.0':
+      #              next_hop_attr: 192.168.10.254
 
-      f220-p:
-        vrf_attr:
-          # 'default':
-          #   address_family_attr:
-          #     ipv4:
-          #       route_attr:
-          #         '0.0.0.0 0.0.0.0':
-          #           next_hop_attr: 192.168.10.254
+      #f220-p:
+      #  vrf_attr:
+      #    'default':
+      #      address_family_attr:
+      #        ipv4:
+      #          route_attr:
+      #            '0.0.0.0 0.0.0.0':
+      #              next_hop_attr: 192.168.10.254
 
       f221-ce2:
         vrf_attr:
