@@ -169,10 +169,12 @@ class Srv6(DeviceFeature):
         vxlan = 'vxlan'
 
     # interface level
+
     tunnel_mode = managedattribute(name='tunnel_mode', default=None, type=(None, TunnelMode), doc='tunnel mode <mode>')
 
     # segment-routing srv6 level
 
+    # encapsulation source-address
     encap_source = managedattribute(name='encap_source', default=None, type=(None, managedattribute.test_istype(str)), doc='encapsulation source-address')
 
     # set mtu <1280-4000>

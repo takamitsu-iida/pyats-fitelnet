@@ -103,9 +103,9 @@ class Srv6:
                 action = attributes.value('action')
                 vrf = attributes.value('vrf')
                 if action and vrf:
-                    configurations.append_line(attributes.format(f'local-sid {sid_name} {action} vrf {vrf}'))
+                    configurations.append_line(attributes.format(f'local-sid {sid_name} action {action} vrf {vrf}'))
                 elif action:
-                    configurations.append_line(attributes.format(f'local-sid {sid_name} {action}'))
+                    configurations.append_line(attributes.format(f'local-sid {sid_name} action {action}'))
 
                 return str(configurations)
 

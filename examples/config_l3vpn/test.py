@@ -4,11 +4,12 @@ import logging
 
 from pprint import pprint  #, pformat
 
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+# from genie.utils import Dq
+# from genie.conf.base import Device
 from pyats import aetest
 from pyats.log.utils import banner
-from genie.utils import Dq
-from genie.conf.base import Device
+from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 from test_libs import build_addr_config
 from test_libs import build_bgp_config
@@ -22,6 +23,9 @@ logger = logging.getLogger(__name__)
 
 # see datafile.yaml
 parameters = {}
+
+def is_check_mode() -> bool:
+    return parameters.get('check_mode', False)
 
 
 # for debug purpose
@@ -37,12 +41,12 @@ def print_config(name: str, configs: dict):
 # for debug purpose
 execute_map = {
     'port_channel': True,
-    'addr': False,
-    'static_route': False,
-    'srv6': False,
-    'isis': False,
-    'bgp': False,
-    'l3vpn': False,
+    'addr':         True,
+    'static_route': True,
+    'srv6':         True,
+    'isis':         True,
+    'bgp':          True,
+    'l3vpn':        True,
 }
 
 
@@ -69,21 +73,33 @@ class CommonSetup(aetest.CommonSetup):
 ###                     TESTCASES SECTION                       ###
 ###################################################################
 
-class testcase_class(aetest.Testcase):
+class BuildConfigApply(aetest.Testcase):
+
+    def apply_config(self, testbed, configs, steps):
+
+        for device_name, config_list in configs.items():
+            with steps.start(device_name, continue_=False) as device_step:
+                device = testbed.devices[device_name]
+                if not device.is_connected():
+                    try:
+                        device.connect()
+                    except (TimeoutError, StateMachineError, ConnectionError) as e:
+                        logger.error(banner(f'connect failed {device_name}'))
+                        logger.error(banner(str(e)))
+                        device_step.failed()
+                try:
+                    device.configure(config_list)
+                except SubCommandFailure as e:
+                    logger.error(banner(f'execute failed {device_name}'))
+                    logger.error(banner(str(e)))
+                    device_step.failed()
+
 
     @aetest.setup
     def setup(self, testbed):
         """
         """
-        if parameters.get('check_mode') is True:
-            self.check_mode = True
-        else:
-            for device_name, dev in testbed.devices.items():
-                try:
-                    dev.connect()
-                except (TimeoutError, StateMachineError, ConnectionError) as e:
-                    logger.error(f'{device_name} connect failed')
-                    logger.error(str(e))
+        pass
 
 
     @aetest.test
@@ -103,21 +119,21 @@ class testcase_class(aetest.Testcase):
 
 
     @aetest.test
-    def apply_port_channel_config(self, testbed):
+    def apply_port_channel_config(self, testbed, steps):
         """
         """
         if execute_map.get('port_channel', False) is False:
             self.skipped('execute_map')
 
-        if self.check_mode:
+        if is_check_mode():
             self.skipped('check_mode')
 
-        if not self.port_channel_configs:
-            self.skipped('port_channel_configs not found')
+        configs = self.port_channel_configs
 
-        self.passed()
+        if not configs:
+            self.skipped('configs not found')
 
-
+        self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
@@ -137,6 +153,24 @@ class testcase_class(aetest.Testcase):
 
 
     @aetest.test
+    def apply_addr_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('addr', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.addr_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
     def build_static_route_config(self, testbed):
         """
         """
@@ -150,6 +184,25 @@ class testcase_class(aetest.Testcase):
 
         self.static_route_configs = build_static_route_config(testbed=testbed, params=static_route_params)
         print_config('static route', self.static_route_configs)
+
+
+    @aetest.test
+    def apply_static_route_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('static_route', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.static_route_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
 
 
     @aetest.test
@@ -169,6 +222,24 @@ class testcase_class(aetest.Testcase):
 
 
     @aetest.test
+    def apply_srv6_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('srv6', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.srv6_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
     def build_isis_config(self, testbed):
         """
         """
@@ -182,6 +253,24 @@ class testcase_class(aetest.Testcase):
 
         self.isis_configs = build_isis_config(testbed=testbed, params=isis_params)
         print_config('isis', self.isis_configs)
+
+
+    @aetest.test
+    def apply_isis_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('isis', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.isis_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
@@ -201,6 +290,24 @@ class testcase_class(aetest.Testcase):
 
 
     @aetest.test
+    def apply_bgp_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('bgp', False) is False:
+            self.skipped('execute_map')
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        configs = self.bgp_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
     def build_l3vpn_config(self, testbed):
         """
         """
@@ -216,16 +323,22 @@ class testcase_class(aetest.Testcase):
         print_config('l3vpn', self.l3vpn_configs)
 
 
-
     @aetest.test
-    def apply_config(self, testbed):
+    def apply_l3vpn_config(self, testbed, steps):
         """
         """
-        if self.check_mode:
-            self.skipped()
+        if execute_map.get('l3vpn', False) is False:
+            self.skipped('execute_map')
 
-        self.passed()
+        if is_check_mode():
+            self.skipped('check_mode')
 
+        configs = self.l3vpn_configs
+
+        if not configs:
+            self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
 
 
 #####################################################################
@@ -243,8 +356,8 @@ class CommonCleanup(aetest.CommonCleanup):
         Args:
             testbed (genie.libs.conf.testbed.Testbed): スクリプト実行時に渡されるテストベッド
         """
-        # testbed.disconnect()
-        pass
+        if is_check_mode() is False:
+            testbed.disconnect()
 
 
 #

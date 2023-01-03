@@ -942,3 +942,16 @@ boot.cfgは変更していませんので、working.cfgを元に戻したいな�
 show file configuration /drive/config/minimum.cfg
 を一括で採取したい
 -->
+
+<!--
+ターゲットを指定できるようにしたい。
+--target p
+--target pe
+--target ce
+--target core
+--target all
+-->
+
+<!--
+clearコマンドを作り忘れた
+-->

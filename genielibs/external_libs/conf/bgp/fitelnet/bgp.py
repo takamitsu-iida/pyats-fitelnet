@@ -28,7 +28,7 @@ class Bgp:
                         configurations.append_line(attributes.format('bgp router-id {router_id}'))
 
                     if attributes.value('log_neighbor_changes') is True:
-                        configurations.append_line(attributes.format('log-neighbor-changes'))
+                        configurations.append_line(attributes.format('bgp log-neighbor-changes'))
 
                     if attributes.value('no_default_ipv4_unicast') is True:
                         configurations.append_line(attributes.format('no bgp default ipv4-unicast'), unconfig_cmd=attributes.format('bgp default ipv4-unicast'))

@@ -31,12 +31,12 @@ parameters:
       fx201-pe1:
 
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
           '1':
             address_family_attr:
@@ -77,12 +77,12 @@ parameters:
 
       f220-pe2:
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
           '1':
             address_family_attr:
@@ -123,30 +123,30 @@ parameters:
 
       fx201-p:
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
       f220-p:
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
       f221-ce2:
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
           '1':
             address_family_attr:
@@ -173,12 +173,12 @@ parameters:
 
       f221-ce1:
         vrf_attr:
-          'default':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '0.0.0.0 0.0.0.0':
-                    next_hop_attr: 192.168.10.254
+          # 'default':
+          #   address_family_attr:
+          #     ipv4:
+          #       route_attr:
+          #         '0.0.0.0 0.0.0.0':
+          #           next_hop_attr: 192.168.10.254
 
           '1':
             address_family_attr:

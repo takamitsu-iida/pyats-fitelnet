@@ -26,7 +26,8 @@ def build_base_configs(testbed: object, params: dict) -> dict:
     base = Base()
 
     devices = []
-    for device_name, device_data in params.get('device_attr', {}).items():
+    device_attr = params.get('device_attr', {}) if params.get('device_attr', {}) else {}
+    for device_name, device_data in device_attr.items():
         if device_name == common_name:
             dev = Device(testbed=testbed, name=common_name, os='fitelnet')
         else:
@@ -79,6 +80,15 @@ def build_base_configs(testbed: object, params: dict) -> dict:
                 if username_data.get('password') is not None:
                     base.device_attr[device_name].username_attr[username_name].password = username_data.get('password')
 
+        if device_data.get('aaa_login_attr') is not None:
+            for aaa_name, aaa_data in device_data.get('aaa_login_attr').items():
+                if aaa_data.get('login_method') is not None:
+                    base.device_attr[device_name].aaa_login_attr[aaa_name].login_method = aaa_data.get('login_method')
+
+        if device_data.get('aaa_exec_attr') is not None:
+            for aaa_name, aaa_data in device_data.get('aaa_exec_attr').items():
+                if aaa_data.get('exec_method') is not None:
+                    base.device_attr[device_name].aaa_exec_attr[aaa_name].exec_method = aaa_data.get('exec_method')
 
     cfgs = {}
     if state == 'present':

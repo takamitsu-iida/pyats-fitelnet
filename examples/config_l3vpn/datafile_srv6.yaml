@@ -39,6 +39,11 @@ parameters:
     fragment: 'post'
     propagate_tos: 'enable'
 
+    # local-sidの採番ルール
+    ## End             {locator}:1::
+    ## vrf 1 End.DT4   {locator}:11::
+    ## vrf 2 End.DT4   {locator}:12::
+
     # 装置固有設定
     device_attr:
 
@@ -47,108 +52,147 @@ parameters:
           'prefix1':
             locator_prefix: '3ffe:201:0:1::/64'
 
+        local_sid_attr:
+          '3ffe:201:0:1:1::':
+            action: end
+
       f220-p:
         locator_attr:
           'prefix1':
             locator_prefix: '3ffe:220:0:1::/64'
+
+        local_sid_attr:
+          '3ffe:220:0:1:1::':
+            action: end
 
       fx201-pe1:
         interface_attr:
           'Tunnel 1':
             tunnel_mode: srv6
 
+        # L3VPNのSRv6パケットを送信するときのソースアドレス
+        # Loopback 1のIPv6アドレスを利用
         encap_source: '3ffe:201:1::1'
 
         locator_attr:
           'prefix1':
             locator_prefix: '3ffe:201:1:1::/64'
 
+        local_sid_attr:
+          # 自分自身のSID {locator}:1
+          '3ffe:201:1:1:1::':
+            action: end
+
+          # vrf 1のSID {locator}:11
+          '3ffe:201:1:1:11::':
+            action: end.dt4
+            vrf: 1
+
+          # vrf 2のSID {locator}:12
+          '3ffe:201:1:1:12::':
+            action: end.dt4
+            vrf: 2
+
         policy_attr:
-          '1':
+          1:
+            # 宛先PE2 vrf 1 途中経路1
             color: 1
-            end_point: '3ffe:220:1:1:46::'
+            # {PE2のロケータ}:11
+            end_point: '3ffe:220:1:1:11::'
             explicit_segment_list: 1
 
-          '2':
+          2:
+            # 宛先PE2 vrf 1 途中経路2
             color: 1
-            end_point: '3ffe:220:1:1:48::'
+            # vrf 1 = {PE2のロケータ}:11
+            end_point: '3ffe:220:1:1:11::'
+            explicit_segment_list: 2
+
+          3:
+            # 宛先PE2 vrf 2 途中経路1
+            color: 1
+            # vrf 2 = {PE2のロケータ}:12
+            end_point: '3ffe:220:1:1:12::'
             explicit_segment_list: 1
 
-          '3':
+          4:
+            # 宛先PE2 vrf 2 途中経路2
             color: 1
-            end_point: '3ffe:220:1:1:47::'
-            explicit_segment_list: 2
-
-          '4':
-            color: 1
-            end_point: '3ffe:220:1:1:49::'
-            explicit_segment_list: 2
-
-          '5':
-            color: 1
-            end_point: '3ffe:220:1:1:46::'
+            # vrf 2 = {PE2のロケータ}:12
+            end_point: '3ffe:220:1:1:12::'
             explicit_segment_list: 2
 
         segment_list_attr:
           '1':
             index_attr:
               '1':
-                index_sid: '3ffe:201:0:1:42::'
+                # FX201 PのEnd SID
+                index_sid: '3ffe:201:0:1:1::'
 
           '2':
             index_attr:
               '1':
-                index_sid: '3ffe:220:0:1:42::'
+                # FX220EX PのEnd SID
+                index_sid: '3ffe:220:0:1:1::'
 
       f220-pe2:
         interface_attr:
           'Tunnel 1':
             tunnel_mode: srv6
 
+        # L3VPNのSRv6パケットを送信するときのソースアドレス
         encap_source: '3ffe:220:1::1'
-
-        local_sid_attr:
-          '3ffe:220:1:1:46::':
-            action: end.dt4
-            vrf: 1
 
         locator_attr:
           'prefix1':
             locator_prefix: '3ffe:220:1:1::/64'
 
+        local_sid_attr:
+          '3ffe:220:1:1:1::':
+            action: end
+
+          '3ffe:220:1:1:11::':
+            action: end.dt4
+            vrf: 1
+
+          '3ffe:220:1:1:12::':
+            action: end.dt4
+            vrf: 2
+
         policy_attr:
           '1':
+            # 宛先PE1 vrf 1 途中経路1
             color: 1
-            end_point: '3ffe:201:1:1:46::'
+            end_point: '3ffe:201:1:1:11::'
             explicit_segment_list: 1
 
           '2':
+            # 宛先PE1 vrf 1 途中経路2
             color: 1
-            end_point: '3ffe:201:1:1:48::'
-            explicit_segment_list: 1
+            end_point: '3ffe:201:1:1:11::'
+            explicit_segment_list: 2
 
           '3':
+            # 宛先PE1 vrf 2 途中経路1
             color: 1
-            end_point: '3ffe:201:1:1:47::'
-            explicit_segment_list: 2
+            end_point: '3ffe:201:1:1:12::'
+            explicit_segment_list: 1
 
           '4':
+            # 宛先PE1 vrf 2 途中経路2
             color: 1
-            end_point: '3ffe:201:1:1:49::'
-            explicit_segment_list: 2
-
-          '5':
-            color: 1
-            end_point: '3ffe:201:1:1:46::'
+            end_point: '3ffe:201:1:1:12::'
             explicit_segment_list: 2
 
         segment_list_attr:
           '1':
             index_attr:
               '1':
-                index_sid: '3ffe:201:0:1:46::'
+                # FX201 P(上のルータ)のEnd SID
+                index_sid: '3ffe:201:0:1:1::'
 
           '2':
             index_attr:
               '1':
-                index_sid: '3ffe:220:0:1:46::'
+                # FX220EX P(下のルータ)のEnd SID
+                index_sid: '3ffe:220:0:1:1::'

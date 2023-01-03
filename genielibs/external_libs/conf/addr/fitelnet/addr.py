@@ -43,7 +43,10 @@ class Addr:
 
                     ipv6_address = attributes.value('ipv6_address')
                     if ipv6_address is not None:
-                        ipv6_address = ipv6_address.with_prefixlen
+                        if 'loopback' in str(self.interface).lower():
+                            ipv6_address = ipv6_address.ip
+                        else:
+                            ipv6_address = ipv6_address.with_prefixlen
                         configurations.append_line(attributes.format(f'ipv6 address {ipv6_address}'))
 
                     if attributes.value('ipv6_enable') is True:
