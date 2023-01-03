@@ -40,12 +40,12 @@ def print_config(name: str, configs: dict):
 
 # for debug purpose
 execute_map = {
-    'port_channel': True,
-    'addr':         True,
-    'isis':         True,
-    'static_route': True,
-    'srv6':         True,
-    'bgp':          True,
+    'port_channel': False,
+    'addr':         False,
+    'isis':         False,
+    'static_route': False,
+    'srv6':         False,
+    'bgp':          False,
     'l3vpn':        True,
 }
 

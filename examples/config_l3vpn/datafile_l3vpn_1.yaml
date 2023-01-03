@@ -49,9 +49,6 @@ parameters:
           # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
           # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
 
-          # 注意
-          # CEルータをこのファイルで設定しないこと
-
           fx201-pe1:
 
             # 指定がなければ親の設定を引き継ぐ
@@ -62,6 +59,8 @@ parameters:
 
             # インタフェース固有の設定
             interface_attr:
+
+              # CEルータ向けインタフェース
               'Port-channel 2010001':
                 ipv4_address: 201.0.1.1/24
                 ipv6_address: '201:1::1/32'
@@ -84,6 +83,7 @@ parameters:
 
           f220-pe2:
             interface_attr:
+              # CEルータ向けインタフェース
               'Port-channel 2010001':
                 ipv4_address: 220.0.1.1/24
                 ipv6_address: '220:1::1/32'
@@ -93,3 +93,5 @@ parameters:
                   redistribute: [connected]
                 'ipv6 vrf':
                   redistribute: [connected]
+
+          # CEルータの設定を追加
