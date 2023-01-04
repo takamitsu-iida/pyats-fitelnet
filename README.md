@@ -952,13 +952,6 @@ show file configuration /drive/config/minimum.cfg
 
 <!--
 ターゲットを指定できるようにしたい。
---target p
---target pe
---target ce
---target core
---target all
--->
-
-<!--
-clearコマンドを作り忘れた
+--group [ p | pe | ce | core | all ]
+--host fx201-p
 -->
