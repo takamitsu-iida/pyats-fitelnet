@@ -39,11 +39,6 @@ parameters:
     fragment: 'post'
     propagate_tos: 'enable'
 
-    # local-sidの採番ルール
-    ## End             {locator}:1::
-    ## vrf 1 End.DT4   {locator}:11::
-    ## vrf 2 End.DT4   {locator}:12::
-
     # 装置固有設定
     device_attr:
 
@@ -79,7 +74,6 @@ parameters:
             locator_prefix: '3ffe:201:1:1::/64'
 
         local_sid_attr:
-          # 自分自身のSID {locator}:1
           '3ffe:201:1:1:1::':
             action: end
 

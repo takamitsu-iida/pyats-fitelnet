@@ -12,7 +12,7 @@ parameters:
         # override state
         # state: 'present'
 
-      # filter_attributesの有効・無効
+        # filter_attributesの有効・無効
         apply_filter: true
 
         # 対象とするアトリビュートの定義
@@ -52,7 +52,7 @@ parameters:
           fx201-pe1:
 
             # 指定がなければ親の設定を引き継ぐ
-            rd: '1:1'
+            # rd: '1:1'
             # import_rt:
             # export_rt:
             # srv6_locator: prefix1
@@ -94,4 +94,16 @@ parameters:
                 'ipv6 vrf':
                   redistribute: [connected]
 
-          # CEルータの設定を追加
+          f221-ce1:
+            interface_attr:
+              # PEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 201.0.1.2/24
+                ipv6_address: '201:1::2/32'
+
+          f221-ce2:
+            interface_attr:
+              # PEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 220.0.1.2/24
+                ipv6_address: '220:1::2/32'

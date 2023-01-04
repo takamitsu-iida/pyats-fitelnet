@@ -1,0 +1,67 @@
+---
+
+parameters:
+
+  static_route_params:
+
+    # 装置固有設定
+    device_attr:
+      fx201-pe1:
+        vrf_attr:
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '220.0.2.0 255.255.255.0':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 1
+              ipv6:
+                route_attr:
+                  '220:2::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 1
+
+      f220-pe2:
+        vrf_attr:
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '201.0.2.0/24':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 1
+              ipv6:
+                route_attr:
+                  '201:2::/32':
+                    interface_attr:
+                      'tunnel 1':
+                        srv6_policy: 1
+
+      f221-ce2:
+        vrf_attr:
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 220.0.2.1
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 220:2::1
+
+      f221-ce1:
+        vrf_attr:
+          '2':
+            address_family_attr:
+              ipv4:
+                route_attr:
+                  '0.0.0.0 0.0.0.0':
+                    next_hop_attr: 201.0.2.1
+              ipv6:
+                route_attr:
+                  '::/0':
+                    next_hop_attr: 201:2::1

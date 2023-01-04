@@ -40,13 +40,43 @@ def print_config(name: str, configs: dict):
 
 # for debug purpose
 execute_map = {
+
+    # 1
+    # ポートチャネルを作る
     'port_channel': False,
-    'addr':         False,
-    'isis':         False,
+
+    # 2
+    # 網内にIPアドレスを割り振る
+    'addr': False,
+
+    # 3
+    # ISISでルーティングする（srv6 locatorはまだ定義していないので、それは除く）
+    'isis': False,
+
+    # 4
+    # BGPでPE間を接続する（VPNv4とVPNv6を定義しておく）
+    'bgp': False,
+
+    # 5
+    # SRv6ロケータを設定する
+    'srv6_locator': False,
+
+    # 6
+    # ISISにsrv6 locatorを加える
+    'isis_srv6': False,
+
+    # 7
+    # vrf 1とvrf 2を定義する
+    'l3vpn': False,
+
+    # 8
+    # SRv6のlocal sidとポリシーを設定する
+    'srv6_local_sid': False,
+
+    # 9
+    # vrf 1とvrf 2に関するスタティックルートを設定する
     'static_route': False,
-    'srv6':         False,
-    'bgp':          False,
-    'l3vpn':        True,
+
 }
 
 
@@ -67,6 +97,8 @@ class CommonSetup(aetest.CommonSetup):
         """
         assert testbed is not None
         assert description is not None
+
+        logger.info(banner(f'{description}'))
 
 
 ###################################################################
@@ -89,11 +121,11 @@ class BuildConfigApply(aetest.Testcase):
                         device_step.failed()
                 try:
                     device.configure(config_list)
+                    device.refresh()
                 except SubCommandFailure as e:
                     logger.error(banner(f'execute failed {device_name}'))
                     logger.error(banner(str(e)))
                     device_step.failed()
-
 
     @aetest.setup
     def setup(self, testbed):

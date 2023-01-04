@@ -43,21 +43,21 @@ parameters:
 
         device_attr:
           fx201-pe1:
+            # to CE1
             interface_attr:
               'Port-channel 2010002':
                 ipv4_address: 201.0.2.1/24
                 ipv6_address: '201:2::1/32'
-
             bgp_attr:
               af_attr:
                 'ipv4 vrf':
-                  redistribute: connected
+                  redistribute: [connected]
                 'ipv6 vrf':
-                  redistribute:
-                    - connected
+                  redistribute: [connected]
 
           f220-pe2:
             interface_attr:
+              # to CE2
               'Port-channel 2010002':
                 ipv4_address: 220.0.2.1/24
                 ipv6_address: '220:2::1/32'
@@ -67,3 +67,17 @@ parameters:
                   redistribute: [connected]
                 'ipv6 vrf':
                   redistribute: [connected]
+
+          f221-ce1:
+            interface_attr:
+              # to PE1
+              'Port-channel 2010002':
+                ipv4_address: 201.0.2.2/24
+                ipv6_address: '201:2::2/32'
+
+          f221-ce2:
+            interface_attr:
+              # to PE2
+              'Port-channel 2010002':
+                ipv4_address: 220.0.2.2/24
+                ipv6_address: '220:2::2/32'
