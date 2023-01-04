@@ -93,26 +93,45 @@ if __name__ == '__main__':
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=default_testbed_path)
+    parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
+    parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
+    parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
     parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='show directory')
     args, _ = parser.parse_known_args()
 
     testbed = load(args.testbed)
 
-    # define router type
-    p_routers = ['fx201-p', 'f220-p']
-    pe_routers = ['fx201-pe1', 'f220-pe2']
-    ce_routers = ['f221-ce1', 'f221-ce2']
-    core_routers = p_routers + pe_routers
-    all_routers = p_routers + pe_routers + ce_routers
+    # define router group map
+    router_groups = {
+        'p': ['fx201-p', 'f220-p'],
+        'pe': ['fx201-pe1', 'f220-pe2'],
+        'ce': ['f221-ce1', 'f221-ce2'],
+        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
+        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
+    }
+
+    target_list = []
+    if args.group:
+        for group_name in args.group:
+            group_list = router_groups.get(group_name, [])
+            for router_name in group_list:
+                if router_name in testbed.devices.keys():
+                    target_list.append(router_name)
+
+    if args.host:
+        for host_name in args.host:
+            if host_name in testbed.devices.keys():
+                if host_name not in target_list:
+                    target_list.append(host_name)
+
 
     def main():
 
         results = {}
 
         if args.yes:
-            for router_name in all_routers:
+            for router_name in target_list:
                 dev = testbed.devices.get(router_name)
 
                 result = connect(dev)

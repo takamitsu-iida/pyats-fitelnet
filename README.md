@@ -491,15 +491,31 @@ fx201-pe1#
 
 ルータが複数あるときは、スクリプトで一括操作した方が効率的です。
 
+操作する対象を指定するには '--group <グループ名>' もしくは '--host <ホスト名>' を指定します。
+
+```python
+    router_groups = {
+        'p': ['fx201-p', 'f220-p'],
+        'pe': ['fx201-pe1', 'f220-pe2'],
+        'ce': ['f221-ce1', 'f221-ce2'],
+        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
+        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
+    }
+```
+
+--group all がデフォルトです。
+
 <br><br>
 
 ## 編集中の設定を破棄する
 
 FITELnetのコマンドはrestoreです。
 
-working.cfgをcurrent.cfgの内容で復元します（つまり編集内容を破棄してworking.cfgを動作中の設定に戻すことになります）。
+working.cfgをcurrent.cfgの内容で復元します（つまり、現在のworking.cfgの編集内容を破棄して動作中の設定に戻すことになります）。
 
 一括で操作するスクリプトは `examples/bin/restore.py -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 実行例。
 
@@ -528,6 +544,8 @@ FITELnetのコマンドはrestore <filename>です。
 
 一括で操作するスクリプトは `examples/bin/restore.py --filename <filename> -y` です。
 
+デフォルトの対象装置は '--group all' です。
+
 実行例。
 
 ```bash
@@ -549,16 +567,18 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/restore.py --filename 
 
 ## 編集中の設定をboot.cfgとして保存する
 
-> **Warning**
-> この作業は慎重に実行しましょう。commitして動作することを確認した後の方がよろしいかと思います。
-
 FITELnetのコマンドはsaveです。
 
 今編集している設定(working.cfg)を起動用の設定(boot.cfg)として保存します。
 
 一括で操作するスクリプトは `examples/bin/save.py -y` です。
 
+デフォルトの対象装置は '--group all' です。
+
 実行例。
+
+> **Warning**
+> この作業は慎重に実行しましょう。commitして動作することを確認した後の方がよろしいかと思います。
 
 ```bash
 iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py -y
@@ -575,7 +595,6 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py -y
 | f221-ce2  | Success  |
 ```
 
-
 <br><br>
 
 ## 編集中の設定をファイルに保存する
@@ -585,6 +604,8 @@ FITELnetのコマンドはsave <filename>です。
 今編集している設定(working.cfg)をファイルとして保存します。
 
 一括で操作するスクリプトは `examples/bin/save.py --filename <filename> -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 実行例。
 
@@ -603,16 +624,17 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py --filename /dr
 | f221-ce2  | Success  |
 ```
 
-
 <br><br>
 
 ## 編集中の設定を運用中の設定に反映させる
 
-FITELnetのコマンドはrefreshです（commitと同じです）。
+FITELnetのコマンドはrefreshです。commitと同じ動作です。
 
 今編集している設定(working.cfg)を運用中の設定に反映させます。
 
 一括で操作するスクリプトは `examples/bin/refresh.py -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 実行例。
 
@@ -640,6 +662,8 @@ FITELnetのコマンドはrefresh <filename>です。
 ファイルに保存されている設定を運用中の設定に反映させます。
 
 一括で操作するスクリプトは `examples/bin/refresh.py --filename <filename> -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 > **Note**
 > ファイル名はフルパスで指定してください。
@@ -671,6 +695,8 @@ FITELnetのコマンドはloadです。
 
 一括で操作するスクリプトは `examples/bin/load.py --filename <filename> -y` です。
 
+デフォルトの対象装置は '--group all' です。
+
 実行例。
 
 ```bash
@@ -695,6 +721,8 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/load.py -y
 FITELnetのコマンドはdir <directory>です。
 
 一括で操作するスクリプトは `examples/bin/dir.py --dirname <dirname> -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 実行例。
 
@@ -726,7 +754,6 @@ f220-p
 （省略）
 ```
 
-
 <br><br>
 
 ## ファイルを削除する
@@ -734,6 +761,8 @@ f220-p
 FITELnetのコマンドはdelete <filename>です。
 
 一括で操作するスクリプトは `examples/bin/delete.py --filename <filename> -y` です。
+
+デフォルトの対象装置は '--group all' です。
 
 実行例。
 
@@ -764,6 +793,28 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/bin/delete.py --filename /dr
 | f221-ce1  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
 | f221-ce2  | Fail     | rm: cannot remove '/drive/config/iida.cfg': No such file or directory |
 ```
+
+<br>
+
+## 設定を表示する
+
+- show_current_config.py
+
+show current.cfgを表示します。
+
+たとえば './examples/bin/show_current_config.py --host fx201-p' とすればfx201-pの運用設定が表示されます。
+
+- show_working_config.py
+
+show working.cfgを表示します。
+
+たとえば './examples/bin/show_working_config.py --host fx201-p' とすればfx201-pの編集用設定が表示されます。
+
+- show_file_config.py
+
+たとえば './examples/bin/show_file_config.py --filename /drive/config/minimum.cfg --host fx201-p' とすれば
+fx201-pに保存されているminimum.cfgが表示されます。
+
 
 <br><br><br><br>
 
@@ -944,14 +995,3 @@ f221-ce2
 これでSSHの接続しかできない最小限の状態から検証を始められます。
 
 boot.cfgは変更していませんので、working.cfgを元に戻したいなら `examples/bin/load.py -y` を使ってboot.cfgの設定を編集用設定に取り込みます。
-
-<!--
-show file configuration /drive/config/minimum.cfg
-を一括で採取したい
--->
-
-<!--
-ターゲットを指定できるようにしたい。
---group [ p | pe | ce | core | all ]
---host fx201-p
--->

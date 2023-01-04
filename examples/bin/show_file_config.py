@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""load
+"""show_file_config.py
 
-ファイルの内容を編集用設定に反映させます。
+ファイルで保存されている設定情報を表示します。
 
-引数を省略した場合、boot.cfgの設定情報が読み込まれます。
+show file configuration <filename>
 
 """
 
@@ -13,16 +13,9 @@ import logging
 import os
 import sys
 
-from genie.testbed import load as load_testbed
+from genie.testbed import load
 from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
-
-
-try:
-    from tabulate import tabulate
-    HAS_TABULATE = True
-except ImportError:
-    HAS_TABULATE = False
 
 
 logger = logging.getLogger(__name__)
@@ -50,28 +43,22 @@ def disconnect(uut: object) -> bool:
 
 def print_results(results: dict):
 
-    for router_name, result in results.items():
-        results[router_name] = 'Success' if result is True else 'Fail'
-
-    if HAS_TABULATE:
-        headers = ['device', 'result']
-        print(tabulate(list(results.items()), headers=headers, tablefmt='github'))
-    else:
-        for router_name, result in results.items():
-            print('='*10 + ' results ' + '='*10)
-            print(f'{router_name} {result}')
-
-
-def load(uut: object, filename :str =None) -> bool:
-    try:
-        if filename:
-            uut.load(filename)
+    for router_name, output in results.items():
+        print('\n' + '='*10 + f' {router_name} ' + '='*10 + '\n')
+        if output:
+            print(output)
         else:
-            uut.load()
+            print('no configuration')
+
+
+def show_file_configuration(uut: object, filename :str =None) -> str:
+    if not filename:
+        return None
+    try:
+        return uut.execute(f'show file configuration {filename}')
     except SubCommandFailure as e:
         logger.error(str(e))
-        return False
-    return True
+    return None
 
 
 if __name__ == '__main__':
@@ -88,11 +75,10 @@ if __name__ == '__main__':
     parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
     parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
     parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
-    parser.add_argument('--filename', dest='filename', help='filename', type=str, default=None)
-    parser.add_argument('-y', '--yes', action='store_true', default=False, help='load from file to working.cfg')
-    args, _ = parser.parse_known_args()
+    parser.add_argument('--filename', required=True, dest='filename', type=str, default=None, help='save filename')
+    args = parser.parse_args()
 
-    testbed = load_testbed(args.testbed)
+    testbed = load(args.testbed)
 
     # define router group map
     router_groups = {
@@ -117,6 +103,7 @@ if __name__ == '__main__':
                 if host_name not in target_list:
                     target_list.append(host_name)
 
+
     def main():
 
         results = {}
@@ -124,25 +111,22 @@ if __name__ == '__main__':
         if args.filename:
             filename = args.filename if args.filename.startswith('/') else '/drive/config/' + args.filename
         else:
-            filename = None
-
-        if args.yes:
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
-
-                result = connect(dev)
-                results[router_name] = result
-                if result is False:
-                    continue
-
-                results[router_name] = load(dev, filename)
-
-                disconnect(dev)
-
-            print_results(results)
             return 0
 
-        parser.print_help()
+
+        for router_name in target_list:
+            dev = testbed.devices.get(router_name)
+
+            result = connect(dev)
+            results[router_name] = result
+            if result is False:
+                continue
+
+            results[router_name] = show_file_configuration(dev, filename)
+
+            disconnect(dev)
+
+        print_results(results)
         return 0
 
 

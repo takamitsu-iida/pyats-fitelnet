@@ -387,19 +387,40 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--testbed', dest='testbed', help='testbed YAML file', type=str, default=testbed_path)
+    parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
+    parser.add_argument('--group', nargs='*', type=str, default=['core'], help='a list of target group')
     args, _ = parser.parse_known_args()
 
-    p_routers = ['fx201-p', 'f220-p']
-    pe_routers = ['fx201-pe1', 'f220-pe2']
-    ce_routers = ['f221-ce1', 'f221-ce2']
-    all_routers = p_routers + pe_routers + ce_routers
-
     testbed = load(args.testbed)
+
+    # define router group map
+    router_groups = {
+        'p': ['fx201-p', 'f220-p'],
+        'pe': ['fx201-pe1', 'f220-pe2'],
+        'ce': ['f221-ce1', 'f221-ce2'],
+        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
+        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
+    }
+
+    target_list = []
+    if args.group:
+        for group_name in args.group:
+            group_list = router_groups.get(group_name, [])
+            for router_name in group_list:
+                if router_name in testbed.devices.keys():
+                    target_list.append(router_name)
+
+    if args.host:
+        for host_name in args.host:
+            if host_name in testbed.devices.keys():
+                if host_name not in target_list:
+                    target_list.append(host_name)
+
 
     def test():
 
         for name, dev in testbed.devices.items():
-            if name not in pe_routers:
+            if name not in target_list:
                 continue
 
             if connect(dev) is False:
