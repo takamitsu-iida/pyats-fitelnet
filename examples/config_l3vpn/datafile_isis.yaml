@@ -4,32 +4,6 @@ parameters:
 
   isis_params:
 
-    # present or absent
-    state: 'present'
-
-    # filter_attributesの有効・無効
-    apply_filter: true
-
-    # 対象とするアトリビュートの定義
-    filter_attributes:
-      device_attr:
-        '*':
-          log_adjacency_changes:
-          is_type:
-          topology:
-          net:
-          locator_attr:
-            '*':
-          flexalgo_attr:
-            '*':
-          interface_attr:
-            '*':
-              ipv4:
-              ipv6:
-              level_1_metric:
-              level_2_metric:
-              affinity_name:
-
     # device common settings
     isis_tag: core
     log_adjacency_changes: True
@@ -90,3 +64,30 @@ parameters:
             ipv6: True
           'Port-channel 1020000':
             ipv6: True
+
+
+    # present or absent
+    # state: 'present'
+
+    # filter_attributesの有効・無効
+    # apply_filter: false
+
+    # 対象とするアトリビュートの定義
+    # filter_attributes:
+    #   device_attr:
+    #     '*':
+    #       log_adjacency_changes:
+    #       is_type:
+    #       topology:
+    #       net:
+    #       locator_attr:
+    #         '*':
+    #       flexalgo_attr:
+    #         '*':
+    #       interface_attr:
+    #         '*':
+    #           ipv4:
+    #           ipv6:
+    #           level_1_metric:
+    #           level_2_metric:
+    #           affinity_name:

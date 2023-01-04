@@ -4,35 +4,6 @@ parameters:
 
   srv6_params:
 
-    # present or absent
-    state: 'present'
-
-    # filter_attributesの有効・無効
-    apply_filter: true
-
-    # 対象とするアトリビュートの定義
-    filter_attributes:
-      mtu:
-      mss:
-      fragment:
-      propagate_tos:
-
-      device_attr:
-        # '*' は任意の装置名
-        '*':
-          interface_attr:
-            '*':
-              tunnel_mode:
-          encap_source:
-          locator_attr:
-            '*':
-          local_sid_attr:
-            '*':
-          policy_attr:
-            '*':
-          segment_list_attr:
-            '*':
-
     # 共通設定
     mtu: 2000
     mss: 'auto'
@@ -190,3 +161,33 @@ parameters:
               '1':
                 # FX220EX P(下のルータ)のEnd SID
                 index_sid: '3ffe:220:0:1:1::'
+
+
+    # present or absent
+    # state: 'present'
+
+    # filter_attributesの有効・無効
+    # apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    # filter_attributes:
+    #   mtu:
+    #   mss:
+    #   fragment:
+    #   propagate_tos:
+    #
+    #   device_attr:
+    #     # '*' は任意の装置名
+    #     '*':
+    #       interface_attr:
+    #         '*':
+    #           tunnel_mode:
+    #       encap_source:
+    #       locator_attr:
+    #         '*':
+    #       local_sid_attr:
+    #         '*':
+    #       policy_attr:
+    #         '*':
+    #       segment_list_attr:
+    #         '*':

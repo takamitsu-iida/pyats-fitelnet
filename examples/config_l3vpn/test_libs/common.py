@@ -147,14 +147,10 @@ def build_bgp_config(testbed: object, params: dict) -> dict:
     return configs
 
 
-def build_isis_config(testbed: object, params: dict) -> dict:
+def build_isis_config(testbed: object, params: dict, attributes: dict = None) -> dict:
 
     # state
     state = params.get('state', 'present')
-
-    # filter attribute
-    apply_filter = params.get('apply_filter', False)
-    attributes = params.get('filter_attributes')
 
     isis_tag = params.get('isis_tag')
     if isis_tag is None:
@@ -225,15 +221,16 @@ def build_isis_config(testbed: object, params: dict) -> dict:
 
     cfgs = {}
     if state == 'present':
-        if apply_filter and attributes is not None:
-            cfgs = isis.build_config(devices=devices, apply=False, attributes=attributes)
-        else:
+        if attributes is None:
             cfgs = isis.build_config(devices=devices, apply=False)
-    elif state == 'absent':
-        if apply_filter and attributes is not None:
-            cfgs = isis.build_unconfig(devices=devices, apply=False, attributes=attributes)
         else:
+            cfgs = isis.build_config(devices=devices, apply=False, attributes=attributes)
+    elif state == 'absent':
+        if attributes is None:
             cfgs = isis.build_unconfig(devices=devices, apply=False)
+        else:
+            cfgs = isis.build_unconfig(devices=devices, apply=False, attributes=attributes)
+
 
     # convert to str
     configs = {}
@@ -243,14 +240,10 @@ def build_isis_config(testbed: object, params: dict) -> dict:
     return configs
 
 
-def build_srv6_config(testbed: object, params: dict) -> dict:
+def build_srv6_config(testbed: object, params: dict, attributes: dict = None) -> dict:
 
     # state
     state = params.get('state', 'present')
-
-    # filter attribute
-    apply_filter = params.get('apply_filter', False)
-    attributes = params.get('filter_attributes')
 
     # create Srv6 object
     srv6 = Srv6()
@@ -285,16 +278,16 @@ def build_srv6_config(testbed: object, params: dict) -> dict:
         # override default setting for this device
 
         if device_data.get('mtu') is not None:
-            srv6.mtu = device_data.get('mtu')
+            srv6.device_attr[device_name].mtu = device_data.get('mtu')
 
         if device_data.get('mss') is not None:
-            srv6.mss = device_data.get('mss')
+            srv6.device_attr[device_name].mss = device_data.get('mss')
 
         if device_data.get('fragment') is not None:
-            srv6.fragment = device_data.get('fragment')
+            srv6.device_attr[device_name].fragment = device_data.get('fragment')
 
         if device_data.get('propagate_tos') is not None:
-            srv6.propagate_tos = device_data.get('propagate_tos')
+            srv6.device_attr[device_name].propagate_tos = device_data.get('propagate_tos')
 
         # device specific attribute
 
@@ -330,15 +323,15 @@ def build_srv6_config(testbed: object, params: dict) -> dict:
 
     cfgs = {}
     if state == 'present':
-        if apply_filter and attributes is not None:
-            cfgs = srv6.build_config(devices=devices, apply=False, attributes=attributes)
-        else:
+        if attributes is None:
             cfgs = srv6.build_config(devices=devices, apply=False)
-    elif state == 'absent':
-        if apply_filter and attributes is not None:
-            cfgs = srv6.build_unconfig(devices=devices, apply=False, attributes=attributes)
         else:
+            cfgs = srv6.build_config(devices=devices, apply=False, attributes=attributes)
+    elif state == 'absent':
+        if attributes is None:
             cfgs = srv6.build_unconfig(devices=devices, apply=False)
+        else:
+            cfgs = srv6.build_unconfig(devices=devices, apply=False, attributes=attributes)
 
     # convert to str
     configs = {}

@@ -41,41 +41,32 @@ def print_config(name: str, configs: dict):
 # for debug purpose
 execute_map = {
 
-    # 1
-    # ポートチャネルを作る
-    'port_channel': False,
+    # 1. ポートチャネルを作る
+    'port_channel': True,
 
-    # 2
-    # 網内にIPアドレスを割り振る
-    'addr': False,
+    # 2. 網内にIPアドレスを割り振る
+    'address': True,
 
-    # 3
-    # ISISでルーティングする（srv6 locatorはまだ定義していないので、それは除く）
-    'isis': False,
+    # 3. ISISでルーティングする（この時点ではsrv6 locatorをまだ定義していないので、それは除外）
+    'isis_routing': True,
 
-    # 4
-    # BGPでPE間を接続する（VPNv4とVPNv6を定義しておく）
-    'bgp': False,
+    # 4. BGPでPE間を接続する（VPNv4とVPNv6を設定する）
+    'bgp': True,
 
-    # 5
-    # SRv6ロケータを設定する
-    'srv6_locator': False,
+    # 5. SRv6ロケータを設定する（この時点ではVPNを定義していないのでlocal-sidやポリシーは除外してロケータだけを設定する）
+    'srv6_locator': True,
 
-    # 6
-    # ISISにsrv6 locatorを加える
-    'isis_srv6': False,
+    # 6. ISISにsrv6 locator設定を加える
+    'isis_srv6': True,
 
-    # 7
-    # vrf 1とvrf 2を定義する
-    'l3vpn': False,
+    # 7. vrf 1とvrf 2を定義する
+    'l3vpn': True,
 
-    # 8
-    # SRv6のlocal sidとポリシーを設定する
-    'srv6_local_sid': False,
+    # 8. SRv6のlocal sidとポリシーを設定する
+    'srv6_sid': True,
 
-    # 9
-    # vrf 1とvrf 2に関するスタティックルートを設定する
-    'static_route': False,
+    # 9. vrf 1とvrf 2に関するスタティックルートを設定する
+    'static_route': True,
 
 }
 
@@ -127,186 +118,84 @@ class BuildConfigApply(aetest.Testcase):
                     logger.error(banner(str(e)))
                     device_step.failed()
 
-    @aetest.setup
-    def setup(self, testbed):
-        """
-        """
-        pass
-
 
     @aetest.test
-    def build_port_channel_config(self, testbed):
+    def port_channel_config(self, testbed, steps):
         """
         """
-        if execute_map.get('port_channel', False) is False:
+        if not execute_map.get('port_channel', False):
             self.skipped('execute_map')
 
         port_channel_params = parameters.get('port_channel_params')
         if port_channel_params is None:
-            self.port_channel_configs = None
             self.skipped('port_channel_params not found')
 
-        self.port_channel_configs = build_port_channel_config(testbed=testbed, params=port_channel_params)
-        print_config('port channel', self.port_channel_configs)
+        configs = build_port_channel_config(testbed=testbed, params=port_channel_params)
 
-
-    @aetest.test
-    def apply_port_channel_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('port_channel', False) is False:
-            self.skipped('execute_map')
+        print_config('port channel', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
-
-        configs = self.port_channel_configs
-
-        if not configs:
-            self.skipped('configs not found')
 
         self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
-    def build_addr_config(self, testbed):
+    def address_config(self, testbed, steps):
         """
         """
-        if execute_map.get('addr', False) is False:
+        if not execute_map.get('address', False):
             self.skipped('execute_map')
 
         addr_params = parameters.get('addr_params')
         if addr_params is None:
-            self.addr_configs = None
             self.skipped('addr_params not found')
 
-        self.addr_configs = build_addr_config(testbed=testbed, params=addr_params)
-        print_config('addr', self.addr_configs)
+        configs = build_addr_config(testbed=testbed, params=addr_params)
 
-
-    @aetest.test
-    def apply_addr_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('addr', False) is False:
-            self.skipped('execute_map')
+        print_config('address', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
-
-        configs = self.addr_configs
-
-        if not configs:
-            self.skipped('configs not found')
 
         self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
-    def build_isis_config(self, testbed):
+    def isis_routing_config(self, testbed, steps):
         """
         """
-        if execute_map.get('isis', False) is False:
+        if not execute_map.get('isis_routing', False):
             self.skipped('execute_map')
 
         isis_params = parameters.get('isis_params')
         if isis_params is None:
-            self.isis_configs = None
             self.skipped('isis_params not found')
 
-        self.isis_configs = build_isis_config(testbed=testbed, params=isis_params)
-        print_config('isis', self.isis_configs)
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'log_adjacency_changes': None,
+                    'is_type': None,
+                    'topology': None,
+                    'net': None,
+                    'interface_attr': None,
+                }
+            }
+        }
 
+        configs = build_isis_config(testbed=testbed, params=isis_params, attributes=attributes)
 
-    @aetest.test
-    def apply_isis_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('isis', False) is False:
-            self.skipped('execute_map')
+        print_config('isis_routing', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
-
-        configs = self.isis_configs
-
-        if not configs:
-            self.skipped('configs not found')
 
         self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
-    def build_static_route_config(self, testbed):
-        """
-        """
-        if execute_map.get('static_route', False) is False:
-            self.skipped('execute_map')
-
-        static_route_params = parameters.get('static_route_params')
-        if static_route_params is None:
-            self.static_route_configs = None
-            self.skipped('static_route_params not found')
-
-        self.static_route_configs = build_static_route_config(testbed=testbed, params=static_route_params)
-        print_config('static route', self.static_route_configs)
-
-
-    @aetest.test
-    def apply_static_route_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('static_route', False) is False:
-            self.skipped('execute_map')
-
-        if is_check_mode():
-            self.skipped('check_mode')
-
-        configs = self.static_route_configs
-
-        if not configs:
-            self.skipped('configs not found')
-
-        self.apply_config(testbed, configs, steps)
-
-
-
-    @aetest.test
-    def build_srv6_config(self, testbed):
-        """
-        """
-        if execute_map.get('srv6', False) is False:
-            self.skipped('execute_map')
-
-        srv6_params = parameters.get('srv6_params')
-        if srv6_params is None:
-            self.srv6_configs = None
-            self.skipped('srv6_params not found')
-
-        self.srv6_configs = build_srv6_config(testbed=testbed, params=srv6_params)
-        print_config('srv6', self.srv6_configs)
-
-
-    @aetest.test
-    def apply_srv6_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('srv6', False) is False:
-            self.skipped('execute_map')
-
-        if is_check_mode():
-            self.skipped('check_mode')
-
-        configs = self.srv6_configs
-
-        if not configs:
-            self.skipped('configs not found')
-
-        self.apply_config(testbed, configs, steps)
-
-
-    @aetest.test
-    def build_bgp_config(self, testbed):
+    def bgp_config(self, testbed, steps):
         """
         """
         if execute_map.get('bgp', False) is False:
@@ -314,33 +203,84 @@ class BuildConfigApply(aetest.Testcase):
 
         bgp_params = parameters.get('bgp_params')
         if bgp_params is None:
-            self.bgp_configs = None
             self.skipped('bgp_params not found')
 
-        self.bgp_configs = build_bgp_config(testbed=testbed, params=bgp_params)
-        print_config('bgp', self.bgp_configs)
+        configs = build_bgp_config(testbed=testbed, params=bgp_params)
 
-
-    @aetest.test
-    def apply_bgp_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('bgp', False) is False:
-            self.skipped('execute_map')
+        print_config('bgp', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
-
-        configs = self.bgp_configs
-
-        if not configs:
-            self.skipped('configs not found')
 
         self.apply_config(testbed, configs, steps)
 
 
     @aetest.test
-    def build_l3vpn_config(self, testbed):
+    def srv6_locator_config(self, testbed, steps):
+        """
+        """
+        if not execute_map.get('srv6_locator', False):
+            self.skipped('execute_map')
+
+        srv6_params = parameters.get('srv6_params')
+        if srv6_params is None:
+            self.skipped('srv6_params not found')
+
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'mtu': None,
+                    'mss': None,
+                    'fragment': None,
+                    'propagate_tos': None,
+                    'locator_attr': None,
+                    'encap_source': None,
+                    'interface_attr': None,
+                }
+            }
+        }
+
+        configs = build_srv6_config(testbed=testbed, params=srv6_params, attributes=attributes)
+
+        print_config('srv6_locator', configs)
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
+    def isis_srv6_config(self, testbed, steps):
+        """
+        """
+        if not execute_map.get('isis_srv6', False):
+            self.skipped('execute_map')
+
+        isis_params = parameters.get('isis_params')
+        if isis_params is None:
+            self.skipped('isis_params not found')
+
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'locator_attr': None,
+                }
+            }
+        }
+
+        configs = build_isis_config(testbed=testbed, params=isis_params, attributes=attributes)
+
+        print_config('isis_srv6', configs)
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
+    def l3vpn_config(self, testbed, steps):
         """
         """
         if execute_map.get('l3vpn', False) is False:
@@ -348,19 +288,11 @@ class BuildConfigApply(aetest.Testcase):
 
         l3vpn_params = parameters.get('l3vpn_params')
         if l3vpn_params is None:
-            self.l3vpn_configs = None
             self.skipped('l3vpn_params not found')
 
-        self.l3vpn_configs = build_l3vpn_config(testbed=testbed, params=l3vpn_params)
-        print_config('l3vpn', self.l3vpn_configs)
+        configs = build_l3vpn_config(testbed=testbed, params=l3vpn_params)
 
-
-    @aetest.test
-    def apply_l3vpn_config(self, testbed, steps):
-        """
-        """
-        if execute_map.get('l3vpn', False) is False:
-            self.skipped('execute_map')
+        print_config('l3vpn', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
@@ -369,6 +301,58 @@ class BuildConfigApply(aetest.Testcase):
 
         if not configs:
             self.skipped('configs not found')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
+    def srv6_sid_config(self, testbed, steps):
+        """
+        """
+        if not execute_map.get('srv6_sid', False):
+            self.skipped('execute_map')
+
+        srv6_params = parameters.get('srv6_params')
+        if srv6_params is None:
+            self.skipped('srv6_params not found')
+
+        attributes = {
+            'device_attr': {
+                '*': {
+                    'local_sid_attr': None,
+                    'policy_attr': None,
+                    'segment_list_attr': None,
+                }
+            }
+        }
+
+        configs = build_srv6_config(testbed=testbed, params=srv6_params, attributes=attributes)
+
+        print_config('srv6_sid', configs)
+
+        if is_check_mode():
+            self.skipped('check_mode')
+
+        self.apply_config(testbed, configs, steps)
+
+
+    @aetest.test
+    def static_route_config(self, testbed, steps):
+        """
+        """
+        if execute_map.get('static_route', False) is False:
+            self.skipped('execute_map')
+
+        static_route_params = parameters.get('static_route_params')
+        if static_route_params is None:
+            self.skipped('static_route_params not found')
+
+        configs = build_static_route_config(testbed=testbed, params=static_route_params)
+
+        print_config('static route', configs)
+
+        if is_check_mode():
+            self.skipped('check_mode')
 
         self.apply_config(testbed, configs, steps)
 
