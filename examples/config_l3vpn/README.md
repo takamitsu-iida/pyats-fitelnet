@@ -2,7 +2,7 @@
 
 ## SID設計
 
-![sid design](img/sid_design.PNG "SID設計")
+![sid design](img/labo1_sid.drawio.svg "SID設計")
 
 採番ルール
 
