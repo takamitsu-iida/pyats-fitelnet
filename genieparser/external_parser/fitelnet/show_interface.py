@@ -755,7 +755,7 @@ class ShowInterface(ShowInterfaceSchema):
                 continue
 
 
-        from pprint import pprint
-        pprint(parsed_dict, width=160)
+        # from pprint import pprint
+        # pprint(parsed_dict, width=160, indent=2)
 
         return parsed_dict

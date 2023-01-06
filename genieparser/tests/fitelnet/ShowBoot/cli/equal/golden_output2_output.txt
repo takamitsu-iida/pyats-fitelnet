@@ -1,0 +1,4 @@
+f220-pe2#show boot
+
+next-boot-side: present-side
+config  : /drive/config/boot.cfg

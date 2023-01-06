@@ -1,0 +1,4 @@
+fx201-p#show boot
+
+next-boot-side: present-side
+config  : /drive/config/boot.cfg
