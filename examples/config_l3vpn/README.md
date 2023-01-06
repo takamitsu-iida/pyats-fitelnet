@@ -5,7 +5,7 @@
 
 ![network diagram](img/labo1_isis_static_te.drawio.png "全体構成")
 
-![HTML版構成図](img/labo1_isis_static_te.html)
+[Pルータ　上](ssh://user@10.77.165.211:50221)
 
 <br><br>
 
