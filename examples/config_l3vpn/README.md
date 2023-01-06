@@ -5,7 +5,8 @@
 
 ![network diagram](img/labo1_isis_static_te.drawio.png "全体構成")
 
-[Pルータ　上](ssh://user@10.77.165.211:50221)
+<a href="ssh://user@10.77.165.211:50221">[Pルータ　上]</a>
+
 
 <br><br>
 
