@@ -5,20 +5,7 @@
 
 ![network diagram](img/labo1_isis_static_te.drawio.png "全体構成")
 
-
-<br><br>
-
-<a href='ssh://iida@10.77.165.211:50221'>F201 P</a>
-
-<a href='ssh://iida@10.77.165.211:50225'>FX201 P</a>
-
-<a href='ssh://iida@10.77.165.211:50220'>FX201 PE1</a>
-
-<a href='ssh://iida@10.77.165.211:50224'>F220EX PE2</a>
-
-<a href='ssh://iida@10.77.165.211:50222'>F221 CE1</a>
-
-<a href='ssh://iida@10.77.165.211:50223'>F221 CE2</a>
+![HTML版構成図](img/labo1_isis_static_te.html)
 
 <br><br>
 
