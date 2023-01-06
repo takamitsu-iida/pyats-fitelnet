@@ -1,5 +1,12 @@
 # SRv6 ISIS TE
 
+
+## 全体構成
+
+![network diagram](img/labo1_isis_static_te.drawio.png "全体構成")
+
+<br><br>
+
 ## SID設計
 
 ![sid design](img/labo1_sid.drawio.png "SID設計")

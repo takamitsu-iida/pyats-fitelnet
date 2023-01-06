@@ -12,6 +12,82 @@ parameters:
         # override state
         # state: 'present'
 
+        # route distinguisher
+        rd: '1:1'
+
+        # route target
+        import_rt: '1:1'
+        export_rt: '1:1'
+
+        # srv6 locator
+        srv6_locator: a
+
+        # 装置固有設定
+        device_attr:
+
+          # 注意
+          # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
+          # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
+
+          fx201-pe1:
+
+            # 指定がなければ親の設定を引き継ぐ
+            # rd: '1:1'
+            # import_rt:
+            # export_rt:
+            # srv6_locator: a
+
+            # インタフェース固有の設定
+            interface_attr:
+
+              # CEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 10.1.11.1/24
+                ipv6_address: '2001:db8:1:11::1/64'
+
+            # BGP固有の設定
+            bgp_attr:
+
+              # router bgp <asn>
+              # AS番号は datafile.yaml に記載の DEFAULT_BGP_AS: 65000 を利用
+
+              # PE-CE間設定
+              # address-family <af>
+              # supported address-family is 'ipv4 vrf' and 'ipv6 vrf'
+              af_attr:
+                'ipv4 vrf':
+                  redistribute: [connected]
+                'ipv6 vrf':
+                  redistribute: [connected]
+
+          f220-pe2:
+            interface_attr:
+              # CEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 10.1.12.1/24
+                ipv6_address: '2001:db8:1:12::1/64'
+            bgp_attr:
+              af_attr:
+                'ipv4 vrf':
+                  redistribute: [connected]
+                'ipv6 vrf':
+                  redistribute: [connected]
+
+          f221-ce1:
+            interface_attr:
+              # PEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 10.1.11.2/24
+                ipv6_address: '2001:db8:1:11::2/64'
+
+          f221-ce2:
+            interface_attr:
+              # PEルータ向けインタフェース
+              'Port-channel 2010001':
+                ipv4_address: 10.1.12.2/24
+                ipv6_address: '2001:db8:1:12::2/64'
+
+
         # filter_attributesの有効・無効
         apply_filter: true
 
@@ -31,79 +107,3 @@ parameters:
                 af_attr:
                   '*':
                     'redistribute':
-
-        # route distinguisher
-        rd: '1:1'
-
-        # route target
-        import_rt: '1:1'
-        export_rt: '1:1'
-
-        # srv6 locator
-        srv6_locator: prefix1
-
-        # 装置固有設定
-        device_attr:
-
-          # 注意
-          # ここで記載する装置名がtestbedに存在しない場合は処理対象外になる
-          # testbedに記載のosがSUPPORTED_OSに含まれないものも処理されない
-
-          fx201-pe1:
-
-            # 指定がなければ親の設定を引き継ぐ
-            # rd: '1:1'
-            # import_rt:
-            # export_rt:
-            # srv6_locator: prefix1
-
-            # インタフェース固有の設定
-            interface_attr:
-
-              # CEルータ向けインタフェース
-              'Port-channel 2010001':
-                ipv4_address: 201.0.1.1/24
-                ipv6_address: '201:1::1/32'
-
-            # BGP固有の設定
-            bgp_attr:
-
-              # router bgp <asn>
-              # AS番号は datafile.yaml に記載の DEFAULT_BGP_AS: 65000 を利用
-
-              # PE-CE間設定
-              # address-family <af>
-              # supported address-family is 'ipv4 vrf' and 'ipv6 vrf'
-              af_attr:
-                'ipv4 vrf':
-                  redistribute: connected
-                'ipv6 vrf':
-                  redistribute:
-                    - connected
-
-          f220-pe2:
-            interface_attr:
-              # CEルータ向けインタフェース
-              'Port-channel 2010001':
-                ipv4_address: 220.0.1.1/24
-                ipv6_address: '220:1::1/32'
-            bgp_attr:
-              af_attr:
-                'ipv4 vrf':
-                  redistribute: [connected]
-                'ipv6 vrf':
-                  redistribute: [connected]
-
-          f221-ce1:
-            interface_attr:
-              # PEルータ向けインタフェース
-              'Port-channel 2010001':
-                ipv4_address: 201.0.1.2/24
-                ipv6_address: '201:1::2/32'
-
-          f221-ce2:
-            interface_attr:
-              # PEルータ向けインタフェース
-              'Port-channel 2010001':
-                ipv4_address: 220.0.1.2/24
-                ipv6_address: '220:1::2/32'

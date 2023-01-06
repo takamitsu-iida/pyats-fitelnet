@@ -14,9 +14,10 @@ parameters:
     device_attr:
 
       fx201-p:
-        net: '49.0000.2010.0001.00'
+        # pルータ 上
+        net: '49.0000.0000.0001.00'
         locator_attr:
-          'prefix1':
+          'a':
         interface_attr:
           'Loopback 1':
             ipv6: True
@@ -28,9 +29,10 @@ parameters:
             ipv6: True
 
       f220-p:
-        net: '49.0000.2200.0001.00'
+        # pルータ 下
+        net: '49.0000.0000.0002.00'
         locator_attr:
-          'prefix1':
+          'a':
         interface_attr:
           'Loopback 1':
             ipv6: True
@@ -42,9 +44,9 @@ parameters:
             ipv6: True
 
       fx201-pe1:
-        net: '49.0000.2011.0001.00'
+        net: '49.0000.0000.0011.00'
         locator_attr:
-          'prefix1':
+          'a':
         interface_attr:
           'Loopback 1':
             ipv6: True
@@ -54,9 +56,9 @@ parameters:
             ipv6: True
 
       f220-pe2:
-        net: '49.0000.2201.0001.00'
+        net: '49.0000.0000.0012.00'
         locator_attr:
-          'prefix1':
+          'a':
         interface_attr:
           'Loopback 1':
             ipv6: True
