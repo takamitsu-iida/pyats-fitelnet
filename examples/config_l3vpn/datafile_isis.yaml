@@ -23,10 +23,13 @@ parameters:
             ipv6: True
           'Port-channel 1020000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 2010000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 3010000':
             ipv6: True
+            network_type_p2p: True
 
       f220-p:
         # pルータ 下
@@ -38,10 +41,13 @@ parameters:
             ipv6: True
           'Port-channel 1020000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 2010000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 3010000':
             ipv6: True
+            network_type_p2p: True
 
       fx201-pe1:
         net: '49.0000.0000.0011.00'
@@ -52,8 +58,10 @@ parameters:
             ipv6: True
           'Port-channel 1010000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 3010000':
             ipv6: True
+            network_type_p2p: True
 
       f220-pe2:
         net: '49.0000.0000.0012.00'
@@ -64,9 +72,10 @@ parameters:
             ipv6: True
           'Port-channel 1010000':
             ipv6: True
+            network_type_p2p: True
           'Port-channel 1020000':
             ipv6: True
-
+            network_type_p2p: True
 
     # present or absent
     # state: 'present'

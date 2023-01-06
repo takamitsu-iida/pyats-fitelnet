@@ -95,6 +95,9 @@ class Isis(DeviceFeature):
     # isis affinity flex-algo <affinity name>
     affinity_name = managedattribute(name='affinity_name', default=None, type=(None, managedattribute.test_istype((int, str))), doc='isis affinity flex-algo <affinity name>')
 
+    # isis network point-to-point
+    network_type_p2p = managedattribute(name='network_type_p2p', default=None, type=(None, managedattribute.test_istype(bool)), doc='isis network type point-to-point')
+
     # router isis level
 
     # log-adjacency-changes

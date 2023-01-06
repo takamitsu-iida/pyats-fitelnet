@@ -35,6 +35,7 @@ class test_isis(TestCase):
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].level_1_metric = 20
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].level_2_metric = 20
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].affinity_name = 'blue'
+        isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].network_type_p2p = True
 
         # router isis core
         isis.device_attr[dev1.name].net = '49.0000.2201.0001.00'
@@ -88,6 +89,7 @@ class test_isis(TestCase):
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].level_1_metric = 20
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].level_2_metric = 20
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].affinity_name = 'blue'
+        isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].network_type_p2p = True
 
         # router isis core
         isis.device_attr[dev1.name].is_type = 'level-2'
@@ -125,7 +127,8 @@ class test_isis(TestCase):
                             'ipv6': None,
                             'level_1_metric': None,
                             'level_2_metric': None,
-                            'affinity_name': None
+                            'affinity_name': None,
+                            'network_type_p2p': None
                         }
                     }
                 }
