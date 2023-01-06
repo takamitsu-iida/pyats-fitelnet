@@ -6,6 +6,6 @@
 
 採番ルール
 
-- End `{locator}:1`
+- End `{locator}:1` = Loopback 1のIPv6アドレス
 - vrf 1 End.DT4 `{locator}:11`
 - vrf 2 End.DT4 `{locator}:12`
