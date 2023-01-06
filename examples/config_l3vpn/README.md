@@ -5,9 +5,6 @@
 
 ![network diagram](img/labo1_isis_static_te.drawio.png "全体構成")
 
-<a href="ssh://user@10.77.165.211:50221">[Pルータ　上]</a>
-
-
 <br><br>
 
 ## ローカルSID設計
