@@ -597,7 +597,7 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/bin/save.py -y
 
 <br><br>
 
-## 編集中の設定をファイルに保存する
+## 編集中の設定を装置内に保存する
 
 FITELnetのコマンドはsave <filename>です。
 

@@ -42,31 +42,31 @@ def print_config(name: str, configs: dict):
 execute_map = {
 
     # 1. ポートチャネルを作る
-    'port_channel': False,
+    'port_channel': True,
 
     # 2. 網内にIPアドレスを割り振る
-    'address': False,
+    'address': True,
 
     # 3. ISISでルーティングする（この時点ではsrv6 locatorをまだ定義していないので、それは除外）
-    'isis_routing': False,
+    'isis_routing': True,
 
     # 4. BGPでPE間を接続する（VPNv4とVPNv6を設定する）
-    'bgp': False,
+    'bgp': True,
 
     # 5. SRv6ロケータを設定する（この時点ではVPNを定義していないのでlocal-sidやポリシーは除外してロケータだけを設定する）
-    'srv6_locator': False,
+    'srv6_locator': True,
 
     # 6. ISISにsrv6 locator設定を加える
-    'isis_srv6': False,
+    'isis_srv6': True,
 
     # 7. vrf 1とvrf 2を定義する
-    'l3vpn': False,
+    'l3vpn': True,
 
     # 8. SRv6のlocal sidとポリシーを設定する
-    'srv6_sid': False,
+    'srv6_sid': True,
 
     # 9. vrf 1とvrf 2に関するスタティックルートを設定する
-    'static_route': False,
+    'static_route': True,
 
 }
 
