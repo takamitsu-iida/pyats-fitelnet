@@ -135,6 +135,7 @@ class test_l3vpn(TestCase):
             str(cfgs[dev1.name]),
             '\n'.join([
                 'interface Port-channel 1020000',
+                ' no ip vrf forwarding 1',
                 ' no ip address 1.1.1.1 255.255.255.255',
                 ' exit',
                 'router bgp 65001',

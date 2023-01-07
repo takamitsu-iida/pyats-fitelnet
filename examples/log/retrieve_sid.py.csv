@@ -1,37 +1,29 @@
 Hostname, SID, Context, Function, Owner, State
-f220-p, 3ffe:220:0:1:40::, , End, IS-IS, InUse
-f220-p, 3ffe:220:0:1:41::, , End (PSP), IS-IS, InUse
-f220-p, 3ffe:220:0:1:42::, [Port-channel 1020000  Link-Local], End.X, IS-IS, InUse
-f220-p, 3ffe:220:0:1:43::, [Port-channel 1020000  Link-Local], End.X (PSP), IS-IS, InUse
-f220-p, 3ffe:220:0:1:44::, [Port-channel 2010000  Link-Local], End.X, IS-IS, InUse
-f220-p, 3ffe:220:0:1:45::, [Port-channel 2010000  Link-Local], End.X (PSP), IS-IS, InUse
-f220-p, 3ffe:220:0:1:46::, [Port-channel 3010000  Link-Local], End.X, IS-IS, InUse
-f220-p, 3ffe:220:0:1:47::, [Port-channel 3010000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-p, 3ffe:201:0:1:40::, , End, IS-IS, InUse
-fx201-p, 3ffe:201:0:1:41::, , End (PSP), IS-IS, InUse
-fx201-p, 3ffe:201:0:1:42::, [Port-channel 1020000  Link-Local], End.X, IS-IS, InUse
-fx201-p, 3ffe:201:0:1:43::, [Port-channel 1020000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-p, 3ffe:201:0:1:44::, [Port-channel 3010000  Link-Local], End.X, IS-IS, InUse
-fx201-p, 3ffe:201:0:1:45::, [Port-channel 3010000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-p, 3ffe:201:0:1:46::, [Port-channel 2010000  Link-Local], End.X, IS-IS, InUse
-fx201-p, 3ffe:201:0:1:47::, [Port-channel 2010000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:40::, , End, IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:41::, , End (PSP), IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:42::, [Port-channel 1010000  Link-Local], End.X, IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:43::, [Port-channel 1010000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:44::, [Port-channel 3010000  Link-Local], End.X, IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:45::, [Port-channel 3010000  Link-Local], End.X (PSP), IS-IS, InUse
-fx201-pe1, 3ffe:201:1:1:46::, '1', End.DT4, BGP, InUse
-fx201-pe1, 3ffe:201:1:1:47::, '2', End.DT4, BGP, InUse
-fx201-pe1, 3ffe:201:1:1:48::, '1', End.DT6, BGP, InUse
-fx201-pe1, 3ffe:201:1:1:49::, '2', End.DT6, BGP, InUse
-f220-pe2, 3ffe:220:1:1:40::, , End, IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:41::, , End (PSP), IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:42::, [Port-channel 1020000  Link-Local], End.X, IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:43::, [Port-channel 1020000  Link-Local], End.X (PSP), IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:44::, [Port-channel 1010000  Link-Local], End.X, IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:45::, [Port-channel 1010000  Link-Local], End.X (PSP), IS-IS, InUse
-f220-pe2, 3ffe:220:1:1:46::, '1', End.DT4, BGP, InUse
-f220-pe2, 3ffe:220:1:1:47::, '2', End.DT4, BGP, InUse
-f220-pe2, 3ffe:220:1:1:48::, '1', End.DT6, BGP, InUse
-f220-pe2, 3ffe:220:1:1:49::, '2', End.DT6, BGP, InUse
+f220-p, 2001:db8:0:2:1::, , End, NSM, InUse
+f220-p, 2001:db8:0:2:40::, , End, IS-IS, InUse
+f220-p, 2001:db8:0:2:41::, , End (PSP), IS-IS, InUse
+fx201-p, 2001:db8:0:1:1::, , End, NSM, InUse
+fx201-p, 2001:db8:0:1:40::, , End, IS-IS, InUse
+fx201-p, 2001:db8:0:1:41::, , End (PSP), IS-IS, InUse
+fx201-p, 2001:db8:0:1:42::, [Port-channel 1020000  Link-Local], End.X, IS-IS, InUse
+fx201-p, 2001:db8:0:1:43::, [Port-channel 1020000  Link-Local], End.X (PSP), IS-IS, InUse
+fx201-pe1, 2001:db8:0:11:1::, , End, NSM, InUse
+fx201-pe1, 2001:db8:0:11:11::, , End.DT4, NSM, InUse
+fx201-pe1, 2001:db8:0:11:12::, , End.DT4, NSM, InUse
+fx201-pe1, 2001:db8:0:11:40::, , End, IS-IS, InUse
+fx201-pe1, 2001:db8:0:11:41::, , End (PSP), IS-IS, InUse
+fx201-pe1, 2001:db8:0:11:42::, '1', End.DT4, BGP, InUse
+fx201-pe1, 2001:db8:0:11:43::, '1', End.DT6, BGP, InUse
+fx201-pe1, 2001:db8:0:11:44::, '2', End.DT4, BGP, InUse
+fx201-pe1, 2001:db8:0:11:45::, '2', End.DT6, BGP, InUse
+f220-pe2, 2001:db8:0:12:1::, , End, NSM, InUse
+f220-pe2, 2001:db8:0:12:11::, , End.DT4, NSM, InUse
+f220-pe2, 2001:db8:0:12:12::, , End.DT4, NSM, InUse
+f220-pe2, 2001:db8:0:12:40::, , End, IS-IS, InUse
+f220-pe2, 2001:db8:0:12:41::, , End (PSP), IS-IS, InUse
+f220-pe2, 2001:db8:0:12:42::, '1', End.DT4, BGP, InUse
+f220-pe2, 2001:db8:0:12:43::, '2', End.DT4, BGP, InUse
+f220-pe2, 2001:db8:0:12:44::, '1', End.DT6, BGP, InUse
+f220-pe2, 2001:db8:0:12:45::, '2', End.DT6, BGP, InUse
+f220-pe2, 2001:db8:0:12:46::, [Port-channel 1010000  Link-Local], End.X, IS-IS, InUse
+f220-pe2, 2001:db8:0:12:47::, [Port-channel 1010000  Link-Local], End.X (PSP), IS-IS, InUse

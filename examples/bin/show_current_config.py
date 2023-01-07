@@ -20,6 +20,12 @@ from unicon.core.errors import SubCommandFailure
 
 logger = logging.getLogger(__name__)
 
+# app_home is .. from this file
+app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# log_dir is ../log
+log_dir = os.path.join(app_home, 'log')
+
 
 def connect(uut: object) -> bool:
     if not uut.is_connected():
@@ -59,12 +65,21 @@ def show_current_config(uut: object) -> str:
     return None
 
 
+def save_config(results):
+
+    for router_name, output in results.items():
+        if output:
+            log_path = os.path.join(log_dir, f'{router_name}_config.log')
+            try:
+                with open(log_path, 'w') as f:
+                    f.write(output)
+            except:
+                pass
+
+
 if __name__ == '__main__':
 
     logging.basicConfig()
-
-    # app_home is .. from this file
-    app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     # default testbed file
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
@@ -73,6 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
     parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
     parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
+    parser.add_argument('--save', action='store_true', default=False, help='save config to log directory')
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show current.cfg')
     args = parser.parse_args()
 
@@ -117,6 +133,9 @@ if __name__ == '__main__':
                 results[router_name] = show_current_config(dev)
 
                 disconnect(dev)
+
+            if args.save is True:
+                save_config(results)
 
             print_results(results)
             return 0

@@ -186,6 +186,6 @@ class Isis:
                         configurations.append_line(attributes.format('isis affinity flex-algo {affinity_name}'))
 
                     if attributes.value('network_type_p2p') is True:
-                        configurations.append_line(attributes.format('isis network type point-to-point'))
+                        configurations.append_line(attributes.format('isis network point-to-point'))
 
                 return str(configurations)

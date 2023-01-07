@@ -143,8 +143,10 @@ class FitelnetReset(GenericReload):
 
         command = ' '.join(['reset'] + list(args))
 
-        super().call_service(reload_command=command, dialog=dialog, timeout=self.timeout, kwargs=kwargs)
-
+        try:
+            super().call_service(reload_command=command, dialog=dialog, timeout=self.timeout, kwargs=kwargs)
+        except Exception:
+            pass
 
 
 #

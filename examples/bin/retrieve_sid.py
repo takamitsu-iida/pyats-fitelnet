@@ -9,6 +9,7 @@ from pprint import pprint
 
 from unicon.core.errors import StateMachineError
 from genie.testbed import load
+from genie.metaparser.util.exceptions import SchemaEmptyParserError
 
 # app_home is .. from this file
 app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -40,7 +41,10 @@ def get_sid(uut: object) -> dict:
     # parser = ShowSegmentRoutingSrv6Sid(device=uut)
     # sid_dict = parser.parse()
 
-    sid_dict = uut.parse('show segment-routing srv6 sid')
+    try:
+        sid_dict = uut.parse('show segment-routing srv6 sid')
+    except SchemaEmptyParserError:
+        sid_dict = None
 
     if uut.is_connected():
         uut.disconnect()

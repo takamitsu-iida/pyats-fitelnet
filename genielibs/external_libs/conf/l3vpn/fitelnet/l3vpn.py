@@ -70,7 +70,7 @@ class L3vpn:
                 #
                 with configurations.submode_context(attributes.format('interface {interface}', force=True)):
 
-                    configurations.append_line(attributes.format('ip vrf forwarding {vrf_name}'))
+                    configurations.append_line(attributes.format(f'ip vrf forwarding {self.vrf_name}'))
 
                     ipv4_address = attributes.value('ipv4_address')
                     if ipv4_address is not None:

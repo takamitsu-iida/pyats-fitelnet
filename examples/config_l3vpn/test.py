@@ -42,31 +42,31 @@ def print_config(name: str, configs: dict):
 execute_map = {
 
     # 1. ポートチャネルを作る
-    'port_channel': True,
+    'port_channel': False,
 
     # 2. 網内にIPアドレスを割り振る
-    'address': True,
+    'address': False,
 
     # 3. ISISでルーティングする（この時点ではsrv6 locatorをまだ定義していないので、それは除外）
-    'isis_routing': True,
+    'isis_routing': False,
 
     # 4. BGPでPE間を接続する（VPNv4とVPNv6を設定する）
-    'bgp': True,
+    'bgp': False,
 
     # 5. SRv6ロケータを設定する（この時点ではVPNを定義していないのでlocal-sidやポリシーは除外してロケータだけを設定する）
-    'srv6_locator': True,
+    'srv6_locator': False,
 
     # 6. ISISにsrv6 locator設定を加える
-    'isis_srv6': True,
+    'isis_srv6': False,
 
     # 7. vrf 1とvrf 2を定義する
-    'l3vpn': True,
+    'l3vpn': False,
 
     # 8. SRv6のlocal sidとポリシーを設定する
-    'srv6_sid': True,
+    'srv6_sid': False,
 
     # 9. vrf 1とvrf 2に関するスタティックルートを設定する
-    'static_route': True,
+    'static_route': False,
 
 }
 
@@ -296,8 +296,6 @@ class BuildConfigApply(aetest.Testcase):
 
         if is_check_mode():
             self.skipped('check_mode')
-
-        configs = self.l3vpn_configs
 
         if not configs:
             self.skipped('configs not found')

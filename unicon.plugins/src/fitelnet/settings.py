@@ -32,7 +32,7 @@ class FitelnetSettings(GenericSettings):
         self.LESS_CONTINUE = ' '
 
         # overwrite RELOAD_TIMEOUT, see services.py
-        # interval 30 sec, 10 attempts, total 300 sec
-        self.RELOAD_RECONNECT_ATTEMPTS = 10 # default 3
+        # interval 30 sec, 20 attempts, total 600 sec
+        self.RELOAD_RECONNECT_ATTEMPTS = 20 # default 3
         self.RELOAD_WAIT = 30               # default 240
-        self.RELOAD_TIMEOUT = 300           # default 300
+        self.RELOAD_TIMEOUT = 600           # default 300

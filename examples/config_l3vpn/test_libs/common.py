@@ -199,9 +199,9 @@ def build_isis_config(testbed: object, params: dict, attributes: dict = None) ->
 
         locator_attr = device_data.get('locator_attr', {}) if device_data.get('locator_attr', {}) else {}
         for locator_name, locator_data in locator_attr.items():
+            locator = isis.device_attr[device_name].locator_attr[locator_name]
             if locator_data is None:
                 continue
-            locator = isis.device_attr[device_name].locator_attr[locator_name]
             if locator_data.get('algorithm') is not None:
                 locator.algorithm = locator_data.get('algorithm')
 
@@ -554,14 +554,16 @@ def build_l3vpn_config(testbed: object, params: dict) -> dict:
             # set interface specific config
             interface_attr = device_data.get('interface_attr', {}) if device_data.get('interface_attr', {}) else {}
             for intf_name, intf_data in interface_attr.items():
+                intf = l3vpn.device_attr[device_name].interface_attr[intf_name]
+
                 if intf_data is None:
                     continue
 
                 if intf_data.get('ipv4_address') is not None:
-                    l3vpn.device_attr[device_name].interface_attr[intf_name].ipv4_address = intf_data.get('ipv4_address')
+                    intf.ipv4_address = intf_data.get('ipv4_address')
 
                 if intf_data.get('ipv6_address') is not None:
-                    l3vpn.device_attr[device_name].interface_attr[intf_name].ipv6_address = intf_data.get('ipv6_address')
+                    intf.ipv6_address = intf_data.get('ipv6_address')
 
             # set router bgp <asn> specific config
             bgp_attr = device_data.get('bgp_attr', {}) if device_data.get('bgp_attr', {}) else {}

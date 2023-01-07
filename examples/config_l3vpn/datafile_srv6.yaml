@@ -15,6 +15,14 @@ parameters:
 
       fx201-p:
         # pルータ 上
+
+        # pルータを経由して通信するポリシーを作成するので、トンネルとソースアドレスは必須
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        encap_source: '2001:db8:0:1::1'
+
         locator_attr:
           'a':
             locator_prefix: '2001:db8:0:1::/64'
@@ -25,6 +33,12 @@ parameters:
 
       f220-p:
         # pルータ 下
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        encap_source: '2001:db8:0:2::1'
+
         locator_attr:
           'a':
             locator_prefix: '2001:db8:0:2::/64'
