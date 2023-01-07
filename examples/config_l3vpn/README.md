@@ -232,6 +232,6 @@ FITELnetのコマンドはshow segment-routing srv6 sidです。
 
 [PEルータ・左](final_config/f220-pe2_config.txt)
 
-[CEルータ・右](f221-ce1_config.txt)
+[CEルータ・右](final_config/f221-ce1_config.txt)
 
-[CEルータ・左](f221-ce2_config.txt)
+[CEルータ・左](final_config/f221-ce2_config.txt)
