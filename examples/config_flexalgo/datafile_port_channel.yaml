@@ -28,33 +28,33 @@ parameters:
         interface_attr:
 
           'GigaEthernet 1/2.1':
-            vlan_id: 1
-            bridge_group: 121
+            vlan_id: 14
+            bridge_group: 14
             channel_group: 1020001
 
           'GigaEthernet 1/2.2':
-            vlan_id: 2
-            bridge_group: 122
+            vlan_id: 15
+            bridge_group: 15
             channel_group: 1020002
 
           'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 211
+            vlan_id: 10
+            bridge_group: 10
             channel_group: 2010001
 
           'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 212
+            vlan_id: 11
+            bridge_group: 11
             channel_group: 2010002
 
           'GigaEthernet 3/1.1':
-            vlan_id: 1
-            bridge_group: 311
+            vlan_id: 12
+            bridge_group: 12
             channel_group: 3010001
 
           'GigaEthernet 3/1.2':
-            vlan_id: 2
-            bridge_group: 312
+            vlan_id: 13
+            bridge_group: 13
             channel_group: 3010002
 
       f220-p:
@@ -62,92 +62,127 @@ parameters:
         interface_attr:
 
           'GigaEthernet 1/2.1':
-            vlan_id: 102
-            bridge_group: 102
-            channel_group: 1020000
+            vlan_id: 18
+            bridge_group: 18
+            channel_group: 1020001
 
-          'GigaEthernet 2/1':
-            vlan_id: 201
-            bridge_group: 201
-            channel_group: 2010000
+          'GigaEthernet 1/2.2':
+            vlan_id: 19
+            bridge_group: 19
+            channel_group: 1020002
 
-          'GigaEthernet 3/1':
-            vlan_id: 301
-            bridge_group: 301
-            channel_group: 3010000
+          'GigaEthernet 2/1.1':
+            vlan_id: 10
+            bridge_group: 10
+            channel_group: 2010001
+
+          'GigaEthernet 2/1.2':
+            vlan_id: 11
+            bridge_group: 11
+            channel_group: 2010002
+
+          'GigaEthernet 3/1.1':
+            vlan_id: 16
+            bridge_group: 16
+            channel_group: 3010001
+
+          'GigaEthernet 3/1.2':
+            vlan_id: 17
+            bridge_group: 17
+            channel_group: 3010002
 
           # 'GigaEthernet 1/8':
           #   vlan_id: 108
           #   bridge_group: 108
           #   channel_group: 1080000
-
-
-
-
 
       fx201-pe1:
-
-        # インタフェース固有の設定
+        # peルータ・右
         interface_attr:
 
-          'GigaEthernet 1/1':
-            channel_group: 1010000
+          'GigaEthernet 1/1.1':
+            vlan_id: 12
+            bridge_group: 12
+            channel_group: 1010001
+
+          'GigaEthernet 1/1.2':
+            vlan_id: 13
+            bridge_group: 13
+            channel_group: 1010002
 
           'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 1
+            vlan_id: 20
+            bridge_group: 20
             channel_group: 2010001
 
           'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 2
+            vlan_id: 21
+            bridge_group: 21
             channel_group: 2010002
 
-          'GigaEthernet 3/1':
-            channel_group: 3010000
+          'GigaEthernet 3/1.1':
+            vlan_id: 16
+            bridge_group: 16
+            channel_group: 3010001
+
+          'GigaEthernet 3/1.2':
+            vlan_id: 17
+            bridge_group: 17
+            channel_group: 3010002
+
 
       f220-pe2:
-
+        # peルータ・左
         interface_attr:
 
-          'GigaEthernet 1/1':
-            vlan_id: 101
-            bridge_group: 101
-            channel_group: 1010000
+          'GigaEthernet 1/1.1':
+            vlan_id: 14
+            bridge_group: 14
+            channel_group: 1010001
 
-          'GigaEthernet 1/2':
-            vlan_id: 102
-            bridge_group: 102
-            channel_group: 1020000
+          'GigaEthernet 1/1.2':
+            vlan_id: 15
+            bridge_group: 15
+            channel_group: 1010002
+
+          'GigaEthernet 1/2.1':
+            vlan_id: 18
+            bridge_group: 18
+            channel_group: 1020001
+
+          'GigaEthernet 1/2.2':
+            vlan_id: 19
+            bridge_group: 19
+            channel_group: 1020002
 
           'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 1
+            vlan_id: 22
+            bridge_group: 22
             channel_group: 2010001
 
           'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 2
+            vlan_id: 23
+            bridge_group: 23
             channel_group: 2010002
 
           # 'GigaEthernet 1/8':
           #   vlan_id: 108
           #   bridge_group: 108
           #   channel_group: 1080000
-
 
 
       f221-ce1:
+        # ceルータ・右
         interface_attr:
 
           'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 1
+            vlan_id: 20
+            bridge_group: 20
             channel_group: 2010001
 
           'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 2
+            vlan_id: 21
+            bridge_group: 21
             channel_group: 2010002
 
           # 'GigaEthernet 1/8':
@@ -156,16 +191,17 @@ parameters:
           #   channel_group: 1080000
 
       f221-ce2:
+        # ceルータ・左
         interface_attr:
 
           'GigaEthernet 2/1.1':
-            vlan_id: 1
-            bridge_group: 1
+            vlan_id: 22
+            bridge_group: 22
             channel_group: 2010001
 
           'GigaEthernet 2/1.2':
-            vlan_id: 2
-            bridge_group: 2
+            vlan_id: 23
+            bridge_group: 23
             channel_group: 2010002
 
           # 'GigaEthernet 1/8':
