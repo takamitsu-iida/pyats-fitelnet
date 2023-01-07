@@ -69,7 +69,7 @@ def save_config(results):
 
     for router_name, output in results.items():
         if output:
-            log_path = os.path.join(log_dir, f'{router_name}_config.log')
+            log_path = os.path.join(log_dir, f'{router_name}_config.txt')
             try:
                 with open(log_path, 'w') as f:
                     f.write(output)

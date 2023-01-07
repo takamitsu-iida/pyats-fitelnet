@@ -224,14 +224,14 @@ FITELnetのコマンドはshow segment-routing srv6 sidです。
 
 このコマンドでexamples/logディレクトリにshow current.cfgがファイルとして保存されます。
 
-[Pルータ・上](final_config/fx201-p_config.log)
+[Pルータ・上](final_config/fx201-p_config.txt)
 
-[Pルータ・下](final_config/f220-p_config.log)
+[Pルータ・下](final_config/f220-p_config.txt)
 
-[PEルータ・右](final_config/fx201-pe1_config.log)
+[PEルータ・右](final_config/fx201-pe1_config.txt)
 
-[PEルータ・左](final_config/f220-pe2_config.log)
+[PEルータ・左](final_config/f220-pe2_config.txt)
 
-[CEルータ・右](f221-ce1_config.log)
+[CEルータ・右](f221-ce1_config.txt)
 
-[CEルータ・左](f221-ce2_config.log)
+[CEルータ・左](f221-ce2_config.txt)

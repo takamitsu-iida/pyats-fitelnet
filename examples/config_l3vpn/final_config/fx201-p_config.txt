@@ -1,0 +1,86 @@
+!  LAST EDIT    13:01:03 2023/01/07 by user
+!  LAST REFRESH 13:01:04 2023/01/07 by user
+!  LAST SAVE    18:53:12 2023/01/03 by user
+!
+ip route 0.0.0.0 0.0.0.0 192.168.10.254
+ip domain-name srv6.local
+!
+logging console facility all
+!
+no logging console
+!
+aaa authentication login default local login
+aaa authorization exec default local
+!
+username iida privilege 15 password 2 $1$WfofCXqw$nkdx.2.cqMfPTbWxBcqCK0
+username st privilege 15 password 2 $1$qDR/BSHa$4iSpgVR6awMhNoMC7i8qL/
+username user privilege 15 password 2 $1$wINPtBUG$OFzBNb.T3pCdeYrFCQWah.
+!
+hostname fx201-p
+!
+interface GigaEthernet 1/2
+ channel-group 1020000
+exit
+!
+interface GigaEthernet 2/1
+ channel-group 2010000
+exit
+!
+interface GigaEthernet 3/1
+ channel-group 3010000
+exit
+!
+interface Management 1
+ ip address 192.168.10.221 255.255.255.0
+exit
+!
+interface Loopback 1
+ ipv6 address 2001:db8:0:1::1
+ ipv6 router isis core
+exit
+!
+interface Port-channel 1020000
+ ipv6 enable
+ ipv6 router isis core
+ isis network point-to-point
+exit
+!
+interface Port-channel 2010000
+ ipv6 enable
+ ipv6 router isis core
+ isis network point-to-point
+exit
+!
+interface Port-channel 3010000
+ ipv6 enable
+ ipv6 router isis core
+ isis network point-to-point
+exit
+!
+interface Tunnel 1
+ tunnel mode srv6
+exit
+!
+router isis core
+ log-adjacency-changes
+ is-type level-2
+ net 49.0000.0000.0001.00
+ srv6 locator a
+ topology ipv6-unicast
+exit
+!
+line telnet
+ exec-timeout 0
+exit
+!
+segment-routing srv6
+ encapsulation source-address 2001:db8:0:1::1
+ fragment post
+ local-sid 2001:db8:0:1:1:: action end
+ locator a 2001:db8:0:1::/64
+ propagate-tos enable
+ set mtu 2000
+ set mss auto
+exit
+!
+end
