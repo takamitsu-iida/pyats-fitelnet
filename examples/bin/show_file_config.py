@@ -76,6 +76,8 @@ if __name__ == '__main__':
     parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
     parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
     parser.add_argument('--filename', required=True, dest='filename', type=str, default=None, help='save filename')
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show file configuration <filename>')
+
     args = parser.parse_args()
 
     testbed = load(args.testbed)
@@ -113,21 +115,23 @@ if __name__ == '__main__':
         else:
             return 0
 
+        if args.yes:
+            for router_name in target_list:
+                dev = testbed.devices.get(router_name)
 
-        for router_name in target_list:
-            dev = testbed.devices.get(router_name)
+                result = connect(dev)
+                results[router_name] = result
+                if result is False:
+                    continue
 
-            result = connect(dev)
-            results[router_name] = result
-            if result is False:
-                continue
+                results[router_name] = show_file_configuration(dev, filename)
 
-            results[router_name] = show_file_configuration(dev, filename)
+                disconnect(dev)
 
-            disconnect(dev)
+            print_results(results)
+            return 0
 
-        print_results(results)
+        parser.print_help()
         return 0
-
 
     sys.exit(main())

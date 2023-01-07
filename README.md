@@ -802,17 +802,17 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ examples/bin/delete.py --filename /dr
 
 show current.cfgを表示します。
 
-たとえば './examples/bin/show_current_config.py --host fx201-p' とすればfx201-pの運用設定が表示されます。
+たとえば './examples/bin/show_current_config.py --host fx201-p -y' とすればfx201-pの運用設定が表示されます。
 
 - show_working_config.py
 
 show working.cfgを表示します。
 
-たとえば './examples/bin/show_working_config.py --host fx201-p' とすればfx201-pの編集用設定が表示されます。
+たとえば './examples/bin/show_working_config.py --host fx201-p -y' とすればfx201-pの編集用設定が表示されます。
 
 - show_file_config.py
 
-たとえば './examples/bin/show_file_config.py --filename /drive/config/minimum.cfg --host fx201-p' とすれば
+たとえば './examples/bin/show_file_config.py --filename /drive/config/minimum.cfg --host fx201-p -y' とすれば
 fx201-pに保存されているminimum.cfgが表示されます。
 
 
@@ -995,3 +995,62 @@ f221-ce2
 これでSSHの接続しかできない最小限の状態から検証を始められます。
 
 boot.cfgは変更していませんので、working.cfgを元に戻したいなら `examples/bin/load.py -y` を使ってboot.cfgの設定を編集用設定に取り込みます。
+
+
+<br><br>
+
+# 検証開始時のおすすめの操作
+
+起動時に読み込むコンフィグを minimum.cfg に変更します。
+
+`examples/bin/boot_config.py --group all --filename /drive/config/minimum.cfg -y`
+
+ちゃんと変更されたか確認します。
+
+`examples/bin/show_boot.py --group all -y`
+
+pyATSの接続処理は時々失敗しますので、こんな感じで全てのルータが変更されていることを確認します。
+
+| device    | config                    | next boot side   |
+|-----------|---------------------------|------------------|
+| fx201-p   | /drive/config/minimum.cfg | present-side     |
+| f220-p    | /drive/config/minimum.cfg | present-side     |
+| fx201-pe1 | /drive/config/minimum.cfg | present-side     |
+| f220-pe2  | /drive/config/minimum.cfg | present-side     |
+| f221-ce1  | /drive/config/minimum.cfg | present-side     |
+| f221-ce2  | /drive/config/minimum.cfg | present-side     |
+
+
+全ルータを一斉に再起動します。
+
+`examples/bin/async_reset.py --group all -y`
+
+> **Note**
+> resetコマンドを実行するとSSH接続が切れますが、30秒ごとに再接続を試みます。
+> その際にPythonの例外が表示されますが、気にしないこと。
+> 気が向いたら直します。
+
+起動時に読み込む設定をもとに戻しておきます。
+
+`examples/bin/boot_config.py --group all --filename /drive/config/boot.cfg -y`
+
+`examples/bin/show_boot.py --group all -y`
+
+| device    | config                 | next boot side   |
+|-----------|------------------------|------------------|
+| fx201-p   | /drive/config/boot.cfg | present-side     |
+| f220-p    | /drive/config/boot.cfg | present-side     |
+| fx201-pe1 | /drive/config/boot.cfg | present-side     |
+| f220-pe2  | /drive/config/boot.cfg | present-side     |
+| f221-ce1  | /drive/config/boot.cfg | present-side     |
+| f221-ce2  | /drive/config/boot.cfg | present-side     |
+
+編集用設定を確認します。この時点で編集用の設定は minimum.cfg の設定になっています。
+
+`examples/bin/show_current_config.py --group all -y`
+
+ここまでできたら、あとは好きなように設定を投入しましょう。
+
+> **Warn**
+> saveするとboot.cfgが変わってしまいます。
+> boot_config.pyを使って自分専用の起動用ファイルを作成してもいいでしょう。

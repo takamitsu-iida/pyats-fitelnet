@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-"""reset.py
+"""show_boot.py
 
-装置をresetします。
+起動パラメータを表示します。
+
+show boot
 
 """
 
@@ -11,20 +13,15 @@ import logging
 import os
 import sys
 
-from pprint import pprint
-
-from genie.testbed import load as load_testbed
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
-from unicon.core.errors import SubCommandFailure
-
-# https://pubhub.devnetcloud.com/media/pyats/docs/async/pcall.html
-from pyats.async_ import pcall
-
 try:
     from tabulate import tabulate
     HAS_TABULATE = True
 except ImportError:
     HAS_TABULATE = False
+
+from genie.testbed import load
+from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from unicon.core.errors import SubCommandFailure
 
 
 logger = logging.getLogger(__name__)
@@ -52,42 +49,30 @@ def disconnect(uut: object) -> bool:
 
 def print_results(results: dict):
 
-    for router_name, result in results.items():
-        results[router_name] = 'Success' if result is True else 'Fail'
+    tables = []
+    for router_name, parsed in results.items():
+        if not parsed or not parsed.get('boot'):
+            continue
+
+        config = parsed['boot'].get('config', '')
+        next_boot_side = parsed['boot'].get('next_boot_side')
+        row = [router_name, config, next_boot_side]
+        tables.append(row)
 
     if HAS_TABULATE:
-        headers = ['device', 'result']
-        print(tabulate(list(results.items()), headers=headers, tablefmt='github'))
+        headers = ['device', 'config', 'next boot side']
+        print(tabulate(tables, headers=headers, tablefmt='github'))
     else:
-        for router_name, result in results.items():
-            print('='*10 + ' results ' + '='*10)
-            print(f'{router_name} {result}')
+        for row in tables:
+            print(row)
 
 
-def set_boot_config(uut: object, filename: str) -> str:
-    if not filename:
-        return None
-    if not uut.is_connected():
-        return None
-
+def show_boot(uut: object) -> dict:
     try:
-        parsed = uut.parse('show boot')
-        config = parsed['boot']['config']
-        uut.execute(f'boot config {filename}')
+        return uut.parse('show boot')
     except SubCommandFailure as e:
         logger.error(str(e))
-        return None
-    return config
-
-
-def reset(uut: object) -> bool:
-    try:
-        uut.reset()
-        uut.ping('127.0.0.1')
-    except SubCommandFailure as e:
-        logger.error(str(e))
-        return False
-    return True
+    return None
 
 
 if __name__ == '__main__':
@@ -104,11 +89,10 @@ if __name__ == '__main__':
     parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
     parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
     parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
-    parser.add_argument('--config', dest='config', help='boot config file', type=str, default=None)
-    parser.add_argument('-y', '--yes', action='store_true', default=False, help='reset')
-    args, _ = parser.parse_known_args()
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show boot')
+    args = parser.parse_args()
 
-    testbed = load_testbed(args.testbed)
+    testbed = load(args.testbed)
 
     # define router group map
     router_groups = {
@@ -133,46 +117,25 @@ if __name__ == '__main__':
                 if host_name not in target_list:
                     target_list.append(host_name)
 
+
     def main():
-
-        results = []
-        devices = []
-
-        bootfile = None
-        if args.config:
-            bootfile = args.config if args.config.startswith('/') else '/drive/config/' + args.config
 
         if args.yes:
 
-            # 接続済みのデバイスのリストを作成
+            results = {}
             for router_name in target_list:
                 dev = testbed.devices.get(router_name)
+
                 result = connect(dev)
+                results[router_name] = result
                 if result is False:
                     continue
-                devices.append(dev)
 
-            # 指定されたファイルで起動するように変更
-            # もとに戻すために、もともとの起動ファイルの情報を保存しておく
-            boot_config = {}
-            if bootfile is not None:
-                for device in devices:
-                    boot_config[device.hostname] = set_boot_config(device, bootfile)
+                results[router_name] = show_boot(dev)
 
-            # 同時にリセット
-            results = pcall(reset, uut=devices)
-
-            # 起動コンフィグを元に戻す
-            if bootfile is not None:
-                for device in devices:
-                    set_boot_config(device, boot_config[device.hostname])
-
-            # 切断
-            for dev in devices:
                 disconnect(dev)
 
-            pprint(results)
-
+            print_results(results)
             return 0
 
         parser.print_help()

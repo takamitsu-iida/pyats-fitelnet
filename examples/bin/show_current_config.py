@@ -2,7 +2,7 @@
 
 """show_current_config.py
 
-運用中設定をを表示します。
+運用中設定を表示します。
 
 show working.cfg
 
@@ -53,7 +53,7 @@ def print_results(results: dict):
 
 def show_current_config(uut: object) -> str:
     try:
-        return uut.execute(f'show current.cfg')
+        return uut.execute('show current.cfg')
     except SubCommandFailure as e:
         logger.error(str(e))
     return None
@@ -73,6 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('--testbed', dest='testbed', type=str, default=default_testbed_path, help='testbed YAML file')
     parser.add_argument('--host', nargs='*', type=str, help='a list of target host')
     parser.add_argument('--group', nargs='*', type=str, default=['all'], help='a list of target group')
+    parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show current.cfg')
     args = parser.parse_args()
 
     testbed = load(args.testbed)
@@ -103,21 +104,24 @@ if __name__ == '__main__':
 
     def main():
 
-        results = {}
+        if args.yes:
+            results = {}
+            for router_name in target_list:
+                dev = testbed.devices.get(router_name)
 
-        for router_name in target_list:
-            dev = testbed.devices.get(router_name)
+                result = connect(dev)
+                results[router_name] = result
+                if result is False:
+                    continue
 
-            result = connect(dev)
-            results[router_name] = result
-            if result is False:
-                continue
+                results[router_name] = show_current_config(dev)
 
-            results[router_name] = show_current_config(dev)
+                disconnect(dev)
 
-            disconnect(dev)
+            print_results(results)
+            return 0
 
-        print_results(results)
+        parser.print_help()
         return 0
 
 
