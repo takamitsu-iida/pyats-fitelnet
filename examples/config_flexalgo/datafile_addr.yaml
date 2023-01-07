@@ -1,0 +1,86 @@
+---
+
+parameters:
+
+  addr_params:
+
+    # present or absent
+    state: 'present'
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-p:
+        # pルータ 上
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '2001:db8:0:1::1'
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+          'Port-channel 2010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
+
+      f220-p:
+        # pルータ 下
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '2001:db8:0:2::1'
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+          'Port-channel 2010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
+
+      fx201-pe1:
+        # peルータ 右
+
+        interface_attr:
+          'Loopback 1':
+            ipv6_address: '2001:db8:0:11::1'
+
+          'Port-channel 1010000':
+            ipv6_enable: true
+
+          'Port-channel 3010000':
+            ipv6_enable: true
+
+      f220-pe2:
+        # peルータ 左
+
+        interface_attr:
+
+          'Loopback 1':
+            ipv6_address: '2001:db8:0:12::1'
+
+          'Port-channel 1010000':
+            ipv6_enable: true
+
+          'Port-channel 1020000':
+            ipv6_enable: true
+
+
+    # filter_attributesの有効・無効
+    apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    filter_attributes:
+      device_attr:
+        '*':
+          interface_attr:
+            '*':
+              ipv4_address:
+              ipv6_address:
+              ipv6_enable:

@@ -1,0 +1,104 @@
+---
+
+parameters:
+
+  isis_params:
+
+    # device common settings
+    isis_tag: core
+    log_adjacency_changes: True
+    is_type: 'level-2'
+    topology: 'ipv6-unicast'
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-p:
+        # pルータ 上
+        net: '49.0000.0000.0001.00'
+        locator_attr:
+          'a':
+        interface_attr:
+          'Loopback 1':
+            ipv6: True
+          'Port-channel 1020000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 2010000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 3010000':
+            ipv6: True
+            network_type_p2p: True
+
+      f220-p:
+        # pルータ 下
+        net: '49.0000.0000.0002.00'
+        locator_attr:
+          'a':
+        interface_attr:
+          'Loopback 1':
+            ipv6: True
+          'Port-channel 1020000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 2010000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 3010000':
+            ipv6: True
+            network_type_p2p: True
+
+      fx201-pe1:
+        net: '49.0000.0000.0011.00'
+        locator_attr:
+          'a':
+        interface_attr:
+          'Loopback 1':
+            ipv6: True
+          'Port-channel 1010000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 3010000':
+            ipv6: True
+            network_type_p2p: True
+
+      f220-pe2:
+        net: '49.0000.0000.0012.00'
+        locator_attr:
+          'a':
+        interface_attr:
+          'Loopback 1':
+            ipv6: True
+          'Port-channel 1010000':
+            ipv6: True
+            network_type_p2p: True
+          'Port-channel 1020000':
+            ipv6: True
+            network_type_p2p: True
+
+    # present or absent
+    # state: 'present'
+
+    # filter_attributesの有効・無効
+    # apply_filter: false
+
+    # 対象とするアトリビュートの定義
+    # filter_attributes:
+    #   device_attr:
+    #     '*':
+    #       log_adjacency_changes:
+    #       is_type:
+    #       topology:
+    #       net:
+    #       locator_attr:
+    #         '*':
+    #       flexalgo_attr:
+    #         '*':
+    #       interface_attr:
+    #         '*':
+    #           ipv4:
+    #           ipv6:
+    #           level_1_metric:
+    #           level_2_metric:
+    #           affinity_name:

@@ -1,0 +1,26 @@
+---
+
+#
+# datafile
+# https://pubhub.devnetcloud.com/media/pyats/docs/aetest/datafile.html
+#
+
+parameters:
+  description: SRv6 isis static-te
+
+
+extends:
+
+  - datafile_addr.yaml
+
+  - datafile_port_channel.yaml
+
+  - datafile_static_route.yaml
+
+  - datafile_srv6.yaml
+
+  - datafile_isis.yaml
+
+  - datafile_bgp.yaml
+
+  - datafile_l3vpn.yaml

@@ -1,0 +1,207 @@
+---
+
+parameters:
+
+  srv6_params:
+
+    # 共通設定
+    mtu: 2000
+    mss: 'auto'
+    fragment: 'post'
+    propagate_tos: 'enable'
+
+    # 装置固有設定
+    device_attr:
+
+      fx201-p:
+        # pルータ 上
+
+        # pルータを経由して通信するポリシーを作成するので、トンネルとソースアドレスは必須
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        encap_source: '2001:db8:0:1::1'
+
+        locator_attr:
+          'a':
+            locator_prefix: '2001:db8:0:1::/64'
+
+        local_sid_attr:
+          '2001:db8:0:1:1::':
+            action: end
+
+      f220-p:
+        # pルータ 下
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        encap_source: '2001:db8:0:2::1'
+
+        locator_attr:
+          'a':
+            locator_prefix: '2001:db8:0:2::/64'
+
+        local_sid_attr:
+          '2001:db8:0:2:1::':
+            action: end
+
+      fx201-pe1:
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        # L3VPNのSRv6パケットを送信するときのソースアドレス
+        # Loopback 1のIPv6アドレスを利用
+        encap_source: '2001:db8:0:11::1'
+
+        locator_attr:
+          'a':
+            locator_prefix: '2001:db8:0:11::/64'
+
+        local_sid_attr:
+          '2001:db8:0:11:1::':
+            action: end
+
+          # vrf 1のSID {locator}:11
+          '2001:db8:0:11:11::':
+            action: end.dt4
+            vrf: 1
+
+          # vrf 2のSID {locator}:12
+          '2001:db8:0:11:12::':
+            action: end.dt4
+            vrf: 2
+
+        policy_attr:
+          1:
+            # 宛先PE2 vrf 1 途中経路1
+            color: 1
+            # {PE2のロケータ}:11
+            end_point: '2001:db8:0:12:11::'
+            explicit_segment_list: 1
+
+          2:
+            # 宛先PE2 vrf 1 途中経路2
+            color: 1
+            end_point: '2001:db8:0:12:11::'
+            explicit_segment_list: 2
+
+          3:
+            # 宛先PE2 vrf 2 途中経路1
+            color: 1
+            # {PE2のロケータ}:12
+            end_point: '2001:db8:0:12:12::'
+            explicit_segment_list: 1
+
+          4:
+            # 宛先PE2 vrf 2 途中経路2
+            color: 1
+            end_point: '2001:db8:0:12:12::'
+            explicit_segment_list: 2
+
+        segment_list_attr:
+          '1':
+            index_attr:
+              '1':
+                # FX201 P(pルータ 上)のEnd SID
+                index_sid: '2001:db8:0:1:1::'
+
+          '2':
+            index_attr:
+              '1':
+                # FX220EX P(pルータ 下)のEnd SID
+                index_sid: '2001:db8:0:2:1::'
+
+      f220-pe2:
+        interface_attr:
+          'Tunnel 1':
+            tunnel_mode: srv6
+
+        # L3VPNのSRv6パケットを送信するときのソースアドレス
+        encap_source: '2001:db8:0:12::1'
+
+        locator_attr:
+          'a':
+            locator_prefix: '2001:db8:0:12::/64'
+
+        local_sid_attr:
+          '2001:db8:0:12:1::':
+            action: end
+
+          '2001:db8:0:12:11::':
+            action: end.dt4
+            vrf: 1
+
+          '2001:db8:0:12:12::':
+            action: end.dt4
+            vrf: 2
+
+        policy_attr:
+          '1':
+            # 宛先PE1 vrf 1 途中経路1
+            color: 1
+            end_point: '2001:db8:0:11:11::'
+            explicit_segment_list: 1
+
+          '2':
+            # 宛先PE1 vrf 1 途中経路2
+            color: 1
+            end_point: '2001:db8:0:11:11::'
+            explicit_segment_list: 2
+
+          '3':
+            # 宛先PE1 vrf 2 途中経路1
+            color: 1
+            end_point: '2001:db8:0:11:12::'
+            explicit_segment_list: 1
+
+          '4':
+            # 宛先PE1 vrf 2 途中経路2
+            color: 1
+            end_point: '2001:db8:0:11:12::'
+            explicit_segment_list: 2
+
+        segment_list_attr:
+          '1':
+            index_attr:
+              '1':
+                # FX201 P(上のルータ)のEnd SID
+                index_sid: '2001:db8:0:1:1::'
+
+          '2':
+            index_attr:
+              '1':
+                # FX220EX P(下のルータ)のEnd SID
+                index_sid: '2001:db8:0:2:1::'
+
+
+    # present or absent
+    # state: 'present'
+
+    # filter_attributesの有効・無効
+    # apply_filter: true
+
+    # 対象とするアトリビュートの定義
+    # filter_attributes:
+    #   mtu:
+    #   mss:
+    #   fragment:
+    #   propagate_tos:
+    #
+    #   device_attr:
+    #     # '*' は任意の装置名
+    #     '*':
+    #       interface_attr:
+    #         '*':
+    #           tunnel_mode:
+    #       encap_source:
+    #       locator_attr:
+    #         '*':
+    #       local_sid_attr:
+    #         '*':
+    #       policy_attr:
+    #         '*':
+    #       segment_list_attr:
+    #         '*':

@@ -1,0 +1,85 @@
+---
+
+parameters:
+
+  l3vpn_params:
+
+    vrf:
+
+      # ip vrf 2
+      '2':
+
+        # override state
+        # state: 'present'
+
+        # route distinguisher
+        rd: '1:2'
+
+        # route target
+        import_rt: '1:2'
+        export_rt: '1:2'
+
+        # srv6 locator
+        srv6_locator: a
+
+        device_attr:
+          fx201-pe1:
+            # to CE1
+            interface_attr:
+              'Port-channel 2010002':
+                ipv4_address: 10.2.11.1/24
+                ipv6_address: '2001:db8:2:11::1/64'
+            bgp_attr:
+              af_attr:
+                'ipv4 vrf':
+                  redistribute: [connected]
+                'ipv6 vrf':
+                  redistribute: [connected]
+
+          f220-pe2:
+            interface_attr:
+              # to CE2
+              'Port-channel 2010002':
+                ipv4_address: 10.2.12.1/24
+                ipv6_address: '2001:db8:2:12::1/64'
+            bgp_attr:
+              af_attr:
+                'ipv4 vrf':
+                  redistribute: [connected]
+                'ipv6 vrf':
+                  redistribute: [connected]
+
+          f221-ce1:
+            interface_attr:
+              # to PE1
+              'Port-channel 2010002':
+                ipv4_address: 10.2.11.2/24
+                ipv6_address: '2001:db8:2:11::2/64'
+
+          f221-ce2:
+            interface_attr:
+              # to PE2
+              'Port-channel 2010002':
+                ipv4_address: 10.2.12.2/24
+                ipv6_address: '2001:db8:2:12::2/64'
+
+
+
+        # filter_attributesの有効・無効
+        apply_filter: true
+
+        filter_attributes:
+          device_attr:
+            '*':
+              rd:
+              import_rt:
+              export_rt:
+              srv6_locator:
+              interface_attr:
+                '*':
+                  ipv4_address:
+                  ipv6_address:
+              bgp_attr:
+                af_attr:
+                  '*':
+                    'redistribute':
