@@ -42,7 +42,7 @@ def print_config(name: str, configs: dict):
 execute_map = {
 
     # 1. ポートチャネルを作る
-    'port_channel': True,
+    'port_channel': False,
 
     # 2. 網内にIPアドレスを割り振る
     'address': False,
