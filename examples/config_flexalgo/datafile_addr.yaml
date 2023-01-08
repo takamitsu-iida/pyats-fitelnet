@@ -12,63 +12,86 @@ parameters:
 
       fx201-p:
         # pルータ 上
-
         interface_attr:
 
           'Loopback 1':
-            ipv6_address: '2001:db8:0:1::1'
+            ipv6_address: '2001:db8:1:1::1'
 
-          'Port-channel 1020000':
+          'Port-channel 1020001':
             ipv6_enable: true
 
-          'Port-channel 2010000':
+          'Port-channel 1020002':
             ipv6_enable: true
 
-          'Port-channel 3010000':
+          'Port-channel 2010001':
             ipv6_enable: true
+
+          'Port-channel 3010001':
+            ipv6_enable: true
+
+          'Port-channel 3010002':
+            ipv6_enable: true
+
 
       f220-p:
         # pルータ 下
-
         interface_attr:
 
           'Loopback 1':
-            ipv6_address: '2001:db8:0:2::1'
+            ipv6_address: '2001:db8:1:2::1'
 
-          'Port-channel 1020000':
+          'Port-channel 1020001':
             ipv6_enable: true
 
-          'Port-channel 2010000':
+          'Port-channel 1020002':
             ipv6_enable: true
 
-          'Port-channel 3010000':
+          'Port-channel 2010001':
             ipv6_enable: true
+
+          'Port-channel 3010001':
+            ipv6_enable: true
+
+          'Port-channel 3010002':
+            ipv6_enable: true
+
 
       fx201-pe1:
         # peルータ 右
-
         interface_attr:
           'Loopback 1':
-            ipv6_address: '2001:db8:0:11::1'
+            ipv6_address: '2001:db8:1:11::1'
 
-          'Port-channel 1010000':
+          'Port-channel 1010001':
             ipv6_enable: true
 
-          'Port-channel 3010000':
+          'Port-channel 1010002':
             ipv6_enable: true
+
+          'Port-channel 3010001':
+            ipv6_enable: true
+
+          'Port-channel 3010002':
+            ipv6_enable: true
+
 
       f220-pe2:
         # peルータ 左
-
         interface_attr:
 
           'Loopback 1':
-            ipv6_address: '2001:db8:0:12::1'
+            ipv6_address: '2001:db8:1:12::1'
 
-          'Port-channel 1010000':
+          'Port-channel 1010001':
             ipv6_enable: true
 
-          'Port-channel 1020000':
+          'Port-channel 1010002':
+            ipv6_enable: true
+
+          'Port-channel 1020001':
+            ipv6_enable: true
+
+          'Port-channel 1020002':
             ipv6_enable: true
 
 

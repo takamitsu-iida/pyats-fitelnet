@@ -20,7 +20,7 @@ parameters:
         export_rt: '1:2'
 
         # srv6 locator
-        srv6_locator: a
+        srv6_locator: b
 
         device_attr:
           fx201-pe1:
@@ -28,7 +28,7 @@ parameters:
             interface_attr:
               'Port-channel 2010002':
                 ipv4_address: 10.2.11.1/24
-                ipv6_address: '2001:db8:2:11::1/64'
+                ipv6_address: '2001:db8:2222:11::1/64'
             bgp_attr:
               af_attr:
                 'ipv4 vrf':
@@ -41,7 +41,7 @@ parameters:
               # to CE2
               'Port-channel 2010002':
                 ipv4_address: 10.2.12.1/24
-                ipv6_address: '2001:db8:2:12::1/64'
+                ipv6_address: '2001:db8:2222:12::1/64'
             bgp_attr:
               af_attr:
                 'ipv4 vrf':
@@ -54,14 +54,14 @@ parameters:
               # to PE1
               'Port-channel 2010002':
                 ipv4_address: 10.2.11.2/24
-                ipv6_address: '2001:db8:2:11::2/64'
+                ipv6_address: '2001:db8:2222:11::2/64'
 
           f221-ce2:
             interface_attr:
               # to PE2
               'Port-channel 2010002':
                 ipv4_address: 10.2.12.2/24
-                ipv6_address: '2001:db8:2:12::2/64'
+                ipv6_address: '2001:db8:2222:12::2/64'
 
 
 

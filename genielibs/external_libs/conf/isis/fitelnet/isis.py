@@ -81,6 +81,10 @@ class Isis:
                         }
                         configurations.append_line(attributes.format('topology {topology}', transform=transform))
 
+                # affinity-map <name> bit-position <0-255>
+                for sub, attributes2 in attributes.mapping_values('affinity_map_attr', sort=True, keys=self.affinity_map_attr):
+                    configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
+
                 # srv6 locator <name>
                 for sub, attributes2 in attributes.mapping_values('locator_attr', sort=True, keys=self.locator_attr):
                     configurations.append_block(sub.build_config(apply=False, attributes=attributes2, unconfig=unconfig))
@@ -98,6 +102,24 @@ class Isis:
 
         def build_unconfig(self, apply=True, attributes=None, **kwargs):
             return self.build_config(apply=apply, attributes=attributes, unconfig=True, **kwargs)
+
+
+        #
+        # +- DeviceAttributes
+        #     +- AffinityMapAttributes
+        #
+        class AffinityMapAttributes:
+            def build_config(self, apply=True, attributes=None, unconfig=False, **kwargs):
+                assert not kwargs, kwargs
+
+                attributes = AttributesHelper(self, attributes)
+                configurations = CliConfigBuilder(unconfig=unconfig)
+
+                if attributes.value('bit_position') is not None:
+                    configurations.append_line(attributes.format('affinity-map {affinity_name} bit-position {bit_position}'))
+
+                return str(configurations)
+
 
         #
         # +- DeviceAttributes

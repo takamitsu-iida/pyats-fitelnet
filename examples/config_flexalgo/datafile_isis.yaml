@@ -10,72 +10,195 @@ parameters:
     is_type: 'level-2'
     topology: 'ipv6-unicast'
 
+    locator_attr:
+      'a':
+        algorithm: 128
+      'b':
+        algorithm: 129
+
+    flexalgo_attr:
+      128:
+        advertise: True
+        affinity_mode: 'include-any'
+        affinity_names: ['blue', 'yellow']
+        priority: 128
+      129:
+        advertise: True
+        affinity_mode: 'include-any'
+        affinity_names: ['red', 'yellow']
+        priority: 129
+
+    affinity_map_attr:
+      'yellow':
+        bit_position: 1
+      'blue':
+        bit_position: 2
+      'red':
+        bit_position: 3
+
     # 装置固有設定
     device_attr:
 
       fx201-p:
         # pルータ 上
         net: '49.0000.0000.0001.00'
-        locator_attr:
-          'a':
+
         interface_attr:
           'Loopback 1':
             ipv6: True
-          'Port-channel 1020000':
-            ipv6: True
+
+          'Port-channel 1020001':
+            ipv6: true
             network_type_p2p: True
-          'Port-channel 2010000':
-            ipv6: True
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: blue
+
+          'Port-channel 1020002':
+            ipv6: true
             network_type_p2p: True
-          'Port-channel 3010000':
-            ipv6: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: red
+
+          'Port-channel 2010001':
+            ipv6: true
             network_type_p2p: True
+            level_1_metric: 200
+            level_2_metric: 200
+            affinity_name: yellow
+
+          'Port-channel 3010001':
+            ipv6: true
+            network_type_p2p: True
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: blue
+
+          'Port-channel 3010002':
+            ipv6: true
+            network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: red
+
 
       f220-p:
         # pルータ 下
         net: '49.0000.0000.0002.00'
-        locator_attr:
-          'a':
+
         interface_attr:
           'Loopback 1':
             ipv6: True
-          'Port-channel 1020000':
+
+          'Port-channel 1020001':
             ipv6: True
             network_type_p2p: True
-          'Port-channel 2010000':
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: blue
+
+          'Port-channel 1020002':
             ipv6: True
             network_type_p2p: True
-          'Port-channel 3010000':
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: red
+
+          'Port-channel 2010001':
             ipv6: True
             network_type_p2p: True
+            level_1_metric: 200
+            level_2_metric: 200
+            affinity_name: yellow
+
+          'Port-channel 3010001':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: blue
+
+          'Port-channel 3010002':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: red
+
 
       fx201-pe1:
+        # peルータ・右
         net: '49.0000.0000.0011.00'
-        locator_attr:
-          'a':
+
         interface_attr:
           'Loopback 1':
             ipv6: True
-          'Port-channel 1010000':
+
+          'Port-channel 1010001':
             ipv6: True
             network_type_p2p: True
-          'Port-channel 3010000':
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: blue
+
+          'Port-channel 1010002':
             ipv6: True
             network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: red
+
+          'Port-channel 3010001':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: blue
+
+          'Port-channel 3010002':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: red
+
 
       f220-pe2:
+        # peルータ・左
         net: '49.0000.0000.0012.00'
-        locator_attr:
-          'a':
+
         interface_attr:
           'Loopback 1':
             ipv6: True
-          'Port-channel 1010000':
+
+          'Port-channel 1010001':
             ipv6: True
             network_type_p2p: True
-          'Port-channel 1020000':
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: blue
+
+          'Port-channel 1010002':
             ipv6: True
             network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: red
+
+          'Port-channel 1020001':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 100
+            level_2_metric: 100
+            affinity_name: blue
+
+          'Port-channel 1020002':
+            ipv6: True
+            network_type_p2p: True
+            level_1_metric: 10
+            level_2_metric: 10
+            affinity_name: red
 
     # present or absent
     # state: 'present'
@@ -94,6 +217,8 @@ parameters:
     #       locator_attr:
     #         '*':
     #       flexalgo_attr:
+    #         '*':
+    #       affinity_map_attr:
     #         '*':
     #       interface_attr:
     #         '*':

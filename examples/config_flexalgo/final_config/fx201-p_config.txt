@@ -1,0 +1,150 @@
+!  LAST EDIT    14:16:20 2023/01/08 by user
+!  LAST REFRESH 14:16:21 2023/01/08 by user
+!  LAST SAVE    18:53:12 2023/01/03 by user
+!
+ip route 0.0.0.0 0.0.0.0 192.168.10.254
+ip domain-name srv6.local
+!
+logging console facility all
+!
+no logging console
+!
+aaa authentication login default local login
+aaa authorization exec default local
+!
+username iida privilege 15 password 2 $1$WfofCXqw$nkdx.2.cqMfPTbWxBcqCK0
+username st privilege 15 password 2 $1$qDR/BSHa$4iSpgVR6awMhNoMC7i8qL/
+username user privilege 15 password 2 $1$wINPtBUG$OFzBNb.T3pCdeYrFCQWah.
+!
+hostname fx201-p
+!
+interface GigaEthernet 1/2.1
+ vlan-id 14
+ bridge-group 14
+ channel-group 1020001
+exit
+!
+interface GigaEthernet 1/2.2
+ vlan-id 15
+ bridge-group 15
+ channel-group 1020002
+exit
+!
+interface GigaEthernet 2/1.1
+ vlan-id 11
+ bridge-group 11
+ channel-group 2010001
+exit
+!
+interface GigaEthernet 3/1.1
+ vlan-id 12
+ bridge-group 12
+ channel-group 3010001
+exit
+!
+interface GigaEthernet 3/1.2
+ vlan-id 13
+ bridge-group 13
+ channel-group 3010002
+exit
+!
+interface Management 1
+ ip address 192.168.10.221 255.255.255.0
+exit
+!
+interface Loopback 1
+ ipv6 address 2001:db8:1:1::1
+ ipv6 router isis core
+exit
+!
+interface Port-channel 1020001
+ ipv6 enable
+ ipv6 router isis core
+ isis metric 10 level-1
+ isis metric 10 level-2
+ isis network point-to-point
+ isis affinity flex-algo blue
+exit
+!
+interface Port-channel 1020002
+ ipv6 enable
+ ipv6 router isis core
+ isis metric 100 level-1
+ isis metric 100 level-2
+ isis network point-to-point
+ isis affinity flex-algo red
+exit
+!
+interface Port-channel 2010001
+ ipv6 enable
+ ipv6 router isis core
+ isis metric 200 level-1
+ isis metric 200 level-2
+ isis network point-to-point
+ isis affinity flex-algo yellow
+exit
+!
+interface Port-channel 3010001
+ ipv6 enable
+ ipv6 router isis core
+ isis metric 10 level-1
+ isis metric 10 level-2
+ isis network point-to-point
+ isis affinity flex-algo blue
+exit
+!
+interface Port-channel 3010002
+ ipv6 enable
+ ipv6 router isis core
+ isis metric 100 level-1
+ isis metric 100 level-2
+ isis network point-to-point
+ isis affinity flex-algo red
+exit
+!
+interface Tunnel 1
+ tunnel mode srv6
+exit
+!
+router isis core
+ log-adjacency-changes
+ affinity-map blue bit-position 2
+ affinity-map red bit-position 3
+ affinity-map yellow bit-position 1
+ is-type level-2
+ net 49.0000.0000.0001.00
+ srv6 locator a algorithm 128
+ srv6 locator b algorithm 129
+ topology ipv6-unicast
+ !
+ flex-algo 128
+  advertise-definition
+  affinity include-any blue yellow
+  priority 128
+ exit
+ !
+ flex-algo 129
+  advertise-definition
+  affinity include-any red yellow
+  priority 129
+ exit
+ !
+exit
+!
+line telnet
+ exec-timeout 0
+exit
+!
+segment-routing srv6
+ encapsulation source-address 2001:db8:1:1::1
+ fragment post
+ local-sid 2001:db8:1:1:1:: action end
+ local-sid 2001:db8:2:1:1:: action end
+ locator a 2001:db8:1:1::/64
+ locator b 2001:db8:2:1::/64
+ propagate-tos enable
+ set mtu 2000
+ set mss auto
+exit
+!
+end

@@ -15,20 +15,23 @@ parameters:
 
       fx201-p:
         # pルータ 上
-
-        # pルータを経由して通信するポリシーを作成するので、トンネルとソースアドレスは必須
         interface_attr:
           'Tunnel 1':
             tunnel_mode: srv6
 
-        encap_source: '2001:db8:0:1::1'
+        # Loopback 1 addr
+        encap_source: '2001:db8:1:1::1'
 
         locator_attr:
           'a':
-            locator_prefix: '2001:db8:0:1::/64'
+            locator_prefix: '2001:db8:1:1::/64'
+          'b':
+            locator_prefix: '2001:db8:2:1::/64'
 
         local_sid_attr:
-          '2001:db8:0:1:1::':
+          '2001:db8:1:1:1::':
+            action: end
+          '2001:db8:2:1:1::':
             action: end
 
       f220-p:
@@ -37,144 +40,58 @@ parameters:
           'Tunnel 1':
             tunnel_mode: srv6
 
-        encap_source: '2001:db8:0:2::1'
+        encap_source: '2001:db8:1:2::1'
 
         locator_attr:
           'a':
-            locator_prefix: '2001:db8:0:2::/64'
+            locator_prefix: '2001:db8:1:2::/64'
+          'b':
+            locator_prefix: '2001:db8:2:2::/64'
 
         local_sid_attr:
-          '2001:db8:0:2:1::':
+          '2001:db8:1:2:1::':
+            action: end
+          '2001:db8:2:2:1::':
             action: end
 
       fx201-pe1:
+        # peルータ・右
         interface_attr:
           'Tunnel 1':
             tunnel_mode: srv6
 
-        # L3VPNのSRv6パケットを送信するときのソースアドレス
-        # Loopback 1のIPv6アドレスを利用
-        encap_source: '2001:db8:0:11::1'
+        encap_source: '2001:db8:1:11::1'
 
         locator_attr:
           'a':
-            locator_prefix: '2001:db8:0:11::/64'
+            locator_prefix: '2001:db8:1:11::/64'
+          'b':
+            locator_prefix: '2001:db8:2:11::/64'
 
         local_sid_attr:
-          '2001:db8:0:11:1::':
+          '2001:db8:1:11:1::':
             action: end
-
-          # vrf 1のSID {locator}:11
-          '2001:db8:0:11:11::':
-            action: end.dt4
-            vrf: 1
-
-          # vrf 2のSID {locator}:12
-          '2001:db8:0:11:12::':
-            action: end.dt4
-            vrf: 2
-
-        policy_attr:
-          1:
-            # 宛先PE2 vrf 1 途中経路1
-            color: 1
-            # {PE2のロケータ}:11
-            end_point: '2001:db8:0:12:11::'
-            explicit_segment_list: 1
-
-          2:
-            # 宛先PE2 vrf 1 途中経路2
-            color: 1
-            end_point: '2001:db8:0:12:11::'
-            explicit_segment_list: 2
-
-          3:
-            # 宛先PE2 vrf 2 途中経路1
-            color: 1
-            # {PE2のロケータ}:12
-            end_point: '2001:db8:0:12:12::'
-            explicit_segment_list: 1
-
-          4:
-            # 宛先PE2 vrf 2 途中経路2
-            color: 1
-            end_point: '2001:db8:0:12:12::'
-            explicit_segment_list: 2
-
-        segment_list_attr:
-          '1':
-            index_attr:
-              '1':
-                # FX201 P(pルータ 上)のEnd SID
-                index_sid: '2001:db8:0:1:1::'
-
-          '2':
-            index_attr:
-              '1':
-                # FX220EX P(pルータ 下)のEnd SID
-                index_sid: '2001:db8:0:2:1::'
+          '2001:db8:2:11:1::':
+            action: end
 
       f220-pe2:
         interface_attr:
           'Tunnel 1':
             tunnel_mode: srv6
 
-        # L3VPNのSRv6パケットを送信するときのソースアドレス
-        encap_source: '2001:db8:0:12::1'
+        encap_source: '2001:db8:1:12::1'
 
         locator_attr:
           'a':
-            locator_prefix: '2001:db8:0:12::/64'
+            locator_prefix: '2001:db8:1:12::/64'
+          'b':
+            locator_prefix: '2001:db8:2:12::/64'
 
         local_sid_attr:
-          '2001:db8:0:12:1::':
+          '2001:db8:1:12:1::':
             action: end
-
-          '2001:db8:0:12:11::':
-            action: end.dt4
-            vrf: 1
-
-          '2001:db8:0:12:12::':
-            action: end.dt4
-            vrf: 2
-
-        policy_attr:
-          '1':
-            # 宛先PE1 vrf 1 途中経路1
-            color: 1
-            end_point: '2001:db8:0:11:11::'
-            explicit_segment_list: 1
-
-          '2':
-            # 宛先PE1 vrf 1 途中経路2
-            color: 1
-            end_point: '2001:db8:0:11:11::'
-            explicit_segment_list: 2
-
-          '3':
-            # 宛先PE1 vrf 2 途中経路1
-            color: 1
-            end_point: '2001:db8:0:11:12::'
-            explicit_segment_list: 1
-
-          '4':
-            # 宛先PE1 vrf 2 途中経路2
-            color: 1
-            end_point: '2001:db8:0:11:12::'
-            explicit_segment_list: 2
-
-        segment_list_attr:
-          '1':
-            index_attr:
-              '1':
-                # FX201 P(上のルータ)のEnd SID
-                index_sid: '2001:db8:0:1:1::'
-
-          '2':
-            index_attr:
-              '1':
-                # FX220EX P(下のルータ)のEnd SID
-                index_sid: '2001:db8:0:2:1::'
+          '2001:db8:2:12:1::':
+            action: end
 
 
     # present or absent

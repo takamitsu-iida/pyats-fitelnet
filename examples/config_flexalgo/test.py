@@ -53,8 +53,8 @@ execute_map = {
     # 4. BGPでPE間を接続する（VPNv4とVPNv6を設定する）
     'bgp': False,
 
-    # 5. SRv6ロケータを設定する（この時点ではVPNを定義していないのでlocal-sidやポリシーは除外してロケータだけを設定する）
-    'srv6_locator': False,
+    # 5. SRv6を設定する（ポリシーは作成しないので全項目を設定する）
+    'srv6': False,
 
     # 6. ISISにsrv6 locator設定を加える
     'isis_srv6': False,
@@ -62,10 +62,7 @@ execute_map = {
     # 7. vrf 1とvrf 2を定義する
     'l3vpn': False,
 
-    # 8. SRv6のlocal sidとポリシーを設定する
-    'srv6_sid': False,
-
-    # 9. vrf 1とvrf 2に関するスタティックルートを設定する
+    # 8. vrf 1とvrf 2に関するスタティックルートを設定する
     'static_route': False,
 
 }
@@ -216,33 +213,19 @@ class BuildConfigApply(aetest.Testcase):
 
 
     @aetest.test
-    def srv6_locator_config(self, testbed, steps):
+    def srv6_config(self, testbed, steps):
         """
         """
-        if not execute_map.get('srv6_locator', False):
+        if not execute_map.get('srv6', False):
             self.skipped('execute_map')
 
         srv6_params = parameters.get('srv6_params')
         if srv6_params is None:
             self.skipped('srv6_params not found')
 
-        attributes = {
-            'device_attr': {
-                '*': {
-                    'mtu': None,
-                    'mss': None,
-                    'fragment': None,
-                    'propagate_tos': None,
-                    'locator_attr': None,
-                    'encap_source': None,
-                    'interface_attr': None,
-                }
-            }
-        }
+        configs = build_srv6_config(testbed=testbed, params=srv6_params)
 
-        configs = build_srv6_config(testbed=testbed, params=srv6_params, attributes=attributes)
-
-        print_config('srv6_locator', configs)
+        print_config('srv6', configs)
 
         if is_check_mode():
             self.skipped('check_mode')
@@ -265,6 +248,8 @@ class BuildConfigApply(aetest.Testcase):
             'device_attr': {
                 '*': {
                     'locator_attr': None,
+                    'flexalgo_attr': None,
+                    'affinity_map_attr': None,
                 }
             }
         }
@@ -301,38 +286,6 @@ class BuildConfigApply(aetest.Testcase):
             self.skipped('configs not found')
 
         self.apply_config(testbed, configs, steps)
-
-
-    @aetest.test
-    def srv6_sid_config(self, testbed, steps):
-        """
-        """
-        if not execute_map.get('srv6_sid', False):
-            self.skipped('execute_map')
-
-        srv6_params = parameters.get('srv6_params')
-        if srv6_params is None:
-            self.skipped('srv6_params not found')
-
-        attributes = {
-            'device_attr': {
-                '*': {
-                    'local_sid_attr': None,
-                    'policy_attr': None,
-                    'segment_list_attr': None,
-                }
-            }
-        }
-
-        configs = build_srv6_config(testbed=testbed, params=srv6_params, attributes=attributes)
-
-        print_config('srv6_sid', configs)
-
-        if is_check_mode():
-            self.skipped('check_mode')
-
-        self.apply_config(testbed, configs, steps)
-
 
     @aetest.test
     def static_route_config(self, testbed, steps):

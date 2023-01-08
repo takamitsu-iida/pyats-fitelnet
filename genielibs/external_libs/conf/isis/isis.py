@@ -12,7 +12,8 @@ from genie.decorator import managedattribute
 #   +--DeviceAttributes
 #        +--InterfaceAttributes
 #        +--IsisAttributes
-#             +--LocatorAttributes
+#        +--LocatorAttributes
+#        +--AffinityMapAttributes
 
 class Isis(DeviceFeature):
 
@@ -38,6 +39,21 @@ class Isis(DeviceFeature):
         @locator_attr.initter
         def locator_attr(self):
             return SubAttributesDict(self.LocatorAttributes, parent=self)
+
+        # =============================================
+        # AffinityMap attributes
+        # =============================================
+        class AffinityMapAttributes(KeyedSubAttributes):
+            def __init__(self, parent, key):
+                self.affinity_name = key
+                super().__init__(parent)
+
+        affinity_map_attr = managedattribute(name='affinity_map_attr', read_only=True, doc=AffinityMapAttributes.__doc__)
+
+        @affinity_map_attr.initter
+        def affinity_map_attr(self):
+            return SubAttributesDict(self.AffinityMapAttributes, parent=self)
+
 
         # =============================================
         # Flexalgo attributes
@@ -117,6 +133,9 @@ class Isis(DeviceFeature):
         ipv6_unicast = 'ipv6-unicast'
 
     topology = managedattribute(name='topology', default=None, type=(None, Topology), doc='ISIS topology')
+
+    # affinity-map <name> bit-position <0-255>
+    bit_position = managedattribute(name='bit_position', default=None, type=(None, managedattribute.test_istype(int)), doc='FlexAlgo affinity bit position <0-255>')
 
     # srv6 locator <locator> algorithm <algorithm value>
     algorithm = managedattribute(name='algorithm', default=None, type=(None, managedattribute.test_istype(int)), doc='Srv6 locator algorithm value <128-255>')

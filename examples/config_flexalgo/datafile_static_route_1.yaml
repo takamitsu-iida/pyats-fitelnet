@@ -6,24 +6,6 @@ parameters:
 
     device_attr:
 
-      fx201-pe1:
-        vrf_attr:
-          '1':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '10.1.12.0 255.255.255.0':
-                    interface_attr:
-                     'tunnel 1':
-                        srv6_policy: 1
-
-              ipv6:
-                route_attr:
-                  '2001:db8:1:12::/64':
-                    interface_attr:
-                      'tunnel 1':
-                        srv6_policy: 1
-
       f221-ce1:
         vrf_attr:
           '1':
@@ -35,24 +17,7 @@ parameters:
               ipv6:
                 route_attr:
                   '::/0':
-                    next_hop_attr: '2001:db8:1:11::1'
-
-      f220-pe2:
-        vrf_attr:
-          '1':
-            address_family_attr:
-              ipv4:
-                route_attr:
-                  '10.1.11.0/24':
-                    interface_attr:
-                      'tunnel 1':
-                        srv6_policy: 1
-              ipv6:
-                route_attr:
-                  '2001:db8:1:11::/64':
-                    interface_attr:
-                      'tunnel 1':
-                        srv6_policy: 1
+                    next_hop_attr: '2001:db8:1111:11::1'
 
       f221-ce2:
         vrf_attr:
@@ -66,4 +31,4 @@ parameters:
               ipv6:
                 route_attr:
                   '::/0':
-                    next_hop_attr: '2001:db8:1:12::1'
+                    next_hop_attr: '2001:db8:1111:12::1'

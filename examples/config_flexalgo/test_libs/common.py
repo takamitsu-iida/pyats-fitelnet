@@ -197,15 +197,16 @@ def build_isis_config(testbed: object, params: dict, attributes: dict = None) ->
         if device_data.get('net') is not None:
             isis.device_attr[device_name].net = device_data.get('net')
 
-        locator_attr = device_data.get('locator_attr', {}) if device_data.get('locator_attr', {}) else {}
+        # データをisis_params直下に配置しているのでそこから取り出す
+        locator_attr = params.get('locator_attr', {}) if params.get('locator_attr', {}) else {}
         for locator_name, locator_data in locator_attr.items():
-            locator = isis.device_attr[device_name].locator_attr[locator_name]
             if locator_data is None:
                 continue
             if locator_data.get('algorithm') is not None:
-                locator.algorithm = locator_data.get('algorithm')
+                isis.device_attr[device_name].locator_attr[locator_name].algorithm = locator_data.get('algorithm')
 
-        flexalgo_attr = device_data.get('flexalgo_attr', {}) if device_data.get('flexalgo_attr', {}) else {}
+        # データをisis_params直下に配置しているのでそこから取り出す
+        flexalgo_attr = params.get('flexalgo_attr', {}) if params.get('flexalgo_attr', {}) else {}
         for flexalgo_name, flexalgo_data in flexalgo_attr.items():
             if flexalgo_data is None:
                 continue
@@ -218,6 +219,14 @@ def build_isis_config(testbed: object, params: dict, attributes: dict = None) ->
                 flexalgo.affinity_names = flexalgo_data.get('affinity_names')
             if flexalgo_data.get('priority') is not None:
                 flexalgo.priority = flexalgo_data.get('priority')
+
+        # データをisis_params直下に配置しているのでそこから取り出す
+        affinity_map_attr = params.get('affinity_map_attr', {}) if params.get('affinity_map_attr', {}) else {}
+        for affinity_name, affinity_data in affinity_map_attr.items():
+            if affinity_data is None:
+                continue
+            if affinity_data.get('bit_position') is not None:
+                isis.device_attr[device_name].affinity_map_attr[affinity_name].bit_position = affinity_data.get('bit_position')
 
         interface_attr = device_data.get('interface_attr', {}) if device_data.get('interface_attr', {}) else {}
         for intf_name, intf_data in interface_attr.items():

@@ -7,19 +7,6 @@ parameters:
     # present or absent
     state: 'present'
 
-    # filter_attributesの有効・無効
-    apply_filter: true
-
-    # 対象とするアトリビュートの定義
-    filter_attributes:
-      device_attr:
-        '*':
-          interface_attr:
-            '*':
-              vlan_id:
-              bridge_group:
-              channel_group:
-
     # 装置固有設定
     device_attr:
 
@@ -38,14 +25,9 @@ parameters:
             channel_group: 1020002
 
           'GigaEthernet 2/1.1':
-            vlan_id: 10
-            bridge_group: 10
-            channel_group: 2010001
-
-          'GigaEthernet 2/1.2':
             vlan_id: 11
             bridge_group: 11
-            channel_group: 2010002
+            channel_group: 2010001
 
           'GigaEthernet 3/1.1':
             vlan_id: 12
@@ -62,33 +44,28 @@ parameters:
         interface_attr:
 
           'GigaEthernet 1/2.1':
-            vlan_id: 18
-            bridge_group: 18
+            vlan_id: 19
+            bridge_group: 19
             channel_group: 1020001
 
           'GigaEthernet 1/2.2':
-            vlan_id: 19
-            bridge_group: 19
+            vlan_id: 18
+            bridge_group: 18
             channel_group: 1020002
 
           'GigaEthernet 2/1.1':
-            vlan_id: 10
-            bridge_group: 10
-            channel_group: 2010001
-
-          'GigaEthernet 2/1.2':
             vlan_id: 11
             bridge_group: 11
-            channel_group: 2010002
+            channel_group: 2010001
 
           'GigaEthernet 3/1.1':
-            vlan_id: 16
-            bridge_group: 16
+            vlan_id: 17
+            bridge_group: 17
             channel_group: 3010001
 
           'GigaEthernet 3/1.2':
-            vlan_id: 17
-            bridge_group: 17
+            vlan_id: 16
+            bridge_group: 16
             channel_group: 3010002
 
           # 'GigaEthernet 1/8':
@@ -121,13 +98,13 @@ parameters:
             channel_group: 2010002
 
           'GigaEthernet 3/1.1':
-            vlan_id: 16
-            bridge_group: 16
+            vlan_id: 17
+            bridge_group: 17
             channel_group: 3010001
 
           'GigaEthernet 3/1.2':
-            vlan_id: 17
-            bridge_group: 17
+            vlan_id: 16
+            bridge_group: 16
             channel_group: 3010002
 
 
@@ -146,13 +123,13 @@ parameters:
             channel_group: 1010002
 
           'GigaEthernet 1/2.1':
-            vlan_id: 18
-            bridge_group: 18
+            vlan_id: 19
+            bridge_group: 19
             channel_group: 1020001
 
           'GigaEthernet 1/2.2':
-            vlan_id: 19
-            bridge_group: 19
+            vlan_id: 18
+            bridge_group: 18
             channel_group: 1020002
 
           'GigaEthernet 2/1.1':
@@ -208,3 +185,17 @@ parameters:
           #   vlan_id: 108
           #   bridge_group: 108
           #   channel_group: 1080000
+
+
+    # filter_attributesの有効・無効
+    # apply_filter: true
+    #
+    # # 対象とするアトリビュートの定義
+    # filter_attributes:
+    #   device_attr:
+    #     '*':
+    #       interface_attr:
+    #         '*':
+    #           vlan_id:
+    #           bridge_group:
+    #           channel_group:

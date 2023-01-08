@@ -29,6 +29,12 @@ class test_isis(TestCase):
         isis.is_type = 'level-2'
         isis.topology = 'ipv6-unicast'
 
+        # FlexAlgo affinity-map
+        # affinity-map <color> bit-position <0-255>
+        isis.device_attr[dev1.name].affinity_map_attr['yellow'].bit_position = 1
+        isis.device_attr[dev1.name].affinity_map_attr['blue'].bit_position = 2
+        isis.device_attr[dev1.name].affinity_map_attr['red'].bit_position = 3
+
         # interface Port-channel 1020000
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv4 = True
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv6 = True
@@ -45,12 +51,12 @@ class test_isis(TestCase):
 
         isis.device_attr[dev1.name].flexalgo_attr[128].advertise = True
         isis.device_attr[dev1.name].flexalgo_attr[128].affinity_mode = 'include-any'
-        isis.device_attr[dev1.name].flexalgo_attr[128].affinity_names = ['a', 'b', 'c']
+        isis.device_attr[dev1.name].flexalgo_attr[128].affinity_names = ['yellow', 'blue']
         isis.device_attr[dev1.name].flexalgo_attr[128].priority = 128
 
         isis.device_attr[dev1.name].flexalgo_attr[129].advertise = True
         isis.device_attr[dev1.name].flexalgo_attr[129].affinity_mode = 'include-any'
-        isis.device_attr[dev1.name].flexalgo_attr[129].affinity_names = ['a', 'b', 'c']
+        isis.device_attr[dev1.name].flexalgo_attr[129].affinity_names = ['yellow', 'red']
         isis.device_attr[dev1.name].flexalgo_attr[129].priority = 129
 
         #
@@ -83,6 +89,12 @@ class test_isis(TestCase):
         isis.is_type = 'level-2'
         isis.topology = 'ipv6-unicast'
 
+        # FlexAlgo affinity-map
+        # affinity-map <color> bit-position <0-255>
+        isis.device_attr[dev1.name].affinity_map_attr['yellow'].bit_position = 1
+        isis.device_attr[dev1.name].affinity_map_attr['blue'].bit_position = 2
+        isis.device_attr[dev1.name].affinity_map_attr['red'].bit_position = 3
+
         # interface Port-channel 1020000
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv4 = True
         isis.device_attr[dev1.name].interface_attr['Port-channel 1020000'].ipv6 = True
@@ -100,12 +112,12 @@ class test_isis(TestCase):
 
         isis.device_attr[dev1.name].flexalgo_attr[128].advertise = True
         isis.device_attr[dev1.name].flexalgo_attr[128].affinity_mode = 'include-any'
-        isis.device_attr[dev1.name].flexalgo_attr[128].affinity_names = ['a', 'b', 'c']
+        isis.device_attr[dev1.name].flexalgo_attr[128].affinity_names = ['yellow', 'blue']
         isis.device_attr[dev1.name].flexalgo_attr[128].priority = 128
 
         isis.device_attr[dev1.name].flexalgo_attr[129].advertise = True
         isis.device_attr[dev1.name].flexalgo_attr[129].affinity_mode = 'include-any'
-        isis.device_attr[dev1.name].flexalgo_attr[129].affinity_names = ['a', 'b', 'c']
+        isis.device_attr[dev1.name].flexalgo_attr[129].affinity_names = ['yellow', 'red']
         isis.device_attr[dev1.name].flexalgo_attr[129].priority = 129
 
         attributes = {
@@ -116,6 +128,9 @@ class test_isis(TestCase):
                     'net': None,
                     'topology': None,
                     'locator_attr': {
+                        '*': None
+                    },
+                    'affinity_map_attr': {
                         '*': None
                     },
                     'flexalgo_attr': {

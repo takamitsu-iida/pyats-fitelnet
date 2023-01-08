@@ -1,0 +1,18 @@
+f220-pe2#show isis flex-algo
+
+Area core:
+Flex-Algo 128:
+       Definition Priority: 128
+       Definition Source: 0000.0000.0012
+       Definition Metric Type: IGP Metric
+       Definition Calc Type: SPF
+       Definition Include-Any: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000006
+       Disabled: No
+
+Flex-Algo 129:
+       Definition Priority: 129
+       Definition Source: 0000.0000.0012
+       Definition Metric Type: IGP Metric
+       Definition Calc Type: SPF
+       Definition Include-Any: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 0000000a
+       Disabled: No
