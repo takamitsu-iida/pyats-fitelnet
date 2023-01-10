@@ -6,17 +6,14 @@
 
 引数を省略した場合、編集用の設定情報(working.cfg)を運用中の設定(current.cfg)に反映させます。
 
-引数を指定した場合はそのファイルから運用中の設定(current.cfg)に反映させます。
+引数を指定した場合はそのファイルの内容を運用中の設定(current.cfg)に反映させます。
 
 """
 
-import argparse
 import logging
-import os
-import sys
+
 
 from genie.testbed import load
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
 
 try:
@@ -29,23 +26,15 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-def connect(uut: object) -> bool:
-    if not uut.is_connected():
-        try:
-            uut.connect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def disconnect(uut: object) -> bool:
-    if uut.is_connected():
-        try:
-            uut.disconnect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
+def execute_refresh(uut: object, filename :str =None) -> bool:
+    try:
+        if filename:
+            uut.refresh(filename)
+        else:
+            uut.refresh()
+    except SubCommandFailure as e:
+        logger.error(str(e))
+        return False
     return True
 
 
@@ -63,21 +52,16 @@ def print_results(results: dict):
             print(f'{router_name} {result}')
 
 
-def refresh(uut: object, filename :str =None) -> bool:
-    try:
-        if filename:
-            uut.refresh(filename)
-        else:
-            uut.refresh()
-    except SubCommandFailure as e:
-        logger.error(str(e))
-        return False
-    return True
-
-
 if __name__ == '__main__':
 
+    import argparse
+    import os
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # app_home is .. from this file
     app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -93,35 +77,8 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='restore from current.cfg')
     args, _ = parser.parse_known_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
 
-        results = {}
 
         if args.filename:
             filename = args.filename if args.filename.startswith('/') else '/drive/config/' + args.filename
@@ -129,19 +86,23 @@ if __name__ == '__main__':
             filename = None
 
         if args.yes:
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
 
-                result = connect(dev)
-                results[router_name] = result
-                if result is False:
+            testbed = load(args.testbed)
+            target_list = common.get_target_device_list(args=args, testbed=testbed)
+            connected_device_list = common.connect_target_list(target_list=target_list)
+
+            results = {}
+            for target in target_list:
+                if target not in connected_device_list:
+                    results[target.hostname] = False
                     continue
 
-                results[router_name] = refresh(dev, filename)
+                results[target.hostname] = execute_refresh(target, filename)
 
-                disconnect(dev)
+            testbed.disconnect()
 
             print_results(results)
+
             return 0
 
         parser.print_help()

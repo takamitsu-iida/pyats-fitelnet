@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-import argparse
 import logging
 import os
-import sys
 
-from pprint import pprint
-
-from unicon.core.errors import StateMachineError
 from genie.testbed import load
 from genie.metaparser.util.exceptions import SchemaEmptyParserError
+
+logger = logging.getLogger(__name__)
 
 # app_home is .. from this file
 app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -32,10 +29,7 @@ os.makedirs(log_dir, exist_ok=True)
 def get_sid(uut: object) -> dict:
 
     if not uut.is_connected():
-        try:
-            uut.connect()
-        except StateMachineError:
-            return None
+        return None
 
     # from external_parser.fitelnet.show_segment_routing_srv6_sid import ShowSegmentRoutingSrv6Sid
     # parser = ShowSegmentRoutingSrv6Sid(device=uut)
@@ -45,9 +39,6 @@ def get_sid(uut: object) -> dict:
         sid_dict = uut.parse('show segment-routing srv6 sid')
     except SchemaEmptyParserError:
         sid_dict = None
-
-    if uut.is_connected():
-        uut.disconnect()
 
     return sid_dict
 
@@ -70,7 +61,13 @@ Hostname, SID, Context, Function, Owner, State
 
 if __name__ == '__main__':
 
+    import argparse
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # default testbed file
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
@@ -81,43 +78,26 @@ if __name__ == '__main__':
     parser.add_argument('--group', nargs='*', type=str, default=['core'], help='a list of target group')
     args, _ = parser.parse_known_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
 
-        parsed_dict = {}
-        for name, dev in testbed.devices.items():
-            if name not in target_list:
-                continue
-            sid = get_sid(dev)
-            if sid:
-                parsed_dict[name] = sid
+        testbed = load(args.testbed)
+        target_list = common.get_target_device_list(args=args, testbed=testbed)
+        connected_device_list = common.connect_target_list(target_list=target_list)
 
-        pprint(parsed_dict)
+        parsed_dict = {}
+        for target in target_list:
+            if target not in connected_device_list:
+                logger.info(f'skip {target.hostname}')
+                continue
+
+            sid = get_sid(target)
+            if sid:
+                parsed_dict[target.hostname] = sid
+
+        testbed.disconnect()
+
+        # from pprint import pprint
+        # pprint(parsed_dict)
 
         # convert to csv
         csv_data = Common.to_csv_from_dict(parsed_dict=parsed_dict, template=TEMPLATE)

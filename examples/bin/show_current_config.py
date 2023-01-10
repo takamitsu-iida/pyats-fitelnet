@@ -4,17 +4,14 @@
 
 運用中設定を表示します。
 
-show working.cfg
+show current.cfg
 
 """
 
-import argparse
 import logging
 import os
-import sys
 
 from genie.testbed import load
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
 
 
@@ -25,36 +22,6 @@ app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 # log_dir is ../log
 log_dir = os.path.join(app_home, 'log')
-
-
-def connect(uut: object) -> bool:
-    if not uut.is_connected():
-        try:
-            uut.connect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def disconnect(uut: object) -> bool:
-    if uut.is_connected():
-        try:
-            uut.disconnect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def print_results(results: dict):
-
-    for router_name, output in results.items():
-        print('\n' + '='*10 + f' {router_name} ' + '='*10 + '\n')
-        if output:
-            print(output)
-        else:
-            print('no configuration')
 
 
 def show_current_config(uut: object) -> str:
@@ -73,13 +40,29 @@ def save_config(results):
             try:
                 with open(log_path, 'w') as f:
                     f.write(output)
-            except:
-                pass
+            except Exception as e:
+                logger.error(str(e))
+
+
+def print_results(results: dict):
+
+    for router_name, output in results.items():
+        print('\n' + '='*10 + f' {router_name} ' + '='*10 + '\n')
+        if output:
+            print(output)
+        else:
+            print('no configuration')
 
 
 if __name__ == '__main__':
 
+    import argparse
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # default testbed file
     default_testbed_path = os.path.join(app_home, 'testbed.yaml')
@@ -92,52 +75,29 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show current.cfg')
     args = parser.parse_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
 
         if args.yes:
-            results = {}
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
 
-                result = connect(dev)
-                results[router_name] = result
-                if result is False:
+            testbed = load(args.testbed)
+            target_list = common.get_target_device_list(args=args, testbed=testbed)
+            connected_device_list = common.connect_target_list(target_list=target_list)
+
+            results = {}
+            for target in target_list:
+                if target not in connected_device_list:
+                    results[target.hostname] = False
                     continue
 
-                results[router_name] = show_current_config(dev)
+                results[target.hostname] = show_current_config(target)
 
-                disconnect(dev)
+            testbed.disconnect()
 
             if args.save is True:
                 save_config(results)
 
             print_results(results)
+
             return 0
 
         parser.print_help()

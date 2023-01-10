@@ -1,40 +1,36 @@
 #!/usr/bin/env python
 
-import argparse
+"""retrieve_isis_neighbors.py
+
+ISISの隣接情報を表示します。
+
+show isis neighbor
+
+"""
+
 import logging
-import os
-import sys
 
-from unicon.core.errors import StateMachineError
 from genie.testbed import load
+from genie.metaparser.util.exceptions import SchemaEmptyParserError
 
-# load genie external_parser
-try:
-    from external_parser.fitelnet.common import Common
-except ImportError:
-    print('failed to import parser, please check sys.path')
-    print(sys.path)
-    sys.exit(1)
+logger = logging.getLogger(__name__)
 
 
 def get_isis_neighbors(uut: object) -> dict:
-
     if not uut.is_connected():
-        try:
-            uut.connect()
-        except StateMachineError:
-            return None
+        return None
 
     # from external_parser.fitelnet.show_isis_neighbor import ShowIsisNeighbor
     # parser = ShowIsisNeighbor(device=uut)
     # neighbors_dict = parser.parse()
 
-    neighbors_dict = uut.parse('show isis neighbor')
-
-    if uut.is_connected():
-        uut.disconnect()
+    try:
+        neighbors_dict = uut.parse('show isis neighbor')
+    except SchemaEmptyParserError:
+        neighbors_dict = None
 
     return neighbors_dict
+
 
 # {'f220-p': {'area': {'core': {'f220-pe2': {'holdtime': 30,
 #                                            'interface': 'Port-channel 1020000',
@@ -70,7 +66,14 @@ device, area, neighbor, interface, snpa, level
 
 if __name__ == '__main__':
 
+    import argparse
+    import os
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # default testbed file
     app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -82,47 +85,31 @@ if __name__ == '__main__':
     parser.add_argument('--group', nargs='*', type=str, default=['core'], help='a list of target group')
     args, _ = parser.parse_known_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
+
+        testbed = load(args.testbed)
+        target_list = common.get_target_device_list(args=args, testbed=testbed)
+        connected_device_list = common.connect_target_list(target_list=target_list)
+
         # retrieve 'show isis neighbors' from core routers
         parsed_dict = {}
-        for name, dev in testbed.devices.items():
-            if name not in target_list:
+        for target in target_list:
+            if target not in connected_device_list:
+                logger.info(f'skip {target.hostname}')
                 continue
-            nbr = get_isis_neighbors(dev)
+
+            nbr = get_isis_neighbors(target)
+
             if nbr:
-                parsed_dict[name] = nbr
+                parsed_dict[target.hostname] = nbr
+
+        testbed.disconnect()
 
         # convert dict to csv
-        csv_data = Common.to_csv_from_dict(parsed_dict=parsed_dict, template=TEMPLATE)
+        csv_data = common.to_csv_from_dict(parsed_dict=parsed_dict, template=TEMPLATE)
 
         # convert csv to table format
-        table_data = Common.to_tabulate_from_csv(csv_data=csv_data)
+        table_data = common.to_tabulate_from_csv(csv_data=csv_data)
         print(table_data)
 
         return 0

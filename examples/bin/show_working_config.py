@@ -8,37 +8,20 @@ show working.cfg
 
 """
 
-import argparse
 import logging
-import os
-import sys
 
 from genie.testbed import load
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
-
 
 logger = logging.getLogger(__name__)
 
 
-def connect(uut: object) -> bool:
-    if not uut.is_connected():
-        try:
-            uut.connect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def disconnect(uut: object) -> bool:
-    if uut.is_connected():
-        try:
-            uut.disconnect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
+def show_working_config(uut: object) -> str:
+    try:
+        return uut.execute(f'show working.cfg')
+    except SubCommandFailure as e:
+        logger.error(str(e))
+    return None
 
 
 def print_results(results: dict):
@@ -51,17 +34,16 @@ def print_results(results: dict):
             print('no configuration')
 
 
-def show_working_config(uut: object) -> str:
-    try:
-        return uut.execute(f'show working.cfg')
-    except SubCommandFailure as e:
-        logger.error(str(e))
-    return None
-
-
 if __name__ == '__main__':
 
+    import argparse
+    import os
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # app_home is .. from this file
     app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -76,49 +58,26 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='execute show working.cfg')
     args = parser.parse_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
 
         if args.yes:
-            results = {}
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
 
-                result = connect(dev)
-                results[router_name] = result
-                if result is False:
+            testbed = load(args.testbed)
+            target_list = common.get_target_device_list(args=args, testbed=testbed)
+            connected_device_list = common.connect_target_list(target_list=target_list)
+
+            results = {}
+            for target in target_list:
+                if target not in connected_device_list:
+                    results[target.hostname] = False
                     continue
 
-                results[router_name] = show_working_config(dev)
+                results[target.hostname] = show_working_config(target)
 
-                disconnect(dev)
+            testbed.disconnect()
 
             print_results(results)
+
             return 0
 
         parser.print_help()

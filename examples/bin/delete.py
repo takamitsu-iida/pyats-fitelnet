@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 
-"""delete
+"""delete.py
 
 ファイルを削除します。
 
+delete <filename>
+
 """
 
-import argparse
 import logging
-import os
-import sys
+
 
 from genie.testbed import load
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
 
 try:
@@ -26,43 +25,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-def connect(uut: object) -> bool:
-    if not uut.is_connected():
-        try:
-            uut.connect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def disconnect(uut: object) -> bool:
-    if uut.is_connected():
-        try:
-            uut.disconnect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def print_results(results: dict):
-
-    result_list = []
-    for router_name, result in results.items():
-        success = result.get('success', False)
-        success = 'Success' if success is True else 'Fail'
-        output = result.get('output', '')
-        result_list.append([router_name, success, output])
-
-    if HAS_TABULATE:
-        headers = ['device', 'result', 'output']
-        print(tabulate(result_list, headers=headers, tablefmt='github'))
-    else:
-        pprint(result_list)
-
-
-def delete(uut: object, filename :str =None) -> dict:
+def execute_delete(uut: object, filename :str =None) -> dict:
     result = {
         'success': False,
         'output': ''
@@ -82,9 +45,31 @@ def delete(uut: object, filename :str =None) -> dict:
     return result
 
 
+def print_results(results: dict):
+
+    result_list = []
+    for router_name, result in results.items():
+        success = result.get('success', False)
+        success = 'Success' if success is True else 'Fail'
+        output = result.get('output', '')
+        result_list.append([router_name, success, output])
+
+    if HAS_TABULATE:
+        headers = ['device', 'result', 'output']
+        print(tabulate(result_list, headers=headers, tablefmt='github'))
+    else:
+        pprint(result_list)
+
+
 if __name__ == '__main__':
+    import argparse
+    import os
+    import sys
+
+    import common
 
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # app_home is .. from this file
     app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -100,50 +85,26 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='show directory')
     args, _ = parser.parse_known_args()
 
-    testbed = load(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
-
     def main():
 
-        results = {}
-
         if args.yes:
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
 
-                result = connect(dev)
-                if result is False:
-                    results[router_name] = {}
+            testbed = load(args.testbed)
+            target_list = common.get_target_device_list(args=args, testbed=testbed)
+            connected_device_list = common.connect_target_list(target_list=target_list)
+
+            results = {}
+            for target in target_list:
+                if target not in connected_device_list:
+                    results[target.hostname] = {}
                     continue
 
-                results[router_name] = delete(dev, filename=args.filename)
+                results[target.hostname] = execute_delete(target, filename=args.filename)
 
-                disconnect(dev)
+            testbed.disconnect()
 
             print_results(results)
+
             return 0
 
         parser.print_help()

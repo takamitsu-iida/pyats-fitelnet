@@ -6,15 +6,9 @@
 
 """
 
-import argparse
 import logging
-import os
-import sys
 
-from pprint import pprint
-
-from genie.testbed import load as load_testbed
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+from genie.testbed import load
 from unicon.core.errors import SubCommandFailure
 
 # https://pubhub.devnetcloud.com/media/pyats/docs/async/pcall.html
@@ -26,28 +20,7 @@ try:
 except ImportError:
     HAS_TABULATE = False
 
-
 logger = logging.getLogger(__name__)
-
-
-def connect(uut: object) -> bool:
-    if not uut.is_connected():
-        try:
-            uut.connect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
-
-
-def disconnect(uut: object) -> bool:
-    if uut.is_connected():
-        try:
-            uut.disconnect()
-        except (TimeoutError, StateMachineError, ConnectionError) as e:
-            logger.error(str(e))
-            return False
-    return True
 
 
 def print_results(results: dict):
@@ -80,7 +53,7 @@ def set_boot_config(uut: object, filename: str) -> str:
     return config
 
 
-def reset(uut: object) -> bool:
+def execute_reset(uut: object) -> bool:
     try:
         uut.reset()
         uut.ping('127.0.0.1')
@@ -92,7 +65,14 @@ def reset(uut: object) -> bool:
 
 if __name__ == '__main__':
 
+    import argparse
+    import os
+    import sys
+
+    import common
+
     logging.basicConfig()
+    logger.setLevel(logging.INFO)
 
     # app_home is .. from this file
     app_home = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -108,70 +88,44 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--yes', action='store_true', default=False, help='reset')
     args, _ = parser.parse_known_args()
 
-    testbed = load_testbed(args.testbed)
-
-    # define router group map
-    router_groups = {
-        'p': ['fx201-p', 'f220-p'],
-        'pe': ['fx201-pe1', 'f220-pe2'],
-        'ce': ['f221-ce1', 'f221-ce2'],
-        'core': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2'],
-        'all': ['fx201-p', 'f220-p', 'fx201-pe1', 'f220-pe2', 'f221-ce1', 'f221-ce2']
-    }
-
-    target_list = []
-    if args.group:
-        for group_name in args.group:
-            group_list = router_groups.get(group_name, [])
-            for router_name in group_list:
-                if router_name in testbed.devices.keys():
-                    target_list.append(router_name)
-
-    if args.host:
-        for host_name in args.host:
-            if host_name in testbed.devices.keys():
-                if host_name not in target_list:
-                    target_list.append(host_name)
-
     def main():
-
-        results = []
-        devices = []
-
-        bootfile = None
-        if args.config:
-            bootfile = args.config if args.config.startswith('/') else '/drive/config/' + args.config
 
         if args.yes:
 
-            # 接続済みのデバイスのリストを作成
-            for router_name in target_list:
-                dev = testbed.devices.get(router_name)
-                result = connect(dev)
-                if result is False:
-                    continue
-                devices.append(dev)
+            testbed = load(args.testbed)
+            target_list = common.get_target_device_list(args=args, testbed=testbed)
+            connected_device_list = common.connect_target_list(target_list=target_list)
 
             # 指定されたファイルで起動するように変更
             # もとに戻すために、もともとの起動ファイルの情報を保存しておく
+            bootfile = None
+            if args.config:
+                bootfile = args.config if args.config.startswith('/') else '/drive/config/' + args.config
+
             boot_config = {}
             if bootfile is not None:
-                for device in devices:
+                for device in connected_device_list:
                     boot_config[device.hostname] = set_boot_config(device, bootfile)
 
             # 同時にリセット
-            results = pcall(reset, uut=devices)
+            reset_results = pcall(execute_reset, uut=connected_device_list)
 
             # 起動コンフィグを元に戻す
             if bootfile is not None:
-                for device in devices:
+                for device in connected_device_list:
                     set_boot_config(device, boot_config[device.hostname])
 
             # 切断
-            for dev in devices:
-                disconnect(dev)
+            testbed.disconnect()
 
-            pprint(results)
+            results = {}
+            for target in target_list:
+                if target in connected_device_list:
+                    results[target.hostname] = reset_results[connected_device_list.index(target)]
+                else:
+                    results[target.hostname] = False
+
+            print_results(results=results)
 
             return 0
 
