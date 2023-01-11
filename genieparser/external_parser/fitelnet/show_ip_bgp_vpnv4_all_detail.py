@@ -52,6 +52,7 @@ class ShowIpBgpVpnv4AllDetailSchema(MetaParser):
                     Optional('function'): str,
                     Optional('local_label'): Or(int, str),
                     Optional('remote_label'): Or(int, str),
+                    Optional('remote_func'): str, # calculated from 'T' and 'remote_label'
                     Optional('path_identifier'): str,
                     Optional('last_update'): str,
                 },
@@ -265,7 +266,26 @@ class ShowIpBgpVpnv4AllDetail(ShowIpBgpVpnv4AllDetailSchema):
                 parsed_dict['route_distinguisher'][current_rd][current_prefix]['T'] = m.group('T')
                 parsed_dict['route_distinguisher'][current_rd][current_prefix]['function'] = m.group('function')
 
-        # from pprint import pprint
-        # pprint(parsed_dict, width=160)
+
+        # append 'remote_func'
+        for rd_data in parsed_dict.get('route_distinguisher', {}).values():
+            if not rd_data:
+                continue
+            for route_data in rd_data.values():
+                if not route_data:
+                    continue
+                if not route_data.get('T') or not route_data.get('remote_label'):
+                    continue
+                try:
+                    trans_len = int(route_data.get('T').split('.')[0])
+                    bit_shift = 20 - trans_len
+                    remote_label = int(route_data.get('remote_label'))
+                    route_data['remote_func'] = hex(remote_label >> bit_shift)
+                except Exception as e:
+                    print(str(e))
+                    continue
+
+        from pprint import pprint
+        pprint(parsed_dict, width=160)
 
         return parsed_dict
