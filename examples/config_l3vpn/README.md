@@ -1,5 +1,6 @@
 # SRv6 ISIS TE
 
+<br><br>
 
 ## 全体構成
 
@@ -215,8 +216,13 @@ FITELnetのコマンドはshow segment-routing srv6 sidです。
 | f220-pe2   | 2001:db8:0:12:46:: | [Port-channel 1010000  Link-Local] | End.X       | IS-IS    | InUse    |
 | f220-pe2   | 2001:db8:0:12:47:: | [Port-channel 1010000  Link-Local] | End.X (PSP) | IS-IS    | InUse    |
 
-<br><br><br><br>
+各ノードにはEndに静的に割り当てたSIDと、ISISが動的に採番したSIDの両方が存在します。
 
+DT4に静的にSIDを割り当てるところがこの構成のポイントで、BGPでアドレスファミリvpnv4を交換しなくても通信できたと思われます。
+
+（実機で確認すればよかった・・・）
+
+<br><br><br><br>
 
 # 最終コンフィグ
 
