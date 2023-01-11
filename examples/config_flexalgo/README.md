@@ -1,17 +1,18 @@
-# SRv6 ISIS TE
+# SRv6 ISIS FlexAlgo L3VPN
 
-リング型のネットワークを2個作り、それぞれのaffinityはredとblueと命名します。
-
-Pルータ間の接続の部分はyellowと命名して、それぞれのリングで共通的に利用します。
-
-VPNを2個作ります。
-
-一つはredの経路、もう一つはblueの経路を通るようにします。
-
+<br><br>
 
 ## 全体構成
 
-![network diagram](img/labo2_isis_flexalgo.drawio.png "全体構成")
+リング型のネットワークを2個作り、それぞれのaffinityをredとblueと命名します。
+
+blueは上を通るルート、redは下を通るルートを現用とします。
+
+Pルータ間を接続する部分はyellowと命名して、それぞれのリングで共通的に利用します。
+
+VPNを2個作ります。一つはredの経路、もう一つはblueの経路を通るようにします。
+
+![flexalgo diagram](img/labo2_flexalgo.drawio.png "FlexAlgo構成")
 
 <br><br>
 
@@ -19,8 +20,9 @@ VPNを2個作ります。
 
 物理線は同じですが、論理的にネットワークを分割するためにポートチャネルを追加します。
 
-![sid design](img/labo2_po.drawio.png "ポートチャネル設計")
+![physical design](img/labo2_physical.drawio.png "ポートチャネル設計")
 
+![port-channel design](img/labo2_po.drawio.png "ポートチャネル設計")
 
 <br><br>
 
