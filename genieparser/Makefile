@@ -24,17 +24,20 @@ PYTHON = python
 # cd tests
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c Dir
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c Ping
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowBoot
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowInterface
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowVersion
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisNeighbor
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisNeighborDetail
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisInterfaceDetail
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIpBgpNeighbors
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIpBgpVpnv4AllDetail
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6Sid
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6SidDetail
-# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6SidCounter
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIpInterfaceBrief
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisFlexAlgo
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisInterfaceDetail
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisNeighborDetail
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowIsisNeighbor
 # python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6Locator
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6Sid
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6SidCounter
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowSegmentRoutingSrv6SidDetail
+# python folder_parsing_job.py -e ../external_parser -o fitelnet -c ShowVersion
 
 test:
 	@(cd tests; python folder_parsing_job.py -e ../external_parser -o fitelnet)
