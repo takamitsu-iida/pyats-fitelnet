@@ -41,6 +41,31 @@ def print_config(name: str, configs: dict):
     print('')
 
 
+def connect(uut: object) -> bool:
+    if uut.is_connected():
+        return True
+
+    try:
+        uut.connect()
+    except (TimeoutError, ConnectionError):
+        logger.info('Try to connect again')
+        try:
+            uut.connect()
+        except Exception as e:
+            logger.error(str(e))
+            return False
+    except StateMachineError as e:
+        # plugin error?
+        logger.error(str(e))
+        return False
+    except Exception as e:
+        logger.error(str(e))
+        return False
+
+    return uut.is_connected()
+
+
+
 ###################################################################
 ###                  COMMON SETUP SECTION                       ###
 ###################################################################
@@ -101,11 +126,9 @@ class ConnectDevices(aetest.Testcase):
         for device_name in base_configs.keys():
             with steps.start(device_name, continue_=False) as device_step:
                 device = testbed.devices[device_name]
-                try:
-                    device.connect()
-                except (TimeoutError, StateMachineError, ConnectionError) as e:
+                result = connect(device)
+                if result is False:
                     logger.error(banner(f'connect failed {device_name}'))
-                    logger.error(banner(str(e)))
                     device_step.failed()
 
 
@@ -158,7 +181,6 @@ class ApplyConfig(aetest.Testcase):
                     logger.error(banner(f'execute failed {device_name}'))
                     logger.error(banner(str(e)))
                     device_step.failed()
-
 
 
 class SaveWorkingConfig(aetest.Testcase):

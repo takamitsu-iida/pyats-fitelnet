@@ -1,5 +1,13 @@
 # SRv6 ISIS TE
 
+リング型のネットワークを2個作り、それぞれのaffinityはredとblueと命名します。
+
+Pルータ間の接続の部分はyellowと命名して、それぞれのリングで共通的に利用します。
+
+VPNを2個作ります。
+
+一つはredの経路、もう一つはblueの経路を通るようにします。
+
 
 ## 全体構成
 
@@ -8,6 +16,8 @@
 <br><br>
 
 ## ポートチャネル設計
+
+物理線は同じですが、論理的にネットワークを分割するためにポートチャネルを追加します。
 
 ![sid design](img/labo2_po.drawio.png "ポートチャネル設計")
 
@@ -60,7 +70,7 @@
 
 <br><br>
 
-## PEのVRFルーティングテーブル
+## show ip route vrf 1
 
 ```bash
 f220-pe2#show ip route vrf 1
@@ -120,7 +130,7 @@ Routing entry for 10.2.11.0/24
 
 <br><br>
 
-## PEのBGPテーブル
+## show ip bgp vpnv4 all
 
 
 ```bash
@@ -186,7 +196,7 @@ BGP routing table entry for 10.2.11.0/24
 
 <br><br>
 
-## IPv6ルーティングテーブル
+## show ipv6 route
 
 ```bash
 f220-pe2#show ipv6 route
@@ -214,4 +224,46 @@ C > * fe80::/64 is directly connected, port-channel1010001
 C > * fe80::/64 is directly connected, port-channel1010002
 C > * fe80::/64 is directly connected, port-channel1020001
 C > * fe80::/64 is directly connected, port-channel1020002
+```
+
+<br><br>
+
+## show isis flex-algo
+
+ビットポジションの設定はこのようにしています。
+
+```bash
+router isis core
+ affinity-map yellow bit-position 1
+ affinity-map blue bit-position 2
+ affinity-map red bit-position 3
+```
+
+yellow(ビットポジション1)とblue(ビットポジション2)をorすると、`0b0110`なので16進数だと0x6です。
+
+yellow(ビットポジション1)とred(ビットポジション3)をorすると、`0b1010`なので16進数だと0xaです。
+
+下記のDefinition Include-Anyの行がそれを意味しているのですが、0を書き並べる意味が分かりません。
+
+（2進数で表示しようとして、間違って16進数で表示してしまっているバグじゃないかしら？）
+
+```bash
+f220-pe2#show isis flex-algo
+
+Area core:
+Flex-Algo 128:
+       Definition Priority: 128
+       Definition Source: 0000.0000.0012
+       Definition Metric Type: IGP Metric
+       Definition Calc Type: SPF
+       Definition Include-Any: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000006
+       Disabled: No
+
+Flex-Algo 129:
+       Definition Priority: 129
+       Definition Source: 0000.0000.0012
+       Definition Metric Type: IGP Metric
+       Definition Calc Type: SPF
+       Definition Include-Any: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 0000000a
+       Disabled: No
 ```

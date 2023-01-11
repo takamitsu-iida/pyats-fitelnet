@@ -8,9 +8,10 @@ from pprint import pprint  #, pformat
 # from genie.conf.base import Device
 from pyats import aetest
 from pyats.log.utils import banner
-from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+# from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
 from unicon.core.errors import SubCommandFailure
 
+from test_libs import connect_device
 from test_libs import build_addr_config
 from test_libs import build_bgp_config
 from test_libs import build_srv6_config
@@ -100,13 +101,11 @@ class BuildConfigApply(aetest.Testcase):
         for device_name, config_list in configs.items():
             with steps.start(device_name, continue_=False) as device_step:
                 device = testbed.devices[device_name]
-                if not device.is_connected():
-                    try:
-                        device.connect()
-                    except (TimeoutError, StateMachineError, ConnectionError) as e:
-                        logger.error(banner(f'connect failed {device_name}'))
-                        logger.error(banner(str(e)))
-                        device_step.failed()
+
+                if connect_device(device) is False:
+                    logger.error(banner(f'connect failed {device_name}'))
+                    device_step.failed()
+
                 try:
                     device.configure(config_list)
                     device.refresh()

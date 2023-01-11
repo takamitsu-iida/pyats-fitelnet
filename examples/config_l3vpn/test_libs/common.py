@@ -1,6 +1,8 @@
 
 import logging
 
+from unicon.core.errors import TimeoutError, StateMachineError, ConnectionError
+
 from external_libs.conf.addr import Addr
 from external_libs.conf.bgp import Bgp
 from external_libs.conf.srv6 import Srv6
@@ -12,6 +14,29 @@ from external_libs.conf.isis import Isis
 logger = logging.getLogger(__name__)
 
 SUPPORTED_OS = ['fitelnet']
+
+def connect_device(uut: object) -> bool:
+    if uut.is_connected():
+        return True
+
+    try:
+        uut.connect()
+    except (TimeoutError, ConnectionError):
+        logger.info('Try to connect again')
+        try:
+            uut.connect()
+        except Exception as e:
+            logger.error(str(e))
+            return False
+    except StateMachineError as e:
+        # plugin error?
+        logger.error(str(e))
+        return False
+    except Exception as e:
+        logger.error(str(e))
+        return False
+
+    return uut.is_connected()
 
 
 def build_addr_config(testbed: object, params: dict) -> dict:
