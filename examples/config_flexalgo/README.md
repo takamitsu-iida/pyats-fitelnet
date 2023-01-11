@@ -18,15 +18,32 @@ VPNを2個作ります。一つはredの経路、もう一つはblueの経路を
 
 ## ポートチャネル設計
 
-物理線は同じですが、論理的にネットワークを分割するためにポートチャネルを追加します。
+物理接続は各リングで共通です。
 
-![physical design](img/labo2_physical.drawio.png "ポートチャネル設計")
+![physical design](img/labo2_physical.drawio.png "物理接続")
+
+論理的にネットワークを分割するためにポートチャネルを追加します。
+
+物理インタフェースにサブインタフェースを作成してVLANを付与します。
+そのサブインタフェースをポートチャネル化します。
+
+VLAN番号が偶数はblue、奇数はredのリングに属するようにします。
+
+Pルータ同士を接続するリンクはyellowとします。
 
 ![port-channel design](img/labo2_po.drawio.png "ポートチャネル設計")
 
 <br><br>
 
 ## SID設計
+
+FlexAlgoではアルゴリズムごとにロケータを定義します。
+
+ロケータ a = 2001:0db8:00 (40ビット) + 01 00XX (24ビット) / 64
+
+ロケータ b = 2001:0db8:00 (40ビット) + 02 00XX (24ビット) / 64
+
+where XX is node specific number
 
 ![sid design](img/labo2_sid.drawio.png "SID設計")
 
@@ -35,12 +52,34 @@ VPNを2個作ります。一つはredの経路、もう一つはblueの経路を
 
 ## ISIS設計
 
+net = 49.0000.0000.00XX.00
+
+where XX is node specific number
+
+- yellow bit-position 1
+- blue bit-position 2
+- red bit-position 3
+
+<br>
+
+#### FlexAlgo 128
+
+include-any yellow blue
+
+
+### FlexAlgo 129
+
+include-any yellow red
+
 ![isis design](img/labo2_isis.drawio.png "ISIS設計")
 
 
 <br><br>
 
 ## VPN設計
+
+- vrf 1 ロケータa
+- vrf 2 ロケータb
 
 ![vpn design](img/labo2_vpn.drawio.png "VPN設計")
 
