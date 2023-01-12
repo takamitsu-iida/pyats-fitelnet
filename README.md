@@ -1091,8 +1091,11 @@ SSHの暗号強度で問題がでている。
 
 Unable to negotiate with 10.77.165.211 port 50225: no matching host key type found. Their offer: ssh-rsa,ssh-dss
 
-テストベッドのprotocol設定をこのように変えることで対処可能なはず。
+テストベッドのprotocol設定をこのように変えることで対処可能。
+protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p <ポート番号>
 
-protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss
+リポジトリはすでに変更してあるので、
+git fetch
+で最新化すればOK
 
 -->
