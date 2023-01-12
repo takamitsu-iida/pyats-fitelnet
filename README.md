@@ -1065,3 +1065,34 @@ pyATSの接続処理は時々失敗しますので、こんな感じで全ての
 - Endに対してローカルSIDをわりあてたときに、そこにpingを打ち込むとどうなるか（応答ありだと思うけど、本当かな？）
 
 - L3VPNにローカルSIDをわりあてたときに、途中経路上のPルータでそのSID宛て通信にQoSをかけられるか（VPN通信に途中経路上のルータでQoSをかけられるのはSRv6だけ）
+
+- BGPの属性でcolorを付けたときに、ポリシー定義とカラーが一致した場合に、そのポリシーが適用される？
+
+
+<!--
+
+pyATS環境構築のトラブルシューティング
+
+システムのPython環境を最新化する。
+これはsudoが必要かも。
+
+python -m pip install -U pip
+pip install –upgrade setuptools
+
+仮想環境は一度消してから作り直す。
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+
+SSHの暗号強度で問題がでている。
+古いネットワーク機器では起こりがち。
+
+Unable to negotiate with 10.77.165.211 port 50225: no matching host key type found. Their offer: ssh-rsa,ssh-dss
+
+テストベッドのprotocol設定をこのように変えることで対処可能なはず。
+
+protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss
+
+-->

@@ -57,9 +57,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50225
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50225
         ip: 10.77.165.211
-        port: 50225
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
@@ -78,9 +79,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50221
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50221
         ip: 10.77.165.211
-        port: 50221
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
@@ -91,7 +93,6 @@ devices:
           # init_exec_commands: []
           # init_config_commands: []
 
-
   fx201-pe1:
     os: fitelnet
     type: router
@@ -100,9 +101,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50220
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50220
         ip: 10.77.165.211
-        port: 50220
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
@@ -116,7 +118,6 @@ devices:
         command: mock_device_cli --os iosxe --mock_data_dir fx201-pe1 --state connect
         protocol: unknown
 
-
   f220-pe2:
     os: fitelnet
     type: router
@@ -125,9 +126,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50224
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50224
         ip: 10.77.165.211
-        port: 50224
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
@@ -138,8 +140,6 @@ devices:
           # init_exec_commands: []
           # init_config_commands: []
 
-
-
   f221-ce1:
     os: fitelnet
     type: router
@@ -148,9 +148,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50222
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50222
         ip: 10.77.165.211
-        port: 50222
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
@@ -169,9 +170,10 @@ devices:
         class: 'unicon.Unicon'
         via: cli
       cli:
-        protocol: ssh
+        # protocol: ssh
+        # port: 50223
+        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50223
         ip: 10.77.165.211
-        port: 50223
         settings:
           GRACEFUL_DISCONNECT_WAIT_SEC: 1     # default 10
           POST_DISCONNECT_WAIT_SEC: 1         # default 10
