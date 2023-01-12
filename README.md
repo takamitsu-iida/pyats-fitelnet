@@ -1072,37 +1072,48 @@ pyATSの接続処理は時々失敗しますので、こんな感じで全ての
 <!--
 pyATS環境構築のトラブルシューティング
 
-システムのPython環境を最新化する。
-これはsudoが必要かも。
-
-python -m pip install -U pip
-pip install –upgrade setuptools
-
-仮想環境は一度消してから作り直す。
-rm -rf .venv
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-SSHの暗号強度で問題がでている。
+問題１．Ubuntu22だとSSHで接続でFITELnet機器に接続できない
 
 Unable to negotiate with 10.77.165.211 port 50225: no matching host key type found. Their offer: ssh-rsa,ssh-dss
 
-古いネットワーク機器では起こりがち。今回はホストキーだけど、CipherやKexAlgorithmsで問題がでることも多い。
+理由はSSHの暗号強度に問題があるため。
+古いネットワーク機器と新しいLinuxの組み合わせで起こりがち。
+今回はホストキーでの不整合だが、CipherやKexAlgorithmsで問題がでることも多い。
 
 まずターミナルからsshコマンドで接続できるかを確認する。
 たとえば、f220-pに接続する場合、
 
 ssh -l user -p 50225 10.77.165.211
 
-これがダメなら~/.ssh/configに修正が必要。
+接続できない場合は~/.ssh/configで以下のように設定する。
 
-pyATSは~/.ssh/configを参照しないので、別の対処が必要。
+Host fx201-1
+  User user
+  HostName 10.77.165.211
+  Port 50220
+  HostKeyAlgorithms +ssh-rsa,ssh-dss
+
+pyATSは~/.ssh/configを参照しないので、これとは別の対処が必要。
 テストベッドのprotocol設定をこのように変えることで対処可能。
+
 protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p <ポート番号>
 
 リポジトリはすでに変更してあるので、
-git fetch
-で最新化すればOK
+git pull
+で最新化するだけでよい。
+
+
+問題２．uniconのプラグインがインストールできない
+
+対処手順１．システムのpython環境を最新化する。
+
+python3 -m pip install -U pip
+python3 -m pip install --upgrade setuptools
+
+対処手順２．
+なぜかオーナーがrootになったディレクトリが作られてしまうので、それを削除する。
+sudo rm -rf <そのディレクトリ>
+
+再度make developすればよい。
 
 -->
