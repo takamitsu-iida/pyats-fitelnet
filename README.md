@@ -1070,7 +1070,6 @@ pyATSの接続処理は時々失敗しますので、こんな感じで全ての
 
 
 <!--
-
 pyATS環境構築のトラブルシューティング
 
 システムのPython環境を最新化する。
@@ -1085,12 +1084,20 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-
 SSHの暗号強度で問題がでている。
-古いネットワーク機器では起こりがち。
 
 Unable to negotiate with 10.77.165.211 port 50225: no matching host key type found. Their offer: ssh-rsa,ssh-dss
 
+古いネットワーク機器では起こりがち。今回はホストキーだけど、CipherやKexAlgorithmsで問題がでることも多い。
+
+まずターミナルからsshコマンドで接続できるかを確認する。
+たとえば、f220-pに接続する場合、
+
+ssh -l user -p 50225 10.77.165.211
+
+これがダメなら~/.ssh/configに修正が必要。
+
+pyATSは~/.ssh/configを参照しないので、別の対処が必要。
 テストベッドのprotocol設定をこのように変えることで対処可能。
 protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p <ポート番号>
 
