@@ -19,7 +19,18 @@ pyATSを利用するために必要な環境を準備します。
 <br>
 
 > **Note**
+>
 > Windows + WSLの構成でVPNも同時に使う場合は、WSL version 2ではなく、WSL version 1を使うようにしてください。
+
+<br>
+
+> **Note**
+>
+> このリポジトリは下記組み合わせで動作しています。
+> - WSL version 1
+> - Ubuntu 20.04
+> - Python 3.8
+
 
 <br>
 
@@ -217,115 +228,10 @@ vscodeの設定メニューからextra pathsを検索します。
 
 <br>
 
-## Ubuntu 22.04 LTSをお使いの方でお困りの場合
+## Ubuntu 22.04 LTSをお使いの方
 
-次のような問題がでましたら、解決策をお試しください。
+[こちら](README.Ubuntu22.md)も参照してください。
 
-<br>
-
-#### 問題１．sshコマンドでFITELnet機器に接続できない
-
-ターミナルからsshコマンドでFITELnet機器に接続を試みると、
-`no matching host key type found. Their offer: ssh-rsa,ssh-dss`
-といった表示が出て接続できないことがあります。
-
-<br>
-
-#### 解決策
-
-これはLinux側のSSHの実装が新しいため、古い実装のネットワーク機器との間でプロトコルの不整合がでているためです。
-FITELnetに限らず古いCatalystやISRでも同様の現象がよく起こります。
-
-sshコマンドの引数にオプションを付けてもよいのですが、毎回指定するのは大変ですので `~/.ssh/config` ファイルに以下のような設定を書いておくとよいでしょう。
-
-```bash
-#
-# FITELnet SRv6 Labo
-#
-
-Host fx201-1
-  User user
-  HostName 10.77.165.211
-  Port 50220
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-
-Host fx201-2
-  User user
-  HostName 10.77.165.211
-  Port 50221
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-
-Host f221-1
-  User user
-  HostName 10.77.165.211
-  Port 50222
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-
-Host f221-2
-  User user
-  HostName 10.77.165.211
-  Port 50223
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-
-Host f220-pe2
-  User user
-  HostName 10.77.165.211
-  Port 50224
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-
-Host f220-p
-  User user
-  HostName 10.77.165.211
-  Port 50225
-  HostKeyAlgorithms +ssh-rsa,ssh-dss
-  #KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-  #Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-```
-
-pyATSを使って接続する場合は `~/.ssh/config` ファイルを読んでくれませんので、テストベッドファイルに同様の設定を施します。
-
-[examples/testbed.yaml](examples/testbed.yaml)
-
-```yaml
-  f220-p:
-    os: fitelnet
-    type: router
-    connections:
-      defaults:
-        class: 'unicon.Unicon'
-        via: cli
-      cli:
-        # protocol: ssh
-        # port: 50225
-        protocol: ssh -oHostKeyAlgorithms=+ssh-rsa,ssh-dss -p 50225
-        ip: 10.77.165.211
-```
-
-<br>
-
-#### 問題２．uniconのプラグインのインストールに失敗する
-
-`make develop` もしくは `python setup.py develop --no-deps` を実行したとき、permission deniedでエラーになることがあります。
-
-<br>
-
-#### 解決策
-
-インストールの仮定でなぜかrootがオーナーになったディレクトリが作られていて、そこへの書き込みに失敗しているようです。
-
-`sudo rm -rf そのディレクトリ` で一度そのディレクトリを消してください。
-rootがオーナーになったディレクトリは複数ありますので、全部消してください。
-その後、再度 `python setup.py develop --no-deps` を実行してみてください。
 
 <br>
 
@@ -340,6 +246,7 @@ rootがオーナーになったディレクトリは複数ありますので、�
 ```
 
 > **Note**
+>
 > 初回起動時は若干遅いです。
 
 ```bash
@@ -448,9 +355,17 @@ Pro Tip
 ./examples/check_segment_list/run -m
 ```
 
-<br>
+<br><br>
 
-### うまくいかないとき
+## 自分でスクリプトを書きたい場合
+
+単体で動作するスクリプトは [examples/bin/test-script.py](examples/bin/test-script.py) を参照してください。
+
+一連の動作をスクリプト化したい場合は examplesディレクトリにあるcheck_で始まるテストを参照してください。
+
+<br><br>
+
+## うまくいかないとき
 
 PYTHONPATHで設定したパスが次のようにsys.pathに反映されているか、確認しましょう。
 
@@ -487,6 +402,7 @@ pipでインストールした外部ライブラリがvscodeで認識されな�
 基本的にvscodeは自動でvenvの環境を見つけてくれるのですが、グローバルのPython環境が選ばれてしまうことも発生しうることです。
 
 > **Note**
+>
 > Where the extension looks for environments
 > https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments
 
@@ -695,6 +611,7 @@ FITELnetのコマンドはsaveです。
 実行例。
 
 > **Warning**
+>
 > この作業は慎重に実行しましょう。commitして動作することを確認した後の方がよろしいかと思います。
 
 ```bash
@@ -783,6 +700,7 @@ FITELnetのコマンドはrefresh <filename>です。
 デフォルトの対象装置は '--group all' です。
 
 > **Note**
+>
 > ファイル名はフルパスで指定してください。
 
 実行例。
@@ -1004,6 +922,7 @@ iida@FCCLS0008993-00:~/git/pyats-fitelnet$ ./examples/config_base/test.py --chec
 ```
 
 > **Warning**
+>
 > ここでaaaの設定やusernameが期待通りに含まれていないと、その後接続できなくなります。
 
 
@@ -1143,6 +1062,7 @@ pyATSの接続処理は時々失敗しますので、こんな感じで全ての
 `examples/bin/async_reset.py --group all -y`
 
 > **Note**
+>
 > resetコマンドを実行するとSSH接続が切れますが、30秒ごとに再接続を試みます。
 > その際にPythonの例外が表示されますが、気にしないこと。
 > 気が向いたら直します。
@@ -1169,6 +1089,7 @@ pyATSの接続処理は時々失敗しますので、こんな感じで全ての
 ここまでできたら、あとは好きなように設定を投入しましょう。
 
 > **Warning**
+>
 > saveするとboot.cfgが変わってしまいます。
 > boot_config.pyを使って自分専用の起動用ファイルを作成してもいいでしょう。
 
