@@ -63,9 +63,7 @@ sudo apt install direnv
 eval "$(direnv hook bash)"
 ```
 
-bash以外のシェルはこちらのページを参照してください。
-
-https://github.com/direnv/direnv/blob/master/docs/hook.md
+bash以外のシェルは[こちらのページ](https://github.com/direnv/direnv/blob/master/docs/hook.md)を参照してください。
 
 <br>
 

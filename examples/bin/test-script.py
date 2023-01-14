@@ -40,7 +40,9 @@ def connect(uut: object) -> bool:
 
 
 def connect_retry(uut: object) -> bool:
-    """接続します。接続失敗時に一度だけリトライします。
+    """接続します。
+
+    接続失敗時に一度だけリトライします。実際に使うときにはこれがおすすめです。
 
     Args:
         uut (object): testbedのデバイスです。
@@ -136,7 +138,6 @@ def test_configure_from_list(uut):
 def test_reset(uut: object):
     """装置をリセットします。
 
-    リセット後に自分自身にpingを打ちます。
     リセット後に再接続を繰り返し試みます。その際Pythonのタイムアウト例外が表示されますが気にしないこと。
 
     Args:
@@ -174,8 +175,23 @@ def test_parse_show_version(uut: object):
 
     print('')
 
-    # やり方２
-    print('show_version.parse()')
+    # やり方２　過去に採取したログを利用してパースする場合
+    output = '''
+  --------------------- present-side ---------------------
+FX201   Version T01.06(00)[0]00.00.0 [2022/11/01 15:00]
+
+  ---------------------- other-side ----------------------
+FX201   Version T01.06(00)[0]00.00.0 [2022/11/01 15:00]
+    '''.strip()
+
+    from external_parser.fitelnet.show_version import ShowVersion
+    show_version = ShowVersion(device=uut)
+    parsed = show_version.parse(output=output)
+    pprint(parsed)
+
+    print('')
+
+    # やり方３
     from external_parser.fitelnet.show_version import ShowVersion
     show_version = ShowVersion(device=uut)
     parsed = show_version.parse()
@@ -254,7 +270,6 @@ def test_parse_ping(uut: object):
         uut (object): testbedのデバイスです。
     """
     # やり方１
-    pprint('uut.parse()')
     parsed = uut.parse('ping', addr='127.0.0.1', repeat=10)
     pprint(parsed)
 
@@ -319,12 +334,12 @@ if __name__ == '__main__':
 
             # 実行するテストを選ぶ
 
-            test_execute(dev)
+            # test_execute(dev)
             # test_configure_from_str(dev)
             # test_configure_from_list(dev)
             # test_reset(dev)
             # test_save(dev)
-            # test_parse_show_version(dev)
+            test_parse_show_version(dev)
             # test_parse_show_ip_interface_brief(dev)
             # test_parse_show_segment_routing_srv6_sid(dev)
             # test_parse_show_interface(dev)
