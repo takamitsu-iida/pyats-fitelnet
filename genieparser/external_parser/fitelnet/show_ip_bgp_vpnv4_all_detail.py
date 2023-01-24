@@ -72,6 +72,8 @@ class ShowIpBgpVpnv4AllDetail(ShowIpBgpVpnv4AllDetailSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         # Route Distinguisher: 1:1 (1)
         p1 = re.compile(r'^Route +Distinguisher *: *(?P<rd>\S+) +\(\d+\)$')

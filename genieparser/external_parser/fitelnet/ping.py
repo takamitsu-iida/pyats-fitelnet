@@ -103,7 +103,9 @@ class Ping(PingSchema):
                 if do_not_fragment:
                     cmd.append('df-bit')
                 cmd = ' '.join(cmd)
-                out = self.device.execute(cmd)
+            out = self.device.execute(cmd)
+            if not out:
+                return None
         else:
             out = output
 

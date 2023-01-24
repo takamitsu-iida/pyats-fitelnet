@@ -43,6 +43,8 @@ class ShowVersion(ShowVersionSchema):
     def cli(self, output=None):
         if output is None:
             out = self.device.execute(self.cli_command)
+            if not out:
+                return None
         else:
             out = output
 

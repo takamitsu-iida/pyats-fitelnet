@@ -60,7 +60,9 @@ class Dir(DirSchema):
                 if directory:
                     cmd.append(directory)
                 cmd = ' '.join(cmd)
-                out = self.device.execute(cmd)
+            out = self.device.execute(cmd)
+            if not out:
+                return None
         else:
             out = output
 

@@ -48,6 +48,8 @@ class ShowSegmentRoutingSrv6SidCounter(ShowSegmentRoutingSrv6SidCounterSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         # End      3ffe:201:0:1:40::                             0 packets            0 errors
         p0 = re.compile(r'^(?P<function>[0-9a-zA-Z\.]+) +(?P<sid>[0-9a-fA-F\:]+) +(?P<decap_packets>\d+) *packets +(?P<error_packets>\d+) *errors$')

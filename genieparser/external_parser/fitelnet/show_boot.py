@@ -41,11 +41,12 @@ class ShowBoot(ShowBootSchema):
     def cli(self, output=None):
         if output is None:
             out = self.device.execute(self.cli_command)
+            if not out:
+                return None
         else:
             out = output
 
         parsed_dict = {}
-
 
         # next-boot-side: present-side
         p1 = re.compile(r'next-boot-side: +(?P<next_boot_side>\S+)')

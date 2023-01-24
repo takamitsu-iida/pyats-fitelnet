@@ -54,6 +54,8 @@ class ShowSegmentRoutingSrv6SidDetail(ShowSegmentRoutingSrv6SidDetailSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         #
         # step 1

@@ -64,6 +64,8 @@ class ShowIsisNeighborDetail(ShowIsisNeighborDetailSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         # Area core:
         p1 = re.compile(r'^Area +(?P<area>\S+): *$')

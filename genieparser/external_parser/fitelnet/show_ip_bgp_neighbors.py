@@ -173,6 +173,8 @@ class ShowIpBgpNeighbors(ShowIpBgpNeighborsSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         # BGP neighbor is 3ffe:201:1::1, remote AS 65000, local AS 65000, internal link
         p1 = re.compile(r'^BGP +neighbor +is +(?P<neighbor>([0-9a-fA-F\:\.]+)), +remote +AS +(?P<remote_as>[\d\.]+), +local +AS +(?P<local_as>[\d\.]+), +(?P<link>\S+) +link$')

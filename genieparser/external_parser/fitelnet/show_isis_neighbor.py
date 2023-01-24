@@ -51,6 +51,8 @@ class ShowIsisNeighbor(ShowIsisNeighborSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if not output:
+                return None
 
         # Area core:
         #   System Id           Interface             L  State        Holdtime SNPA

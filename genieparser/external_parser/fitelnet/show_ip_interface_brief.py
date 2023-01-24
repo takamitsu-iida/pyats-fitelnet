@@ -49,6 +49,8 @@ class ShowIpInterfaceBrief(ShowIpInterfaceBriefSchema):
     def cli(self, output=None):
         if output is None:
             output = self.device.execute(self.cli_command)
+            if output is None or output.strip() == '':
+                return None
 
         parsed_dict = {}
 

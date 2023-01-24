@@ -171,6 +171,8 @@ class ShowInterface(ShowInterfaceSchema):
             else:
                 cmd = self.cli_command[0]
             output = self.device.execute(cmd)
+            if not output:
+                return None
 
         # Loopback 0 is up, line protocol is up
         # Port-channel 1020000 is up, line protocol is up
