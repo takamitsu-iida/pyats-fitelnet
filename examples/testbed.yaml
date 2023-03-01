@@ -70,6 +70,7 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true                    # disable create log file to /tmp
 
   fx201-p:
     os: fitelnet
@@ -92,6 +93,7 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true
 
   fx201-pe1:
     os: fitelnet
@@ -114,6 +116,7 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true
       mock:
         command: mock_device_cli --os iosxe --mock_data_dir fx201-pe1 --state connect
         protocol: unknown
@@ -139,6 +142,7 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true
 
   f221-ce1:
     os: fitelnet
@@ -161,6 +165,7 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true
 
   f221-ce2:
     os: fitelnet
@@ -183,3 +188,4 @@ devices:
           connection_timeout: 10              # default 60
           # init_exec_commands: []
           # init_config_commands: []
+          log_buffer: true
